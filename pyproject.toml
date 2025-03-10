@@ -36,7 +36,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
 files = ["libvcell", "tests"]
-exclude = [ "vcell"]
+exclude = [ "vcell_submodule"]
 strict = true
 
 [tool.pytest.ini_options]

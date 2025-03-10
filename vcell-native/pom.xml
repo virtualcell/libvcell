@@ -8,7 +8,7 @@
         <groupId>org.vcell</groupId>
         <artifactId>vcell-pom</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../vcell/pom.xml</relativePath>
+        <relativePath>../vcell_submodule/pom.xml</relativePath>
     </parent>
 
     <artifactId>vcell-native</artifactId>

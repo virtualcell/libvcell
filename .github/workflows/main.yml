@@ -61,7 +61,7 @@ jobs:
 
       - name: build entire project
         run: |
-          pushd vcell
+          pushd vcell_submodule
           mvn --batch-mode clean install dependency:copy-dependencies -DskipTests=true
           popd
 
