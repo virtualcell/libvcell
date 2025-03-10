@@ -99,6 +99,12 @@ jobs:
         uses: codecov/codecov-action@v4
         if: ${{ matrix.python-version == '3.11' }}
 
+      - name: Setup tmate
+        if: failure()
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
   check-docs:
     runs-on: ubuntu-latest
     steps:
