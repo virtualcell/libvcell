@@ -1,10 +1,9 @@
 from pathlib import Path
 
-from libvcell._internal.native_calls import VCellNativeCalls, ReturnValue
+from libvcell._internal.native_calls import ReturnValue, VCellNativeCalls
 
 
 class libvcell:
-
     @staticmethod
     def vcml_to_finite_volume_input(vcml_content: str, simulation_name: str, output_dir_path: Path) -> None:
         native = VCellNativeCalls()

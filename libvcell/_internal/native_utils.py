@@ -32,7 +32,6 @@ class VCellNativeLibraryLoader:
         raise OSError("Could not find the shared library")
 
     def _define_entry_points(self) -> None:
-
         self.lib.vcmlToFiniteVolumeInput.restype = ctypes.c_char_p
         self.lib.vcmlToFiniteVolumeInput.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
 
@@ -59,4 +58,3 @@ class IsolateManager:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.lib.graal_tear_down_isolate(self.isolate_thread)
-

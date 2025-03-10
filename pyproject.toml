@@ -9,9 +9,12 @@ readme = "README.md"
 packages = [
   {include = "libvcell"}
 ]
+include = [
+    {path="libvcell/_internal/libs/*", format="wheel"}
+]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.9,<4.0"
 pydantic = "^2.10.6"
 
 [tool.poetry.group.dev.dependencies]
@@ -19,27 +22,21 @@ pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 deptry = "^0.16.2"
 mypy = "^1.5.1"
-pre-commit = "^3.4.0"
+pre-commit = "^3.8.0"
 tox = "^4.11.1"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs = "^1.4.2"
-mkdocs-material = "^9.2.7"
-mkdocstrings = {extras = ["python"], version = "^0.26.1"}
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.5.50"
+mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
-files = ["libvcell"]
-disallow_untyped_defs = "True"
-disallow_any_unimported = "True"
-no_implicit_optional = "True"
-check_untyped_defs = "True"
-warn_return_any = "True"
-warn_unused_ignores = "True"
-show_error_codes = "True"
+files = ["libvcell", "tests"]
+strict = true
 
 
 
@@ -50,7 +47,7 @@ testpaths = ["tests"]
 target-version = "py39"
 line-length = 120
 fix = true
-select = [
+lint.select = [
     # flake8-2020
     "YTT",
     # flake8-bandit
@@ -82,11 +79,13 @@ select = [
     # tryceratops
     "TRY",
 ]
-ignore = [
+lint.ignore = [
     # LineTooLong
     "E501",
     # DoNotAssignLambda
     "E731",
+    # avoid specifiying long messages outside the exception class
+    "TRY003",
 ]
 
 [tool.ruff.format]

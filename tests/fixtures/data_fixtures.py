@@ -1,7 +1,7 @@
 import os
 import shutil
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 
 import pytest
 
@@ -35,4 +35,3 @@ def temp_output_dir() -> Generator[Path, None, None]:
     yield output_dir
 
     shutil.rmtree(output_dir)
-

@@ -34,7 +34,7 @@
           </annotation>
                   <spatial:listOfAnalyticVolumes>
             <spatial:analyticVolume spatial:domainType="subdomain0" spatial:functionType="layered" spatial:id="AnalyticVol_subdomain0" spatial:ordinal="0">
-              <math xmlns="http://www.w3.org/1998/Math/MathML">              
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
                 <cn> 1 </cn>
               </math>
                         </spatial:analyticVolume>
@@ -179,7 +179,7 @@
     </listOfParameters>
     <listOfInitialAssignments>
       <initialAssignment symbol="s0">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <times/>
             <cn> 100000 </cn>
@@ -188,7 +188,7 @@
         </math>
             </initialAssignment>
       <initialAssignment symbol="s1">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <plus/>
             <cn> 10 </cn>
@@ -214,7 +214,7 @@
           <speciesReference constant="true" id="r0_s1p" species="s1" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <plus/>
               <apply>

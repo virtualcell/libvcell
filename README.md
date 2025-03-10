@@ -6,7 +6,7 @@
 [![Commit activity](https://img.shields.io/github/commit-activity/m/virtualcell/libvcell)](https://img.shields.io/github/commit-activity/m/virtualcell/libvcell)
 [![License](https://img.shields.io/github/license/virtualcell/libvcell)](https://img.shields.io/github/license/virtualcell/libvcell)
 
-libvcell is a subset of VCell algorithms intended to support the [pyvcell](https://pypi.org/project/pyvcell/) python package.  libvcell is available as a native executable and a python package.
+libvcell is a subset of VCell algorithms intended to support the [pyvcell](https://pypi.org/project/pyvcell/) python package. libvcell is available as a native executable and a python package.
 
 - **Github repository**: <https://github.com/virtualcell/libvcell/>
 - **Documentation** <https://virtualcell.github.io/libvcell/>
