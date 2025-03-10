@@ -1,0 +1,4 @@
+[submodule "vcell_submodule"]
+	path = vcell_submodule
+	url = https://github.com/virtualcell/vcell
+	branch = remove-nativelib
