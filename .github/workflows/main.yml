@@ -26,13 +26,13 @@ jobs:
         run: make check
 
   tests-and-type-check:
-    runs-on: ubuntu-latest
     strategy:
       matrix: #        python-version: ["3.9", "3.10", "3.11", "3.12"]
         python-version: ["3.11", "3.12"]
         #        os: [macos-13, windows-latest, ubuntu-latest, macos-14]
         os: [windows-latest, ubuntu-latest, macos-14]
       fail-fast: false
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
