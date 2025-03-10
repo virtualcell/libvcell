@@ -64,7 +64,7 @@ jobs:
         run: |
           mvn --batch-mode clean install dependency:copy-dependencies -DskipTests=true
 
-      - name: test, record, and build/install native library
+      - name: test, record, and build/install native library (ubuntu)
         working-directory: vcell-native
         run: |
           mvn --batch-mode clean install
@@ -75,19 +75,33 @@ jobs:
                "target/sbml-input"
 
           mvn --batch-mode -P shared-dll package
-          cp target/libvcell.{so,dylib} ../libvcell/_internal/libs
-        if: matrix.os != 'windows-latest'
+          cp target/libvcell.so ../libvcell/_internal/libs
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
 
-      - name: test, record, and build/install native library
+      - name: test, record, and build/install native library (macos)
         working-directory: vcell-native
         run: |
           mvn --batch-mode clean install
 
-          java -agentlib:native-image-agent=config-output-dir=target\recording -jar target\vcell-native-1.0-SNAPSHOT.jar "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
+          java -agentlib:native-image-agent=config-output-dir=target/recording \
+               -jar target/vcell-native-1.0-SNAPSHOT.jar \
+               "src/test/resources/TinySpacialProject_Application0.xml" \
+               "target/sbml-input"
 
           mvn --batch-mode -P shared-dll package
-          cp target/libvcell.{dll} ../libvcell/_internal/libs
-        if: matrix.os == 'windows-latest'
+          cp target/libvcell.dylib ../libvcell/_internal/libs
+        if: ${{ startsWith(matrix.os, 'macos') }}
+
+      - name: test, record, and build/install native library (windows)
+        working-directory: vcell-native
+        run: |
+          mvn --batch-mode clean install
+
+          java -agentlib:native-image-agent=config-output-dir=target\recording -jar "target\vcell-native-1.0-SNAPSHOT.jar" "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
+
+          mvn --batch-mode -P shared-dll package
+          cp target/libvcell.dll ../libvcell/_internal/libs
+        if: ${{ startsWith(matrix.os, 'windows') }}
 
       - name: Run tests
         run: poetry run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
