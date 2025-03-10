@@ -25,6 +25,9 @@ jobs:
 
       - uses: abatilo/actions-poetry@v3
 
+      - name: Install python dependencies
+        run: poetry install --no-interaction
+
       - name: Run checks
         run: make check
 
@@ -107,6 +110,9 @@ jobs:
           cp target/libvcell.dll ../libvcell/_internal/libs
         if: ${{ startsWith(matrix.os, 'windows') }}
 
+      - name: Install python dependencies
+        run: poetry install --no-interaction
+
       - name: Run tests
         run: poetry run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
 
@@ -134,6 +140,9 @@ jobs:
           python-version: "3.11"
 
       - uses: abatilo/actions-poetry@v3
-        
+
+      - name: Install python dependencies
+        run: poetry install --no-interaction
+
       - name: Check if documentation can be built
         run: poetry run mkdocs build -s
