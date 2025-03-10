@@ -5,7 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    types: [ opened, synchronize, reopened, ready_for_review ]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   quality:
@@ -29,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: #        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        python-version: [ "3.11", "3.12" ]
+        python-version: ["3.11", "3.12"]
         #        os: [macos-13, windows-latest, ubuntu-latest, macos-14]
-        os: [ windows-latest, ubuntu-latest, macos-14 ]
+        os: [windows-latest, ubuntu-latest, macos-14]
       fail-fast: false
     defaults:
       run:
@@ -51,13 +51,13 @@ jobs:
       - name: setup graalvm for static native build
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '23'
-          distribution: 'graalvm-community'
+          java-version: "23"
+          distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: 'native-image'
+          components: "native-image"
           #          native-image-musl: 'true' # Now semi-static by not including libc
-          native-image-job-reports: 'true'
-          cache: 'maven'
+          native-image-job-reports: "true"
+          cache: "maven"
 
       - name: build entire project
         run: |
@@ -71,7 +71,7 @@ jobs:
           mvn --batch-mode test
 
           java -Dheadless=true -agentlib:native-image-agent=config-output-dir=target/recording \
-          -jar target/vcell-nativelib-0.0.1-SNAPSHOT.jar \
+          -jar target/vcell-native-1.0-SNAPSHOT.jar \
           "src/test/resources/TinySpacialProject_Application0.xml" \
           "target/sbml-input"
 
@@ -85,7 +85,7 @@ jobs:
           pushd vcell-native
           mvn --batch-mode test
 
-          java -Dheadless=true -agentlib:native-image-agent=config-output-dir=target\recording -jar target\vcell-nativelib-0.0.1-SNAPSHOT.jar "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
+          java -Dheadless=true -agentlib:native-image-agent=config-output-dir=target\recording -jar target\vcell-native-1.0-SNAPSHOT.jar "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
 
           mvn --batch-mode -P shared-dll -DskipTests=true package
           cp target/libvcell.{dll} ../libvcell/_internal/libs
