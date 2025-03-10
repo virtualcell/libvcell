@@ -60,36 +60,33 @@ jobs:
           cache: "maven"
 
       - name: build entire project
+        working-directory: vcell_submodule
         run: |
-          pushd vcell_submodule
           mvn --batch-mode clean install dependency:copy-dependencies -DskipTests=true
-          popd
 
       - name: test, record, and build/install native library
+        working-directory: vcell-native
         run: |
-          pushd vcell-native
-          mvn --batch-mode test
+          mvn --batch-mode clean install
 
-          java -Dheadless=true -agentlib:native-image-agent=config-output-dir=target/recording \
-          -jar target/vcell-native-1.0-SNAPSHOT.jar \
-          "src/test/resources/TinySpacialProject_Application0.xml" \
-          "target/sbml-input"
+          java -agentlib:native-image-agent=config-output-dir=target/recording \
+               -jar target/vcell-native-1.0-SNAPSHOT.jar \
+               "src/test/resources/TinySpacialProject_Application0.xml" \
+               "target/sbml-input"
 
-          mvn --batch-mode -P shared-dll -DskipTests=true package
+          mvn --batch-mode -P shared-dll package
           cp target/libvcell.{so,dylib} ../libvcell/_internal/libs
-          popd
         if: matrix.os != 'windows-latest'
 
       - name: test, record, and build/install native library
+        working-directory: vcell-native
         run: |
-          pushd vcell-native
-          mvn --batch-mode test
+          mvn --batch-mode clean install
 
-          java -Dheadless=true -agentlib:native-image-agent=config-output-dir=target\recording -jar target\vcell-native-1.0-SNAPSHOT.jar "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
+          java -agentlib:native-image-agent=config-output-dir=target\recording -jar target\vcell-native-1.0-SNAPSHOT.jar "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
 
-          mvn --batch-mode -P shared-dll -DskipTests=true package
+          mvn --batch-mode -P shared-dll package
           cp target/libvcell.{dll} ../libvcell/_internal/libs
-          popd
         if: matrix.os == 'windows-latest'
 
       - name: Run tests
