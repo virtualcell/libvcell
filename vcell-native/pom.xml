@@ -233,6 +233,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
                             <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
                             <arg>-g</arg>
                             <arg>-H:ConfigurationFileDirectories=target/recording</arg>
@@ -262,6 +263,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
                             <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
                             <arg>-g</arg>
                             <arg>--shared</arg>
