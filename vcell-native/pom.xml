@@ -8,7 +8,7 @@
         <groupId>org.vcell</groupId>
         <artifactId>vcell-pom</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../vcell/pom.xml</relativePath>
+        <relativePath>../vcell_submodule/pom.xml</relativePath>
     </parent>
 
     <artifactId>vcell-native</artifactId>
@@ -233,6 +233,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
                             <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
                             <arg>-g</arg>
                             <arg>-H:ConfigurationFileDirectories=target/recording</arg>
@@ -262,6 +263,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
                             <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
                             <arg>-g</arg>
                             <arg>--shared</arg>

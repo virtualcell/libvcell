@@ -21,6 +21,7 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
+import org.json.simple.JSONValue;
 import org.vcell.sbml.FiniteVolumeRunUtil;
 import org.vcell.sbml.vcell.SBMLExporter;
 import org.vcell.sbml.vcell.SBMLImporter;
@@ -59,7 +60,8 @@ public class Entrypoints {
     // serialized in JSON and returned as a String (CCharPointer)
     public record ReturnValue(boolean success, String message) {
         public String toJson() {
-            return "{\"success\":" + success + ",\"message\":\"" + message + "\"}";
+            String escaped_message = JSONValue.escape(message);
+            return "{\"success\":" + success + ",\"message\":\"" + escaped_message + "\"}";
         }
     }
 

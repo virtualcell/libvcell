@@ -8,8 +8,10 @@ set -x   # echo all commands
 ROOT_DIR="$( cd "$( dirname "$( dirname "${BASH_SOURCE[0]}" )" )" && pwd )"
 echo "ROOT_DIR: $ROOT_DIR"
 
-cd "$ROOT_DIR"/vcell || ( echo "'vcell' directory not found" && exit 1 )
+cd "$ROOT_DIR"/vcell_submodule || ( echo "'vcell' directory not found" && exit 1 )
 mvn clean install -DskipTests
+
+export JAVA_HOME=$(jenv javahome)
 
 # test if JAVA_HOME is set
 if [ -z "$JAVA_HOME" ]; then
@@ -32,7 +34,10 @@ mvn clean install
 java -agentlib:native-image-agent=config-output-dir=target/recording \
      -jar target/vcell-native-1.0-SNAPSHOT.jar \
      "$ROOT_DIR/vcell-native/src/test/resources/TinySpacialProject_Application0.xml" \
-     "$ROOT_DIR/target/sbml-input"
+     "$ROOT_DIR/vcell-native/target/sbml-input"
 
 # build vcell-native as native shared object library
 mvn package -P shared-dll
+
+# install vcell-native as shared object library
+cp target/libvcell.dylib "$ROOT_DIR/libvcell/_internal/libs/libvcell.dylib"

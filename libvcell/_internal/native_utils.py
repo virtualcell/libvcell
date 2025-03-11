@@ -47,14 +47,14 @@ class IsolateManager:
     isolate: ctypes.c_void_p
     isolate_thread: ctypes.c_void_p
 
-    def __init__(self, lib: ctypes.CDLL):
+    def __init__(self, lib: ctypes.CDLL) -> None:
         self.lib = lib
         self.isolate = ctypes.c_void_p()
         self.isolate_thread = ctypes.c_void_p()
 
-    def __enter__(self):
+    def __enter__(self) -> ctypes.c_void_p:
         self.lib.graal_create_isolate(None, byref(self.isolate), byref(self.isolate_thread))
         return self.isolate_thread
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: type | None, exc_val: Exception, exc_tb: object | None) -> None:
         self.lib.graal_tear_down_isolate(self.isolate_thread)
