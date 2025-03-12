@@ -55,7 +55,17 @@ jobs:
         id: vars
         run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
 
-      - name: Build and publish
+      - name: Build and publish (Windows)
+        run: |
+          .venv\Scripts\activate
+          poetry version $RELEASE_VERSION
+          make build-and-publish
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        if: ${{ startsWith(matrix.os, 'windows') }}
+
+      - name: Build and publish (Linux and macOS)
         run: |
           source .venv/bin/activate
           poetry version $RELEASE_VERSION
@@ -63,6 +73,7 @@ jobs:
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        if: ${{ startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos') }}
 
       - name: Setup tmate
         if: failure()
