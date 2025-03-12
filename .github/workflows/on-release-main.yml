@@ -80,5 +80,23 @@ jobs:
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: abatilo/actions-poetry@v3
+
+      - name: setup graalvm for static native build
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "23"
+          distribution: "graalvm-community"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          components: "native-image"
+          #          native-image-musl: 'true' # Now semi-static by not including libc
+          native-image-job-reports: "true"
+          cache: "maven"
+
       - name: Deploy documentation
         run: poetry run mkdocs gh-deploy --force
