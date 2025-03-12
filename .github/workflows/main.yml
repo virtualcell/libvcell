@@ -82,7 +82,7 @@ jobs:
                "target/sbml-input"
 
           mvn --batch-mode -P shared-dll package
-          cp target/libvcell.so ../libvcell/_internal/libs
+          cp target/libvcell.so ../libvcell/lib
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
 
       - name: test, record, and build/install native library (macos)
@@ -96,7 +96,7 @@ jobs:
                "target/sbml-input"
 
           mvn --batch-mode -P shared-dll package
-          cp target/libvcell.dylib ../libvcell/_internal/libs
+          cp target/libvcell.dylib ../libvcell/lib
         if: ${{ startsWith(matrix.os, 'macos') }}
 
       - name: test, record, and build/install native library (windows)
@@ -107,7 +107,8 @@ jobs:
           java -agentlib:native-image-agent=config-output-dir=target\recording -jar "target\vcell-native-1.0-SNAPSHOT.jar" "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
 
           mvn --batch-mode -P shared-dll package
-          cp target/libvcell.dll ../libvcell/_internal/libs
+          mkdir -p ../libvcell/lib
+          cp target/libvcell.dll ../libvcell/lib
         if: ${{ startsWith(matrix.os, 'windows') }}
 
       - name: Install python dependencies

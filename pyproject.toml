@@ -10,7 +10,7 @@ packages = [
   {include = "libvcell"}
 ]
 include = [
-    {path="libvcell/_internal/libs/*", format="wheel"}
+    {path="libvcell/lib/libvcell*", format="wheel"}
 ]
 
 [tool.poetry.dependencies]
@@ -29,6 +29,13 @@ tox = "^4.11.1"
 mkdocs = "^1.6.1"
 mkdocs-material = "^9.5.50"
 mkdocstrings = {extras = ["python"], version = "^0.27.0"}
+
+[tool.cibuildwheel]
+build = "cp311-manylinux_x86_64 cp311-macosx_x86_64 cp311-macosx_arm64 cp311-win_amd64"
+skip = "cp36-* cp37-* cp38-* cp310-*"
+
+[tool.setuptools.package-data]
+libvcell = ["lib/*"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
