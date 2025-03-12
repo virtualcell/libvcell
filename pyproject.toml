@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.poetry]
 name = "libvcell"
 version = "0.0.1"
@@ -16,6 +20,9 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
 pydantic = "^2.10.6"
+
+[tool.poetry.build]
+script = "build.py"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
@@ -36,10 +43,6 @@ skip = "cp36-* cp37-* cp38-* cp310-*"
 
 [tool.setuptools.package-data]
 libvcell = ["lib/*"]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
 files = ["libvcell", "tests"]
