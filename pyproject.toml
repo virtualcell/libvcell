@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "libvcell"
-version = "0.0.2"
+version = "0.0.3"
 description = "This is a python package which wraps a subset of VCell Java code as a native python package."
 authors = ["Jim Schaff <schaff@uchc.edu>", "Ezequiel Valencia <evalencia@uchc.edu>"]
 repository = "https://github.com/virtualcell/libvcell"
@@ -14,7 +14,8 @@ packages = [
   {include = "libvcell"}
 ]
 include = [
-    {path="libvcell/lib/libvcell*", format="wheel"}
+    {path="libvcell/lib/libvcell*", format="wheel"},
+    {path="libvcell/py.typed"}
 ]
 
 [tool.poetry.dependencies]
