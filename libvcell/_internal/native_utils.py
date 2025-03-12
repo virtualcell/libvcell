@@ -20,7 +20,7 @@ class VCellNativeLibraryLoader:
         if lib_ext is None:
             raise OSError(f"Unsupported operating system: {system}")
 
-        libs_dir = files(libvcell).joinpath("_internal/libs")
+        libs_dir = files(libvcell).joinpath("lib")
         if not libs_dir.is_dir():
             raise OSError(f"Could not find the shared library directory {libs_dir}")
 

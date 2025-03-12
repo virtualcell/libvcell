@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.poetry]
 name = "libvcell"
-version = "0.0.1"
+version = "0.0.2"
 description = "This is a python package which wraps a subset of VCell Java code as a native python package."
 authors = ["Jim Schaff <schaff@uchc.edu>"]
 repository = "https://github.com/virtualcell/libvcell"
@@ -10,12 +14,15 @@ packages = [
   {include = "libvcell"}
 ]
 include = [
-    {path="libvcell/_internal/libs/*", format="wheel"}
+    {path="libvcell/lib/libvcell*", format="wheel"}
 ]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
 pydantic = "^2.10.6"
+
+[tool.poetry.build]
+script = "build.py"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
@@ -30,9 +37,12 @@ mkdocs = "^1.6.1"
 mkdocs-material = "^9.5.50"
 mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.cibuildwheel]
+build = "cp311-manylinux_x86_64 cp311-macosx_x86_64 cp311-macosx_arm64 cp311-win_amd64"
+skip = "cp36-* cp37-* cp38-* cp310-*"
+
+[tool.setuptools.package-data]
+libvcell = ["lib/*"]
 
 [tool.mypy]
 files = ["libvcell", "tests"]
@@ -85,6 +95,8 @@ lint.ignore = [
     "E731",
     # avoid specifiying long messages outside the exception class
     "TRY003",
+    #  S602 `subprocess` call with `shell=True` identified, security issue
+    "S602",
 ]
 
 [tool.ruff.format]

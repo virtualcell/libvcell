@@ -40,4 +40,4 @@ java -agentlib:native-image-agent=config-output-dir=target/recording \
 mvn package -P shared-dll
 
 # install vcell-native as shared object library
-cp target/libvcell.dylib "$ROOT_DIR/libvcell/_internal/libs/libvcell.dylib"
+cp target/libvcell.dylib "$ROOT_DIR/libvcell/lib/libvcell.dylib"
