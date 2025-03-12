@@ -66,51 +66,6 @@ jobs:
           native-image-job-reports: "true"
           cache: "maven"
 
-      - name: build entire project
-        working-directory: vcell_submodule
-        run: |
-          mvn --batch-mode clean install dependency:copy-dependencies -DskipTests=true
-
-      - name: test, record, and build/install native library (ubuntu)
-        working-directory: vcell-native
-        run: |
-          mvn --batch-mode clean install
-
-          java -agentlib:native-image-agent=config-output-dir=target/recording \
-               -jar target/vcell-native-1.0-SNAPSHOT.jar \
-               "src/test/resources/TinySpacialProject_Application0.xml" \
-               "target/sbml-input"
-
-          mvn --batch-mode -P shared-dll package
-          cp target/libvcell.so ../libvcell/lib
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
-
-      - name: test, record, and build/install native library (macos)
-        working-directory: vcell-native
-        run: |
-          mvn --batch-mode clean install
-
-          java -agentlib:native-image-agent=config-output-dir=target/recording \
-               -jar target/vcell-native-1.0-SNAPSHOT.jar \
-               "src/test/resources/TinySpacialProject_Application0.xml" \
-               "target/sbml-input"
-
-          mvn --batch-mode -P shared-dll package
-          cp target/libvcell.dylib ../libvcell/lib
-        if: ${{ startsWith(matrix.os, 'macos') }}
-
-      - name: test, record, and build/install native library (windows)
-        working-directory: vcell-native
-        run: |
-          mvn --batch-mode clean install
-
-          java -agentlib:native-image-agent=config-output-dir=target\recording -jar "target\vcell-native-1.0-SNAPSHOT.jar" "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
-
-          mvn --batch-mode -P shared-dll package
-          mkdir -p ../libvcell/lib
-          cp target/libvcell.dll ../libvcell/lib
-        if: ${{ startsWith(matrix.os, 'windows') }}
-
       - name: Install python dependencies
         run: poetry install --no-interaction
 

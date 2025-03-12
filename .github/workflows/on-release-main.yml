@@ -27,7 +27,6 @@ jobs:
           submodules: true
           fetch-depth: 2
 
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -46,39 +45,6 @@ jobs:
           native-image-job-reports: "true"
           cache: "maven"
 
-      - name: build VCell Java project from submodule
-        working-directory: vcell_submodule
-        run: |
-          mvn --batch-mode clean install dependency:copy-dependencies -DskipTests=true
-
-      - name: test, record, and build/install native library (ubuntu or macos)
-        working-directory: vcell-native
-        run: |
-          mvn --batch-mode clean install
-
-          java -agentlib:native-image-agent=config-output-dir=target/recording \
-               -jar target/vcell-native-1.0-SNAPSHOT.jar \
-               "src/test/resources/TinySpacialProject_Application0.xml" \
-               "target/sbml-input"
-
-          mvn --batch-mode -P shared-dll package
-          mkdir -p ../libvcell/lib
-          cp target/libvcell.so ../libvcell/lib || true
-          cp target/libvcell.dylib ../libvcell/lib || true
-        if: ${{ startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos') }}
-
-      - name: test, record, and build/install native library (windows)
-        working-directory: vcell-native
-        run: |
-          mvn --batch-mode clean install
-
-          java -agentlib:native-image-agent=config-output-dir=target\recording -jar "target\vcell-native-1.0-SNAPSHOT.jar" "src\test\resources\TinySpacialProject_Application0.xml" "target\sbml-input"
-
-          mvn --batch-mode -P shared-dll package
-          mkdir -p ../libvcell/lib
-          cp target/libvcell.dll ../libvcell/lib
-        if: ${{ startsWith(matrix.os, 'windows') }}
-
       - name: Install python dependencies
         run: poetry install --no-interaction
 
@@ -89,19 +55,14 @@ jobs:
         id: vars
         run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
 
-      - name: List contents of vcell-native/target/libvcell.*
-        run: ls -l vcell-native/target/libvcell.*
-
-      - name: Build wheels
+      - name: Build and publish
         run: |
-          pip install cibuildwheel
-          CIBW_BUILD_VERBOSITY=1 CIBW_BEFORE_BUILD="mkdir -p libvcell/lib && cp vcell-native/target/libvcell.* libvcell/lib/" cibuildwheel --output-dir wheelhouse
-
-      - name: Upload wheels as artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels
-          path: wheelhouse/*.whl
+          source .venv/bin/activate
+          poetry version $RELEASE_VERSION
+          make build-and-publish
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
 
       - name: Setup tmate
         if: failure()
@@ -109,24 +70,8 @@ jobs:
         with:
           limit-access-to-actor: true
 
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download wheels
-        uses: actions/download-artifact@v4
-        with:
-          name: wheels
-          path: wheelhouse
-
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.8.6
-        with:
-          password: ${{ secrets.PYPI_TOKEN }}
-          packages_dir: wheelhouse
-
   deploy-docs:
-    needs: publish
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Check out
