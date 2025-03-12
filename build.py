@@ -21,9 +21,9 @@ def main():
     # Build VCell Java project from submodule
     run_command("mvn --batch-mode clean install -DskipTests", cwd=vcell_submodule_dir)
 
-    # Set JAVA_HOME environment variable
-    java_home = subprocess.check_output(["jenv", "javahome"], text=True).strip()
-    os.environ["JAVA_HOME"] = java_home
+    # # Set JAVA_HOME environment variable
+    # java_home = subprocess.check_output(["jenv", "javahome"], text=True).strip()
+    # os.environ["JAVA_HOME"] = java_home
 
     # Check if native-image is installed
     if not shutil.which("native-image"):
