@@ -4,10 +4,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 def run_command(command, cwd=None):
     result = subprocess.run(command, shell=True, cwd=cwd, check=True, text=True)
     if result.returncode != 0:
         sys.exit(result.returncode)
+
 
 def main():
     root_dir = Path(__file__).resolve().parent
@@ -21,9 +23,10 @@ def main():
     # Build VCell Java project from submodule
     run_command("mvn --batch-mode clean install -DskipTests", cwd=vcell_submodule_dir)
 
-    # # Set JAVA_HOME environment variable
-    # java_home = subprocess.check_output(["jenv", "javahome"], text=True).strip()
-    # os.environ["JAVA_HOME"] = java_home
+    # fail if both JAVA_HOME and GRAALVM_HOME are not set
+    if "JAVA_HOME" not in os.environ and "GRAALVM_HOME" not in os.environ:
+        print("JAVA_HOME or GRAALVM_HOME environment variable must be set")
+        sys.exit(1)
 
     # Check if native-image is installed
     if not shutil.which("native-image"):
@@ -39,7 +42,7 @@ def main():
         "-jar target/vcell-native-1.0-SNAPSHOT.jar "
         "src/test/resources/TinySpacialProject_Application0.xml "
         "target/sbml-input",
-        cwd=vcell_native_dir
+        cwd=vcell_native_dir,
     )
 
     # Build vcell-native as native shared object library
@@ -50,6 +53,7 @@ def main():
         shared_lib = vcell_native_dir / f"target/libvcell.{ext}"
         if shared_lib.exists():
             shutil.copy(shared_lib, libvcell_lib_dir / f"libvcell.{ext}")
+
 
 if __name__ == "__main__":
     main()

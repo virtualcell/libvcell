@@ -95,6 +95,8 @@ lint.ignore = [
     "E731",
     # avoid specifiying long messages outside the exception class
     "TRY003",
+    #  S602 `subprocess` call with `shell=True` identified, security issue
+    "S602",
 ]
 
 [tool.ruff.format]
