@@ -87,6 +87,9 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 2
 
       - name: Set up the environment
         uses: ./.github/actions/setup-poetry-env
