@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         os: [macos-13, windows-latest, ubuntu-latest, macos-14]
-        python-version: ["3.11"]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
@@ -28,7 +27,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.11"
 
       - uses: abatilo/actions-poetry@v3
 
@@ -55,8 +54,9 @@ jobs:
           cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BEFORE_BUILD_LINUX: |
-            curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-23.0.2/graalvm-community-linux-amd64-23.0.2.tar.gz
+            curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-23.0.2/graalvm-community-jdk-23.0.2_linux-x64_bin.tar.gz
             tar -xzf graalvm.tar.gz -C /opt
+            export JAVA_HOME=/opt/graalvm-ce-23.0.2
             export GRAALVM_HOME=/opt/graalvm-ce-23.0.2
             export PATH=$GRAALVM_HOME/bin:$PATH
             gu install native-image
@@ -69,11 +69,11 @@ jobs:
           mkdir -p dist
           cp wheelhouse/*.whl dist/
 
-      #      - name: Publish to PyPI
-      #        run: |
-      #          poetry publish --no-interaction
-      #        env:
-      #          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+      - name: Publish to PyPI
+        run: |
+          make publish
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
 
       - name: Setup tmate
         if: failure()
