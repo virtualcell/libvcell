@@ -76,6 +76,7 @@ jobs:
           for wheel in dist/*.whl; do
             delocate-wheel -w wheelhouse $wheel
           done
+          make publish
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
