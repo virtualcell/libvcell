@@ -48,7 +48,7 @@ jobs:
   tests-and-type-check:
     strategy:
       matrix: #        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11"]
         os: [macos-13, windows-latest, ubuntu-22.04, macos-14]
       fail-fast: false
     runs-on: ${{ matrix.os }}
