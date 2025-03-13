@@ -10,9 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        #        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        python-version: ["3.11", "3.12"]
-        os: [macos-13, windows-latest, ubuntu-22.04, macos-14]
+        os: [macos-13, windows-latest, ubuntu-latest, macos-14]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
@@ -29,7 +27,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.11"
 
       - uses: abatilo/actions-poetry@v3
 
@@ -42,58 +40,34 @@ jobs:
           components: "native-image"
           native-image-job-reports: "true"
           cache: "maven"
+        if: ${{ startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'windows') }}
 
-      - name: Install python dependencies
-        run: poetry install --no-interaction
-
-      - name: Run tests
-        run: poetry run pytest tests
-
-      - name: Export tag
-        id: vars
-        run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
-
-      - name: Build and Publish (Windows)
+      - name: Run cibuildwheel
         run: |
-          source .venv/Scripts/activate
-          poetry version $RELEASE_VERSION
-          make build
-          for wheel in dist/*.whl; do
-            delvewheel repair -w wheelhouse $wheel
-          done
-          make publish
+          pip install cibuildwheel
+          cibuildwheel --output-dir wheelhouse
         env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        if: ${{ startsWith(matrix.os, 'windows') }}
+          CIBW_BEFORE_BUILD_LINUX: |
+            curl -sSL https://install.python-poetry.org | python3 -
+            export PATH=$HOME/.local/bin:$PATH
+            poetry install --no-interaction
+            curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-23.0.2/graalvm-community-linux-amd64-23.0.2.tar.gz
+            tar -xzf graalvm.tar.gz -C /opt
+            export GRAALVM_HOME=/opt/graalvm-ce-23.0.2
+            export PATH=$GRAALVM_HOME/bin:$PATH
+            gu install native-image
+            poetry install --no-interaction
 
-      - name: Build and Publish (macOS)
+      - name: Copy wheels to dist directory
         run: |
-          source .venv/bin/activate
-          poetry version $RELEASE_VERSION
-          make build
-          for wheel in dist/*.whl; do
-            delocate-wheel -w wheelhouse $wheel
-          done
-          make publish
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        if: ${{ startsWith(matrix.os, 'macos') }}
+          mkdir -p dist
+          cp wheelhouse/*.whl dist/
 
-      - name: Build and Publish (Linux)
-        run: |
-          source .venv/bin/activate
-          poetry version $RELEASE_VERSION
-          make build
-          for wheel in dist/*.whl; do
-            auditwheel repair -w wheelhouse $wheel
-          done
-          make publish
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+#      - name: Publish to PyPI
+#        run: |
+#          poetry publish --no-interaction
+#        env:
+#          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
 
       - name: Setup tmate
         if: failure()
@@ -103,7 +77,7 @@ jobs:
 
   deploy-docs:
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -114,7 +88,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.11"
 
       - uses: abatilo/actions-poetry@v3
 
