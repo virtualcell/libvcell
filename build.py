@@ -5,13 +5,13 @@ import sys
 from pathlib import Path
 
 
-def run_command(command, cwd=None):
+def run_command(command: str, cwd: Path) -> None:
     result = subprocess.run(command, shell=True, cwd=cwd, check=True, text=True)
     if result.returncode != 0:
         sys.exit(result.returncode)
 
 
-def main():
+def main() -> None:
     root_dir = Path(__file__).resolve().parent
     vcell_submodule_dir = root_dir / "vcell_submodule"
     vcell_native_dir = root_dir / "vcell-native"
