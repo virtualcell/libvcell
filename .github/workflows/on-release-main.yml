@@ -71,9 +71,9 @@ jobs:
 
       - name: Publish to PyPI
         run: |
-          make publish
-        env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+          poetry config pypi-token.pypi "${{ secrets.PYPI_TOKEN }}"
+          poetry publish --dry-run
+          # poetry publish --skip-existing
 
       - name: Setup tmate
         if: failure()
