@@ -41,7 +41,6 @@ jobs:
           components: "native-image"
           native-image-job-reports: "true"
           cache: "maven"
-        if: ${{ startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'windows') }}
 
       - name: Install python dependencies
         run: poetry install --no-interaction
