@@ -41,7 +41,6 @@ jobs:
           distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           components: "native-image"
-          #          native-image-musl: 'true' # Now semi-static by not including libc
           native-image-job-reports: "true"
           cache: "maven"
 
@@ -112,9 +111,6 @@ jobs:
           submodules: true
           fetch-depth: 2
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-poetry-env
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -129,9 +125,11 @@ jobs:
           distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           components: "native-image"
-          #          native-image-musl: 'true' # Now semi-static by not including libc
           native-image-job-reports: "true"
           cache: "maven"
+
+      - name: Install python dependencies
+        run: poetry install --no-interaction
 
       - name: Deploy documentation
         run: poetry run mkdocs gh-deploy --force
