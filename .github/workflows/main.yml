@@ -9,7 +9,7 @@ on:
 
 jobs:
   quality:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -49,8 +49,7 @@ jobs:
     strategy:
       matrix: #        python-version: ["3.9", "3.10", "3.11", "3.12"]
         python-version: ["3.11", "3.12"]
-        os: [macos-13, windows-latest, ubuntu-latest, macos-14]
-      #        os: [ubuntu-latest, macos-14]
+        os: [macos-13, windows-latest, ubuntu-22.04, macos-14]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
@@ -76,7 +75,6 @@ jobs:
           distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           components: "native-image"
-          #          native-image-musl: 'true' # Now semi-static by not including libc
           native-image-job-reports: "true"
           cache: "maven"
 
@@ -100,7 +98,7 @@ jobs:
           limit-access-to-actor: true
 
   check-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -121,7 +119,6 @@ jobs:
           distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           components: "native-image"
-          #          native-image-musl: 'true' # Now semi-static by not including libc
           native-image-job-reports: "true"
           cache: "maven"
 
