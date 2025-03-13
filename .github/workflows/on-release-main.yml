@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-13, windows-latest, ubuntu-latest, macos-14]
+        python-version: ["3.11", "3.12", "3.13"]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
@@ -27,9 +28,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
 
       - uses: abatilo/actions-poetry@v3
+
+      - name: Install python dependencies
+        run: poetry install --no-interaction
 
       - name: setup graalvm for static native build
         uses: graalvm/setup-graalvm@v1
@@ -41,6 +45,10 @@ jobs:
           native-image-job-reports: "true"
           cache: "maven"
         if: ${{ startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'windows') }}
+
+      - name: Set MACOSX_DEPLOYMENT_TARGET used by cibuildwheel
+        if: ${{ startsWith(matrix.os, 'macos') }}
+        run: echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.os == 'macos-14' && '14.0' || '13.0' }}" >> $GITHUB_ENV
 
       - name: Run cibuildwheel
         run: |
@@ -56,18 +64,17 @@ jobs:
             export GRAALVM_HOME=/opt/graalvm-ce-23.0.2
             export PATH=$GRAALVM_HOME/bin:$PATH
             gu install native-image
-            poetry install --no-interaction
 
       - name: Copy wheels to dist directory
         run: |
           mkdir -p dist
           cp wheelhouse/*.whl dist/
 
-#      - name: Publish to PyPI
-#        run: |
-#          poetry publish --no-interaction
-#        env:
-#          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+      #      - name: Publish to PyPI
+      #        run: |
+      #          poetry publish --no-interaction
+      #        env:
+      #          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
 
       - name: Setup tmate
         if: failure()
