@@ -53,7 +53,7 @@ jobs:
           pip install cibuildwheel
           cibuildwheel --debug-traceback --output-dir wheelhouse
         env:
-          CIBW_BEFORE_BUILD_LINUX: |
+          CIBW_BEFORE_ALL_LINUX: |
             # Install GraalVM
             curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-23.0.2/graalvm-community-jdk-23.0.2_linux-x64_bin.tar.gz
             tar -xzf graalvm.tar.gz -C /opt
@@ -71,6 +71,9 @@ jobs:
             tar -xzf apache-maven.tar.gz -C /opt
             export MAVEN_HOME=/opt/apache-maven-$MAVEN_VERSION
             export PATH=$MAVEN_HOME/bin:$PATH
+          CIBW_BUILD_VERBOSITY_LINUX: 3
+          CIBW_DEBUG_TRACEBACK: TRUE
+          CIBW_DEBUG_KEEP_CONTAINER: TRUE
 
       - name: Copy wheels to dist directory
         run: |
