@@ -39,8 +39,19 @@ mkdocs-material = "^9.5.50"
 mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 
 [tool.cibuildwheel]
-build = "cp311-manylinux_2_28_x86_64 cp312-manylinux_2_28_x86_64 cp313-manylinux_2_28_x86_64 cp3*-macosx_x86_64 cp3*-macosx_arm64 cp3*-win_amd64"
-skip = "cp36-* cp37-* cp38-* cp39-* cp310-*"
+build = "cp311-* cp312-* cp313-*"
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-i686-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
+manylinux-ppc64le-image = "manylinux_2_28"
+manylinux-s390x-image = "manylinux_2_28"
+manylinux-armv7l-image = "manylinux_2_28"
+manylinux-pypy_x86_64-image = "manylinux_2_28"
+manylinux-pypy_i686-image = "manylinux_2_28"
+manylinux-pypy_aarch64-image = "manylinux_2_28"
+musllinux-x86_64-image = "musllinux_1_2"
+musllinux-i686-image = "musllinux_1_2"
+
 
 [tool.setuptools.package-data]
 libvcell = ["lib/*"]

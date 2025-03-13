@@ -54,15 +54,23 @@ jobs:
           cibuildwheel --debug-traceback --output-dir wheelhouse
         env:
           CIBW_BEFORE_BUILD_LINUX: |
+            # Install GraalVM
             curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-23.0.2/graalvm-community-jdk-23.0.2_linux-x64_bin.tar.gz
             tar -xzf graalvm.tar.gz -C /opt
             export JAVA_HOME=/opt/graalvm-ce-23.0.2
             export GRAALVM_HOME=/opt/graalvm-ce-23.0.2
             export PATH=$GRAALVM_HOME/bin:$PATH
             gu install native-image
+            # install Poetry
             curl -sSL https://install.python-poetry.org | python3 -
             export PATH=$HOME/.local/bin:$PATH
             poetry install --no-interaction
+            # Install Maven
+            MAVEN_VERSION=3.9.9
+            curl -L -o apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+            tar -xzf apache-maven.tar.gz -C /opt
+            export MAVEN_HOME=/opt/apache-maven-$MAVEN_VERSION
+            export PATH=$MAVEN_HOME/bin:$PATH
 
       - name: Copy wheels to dist directory
         run: |
