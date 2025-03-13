@@ -32,6 +32,9 @@ deptry = "^0.16.2"
 mypy = "^1.5.1"
 pre-commit = "^3.8.0"
 tox = "^4.11.1"
+delocate = "^0.13.0"
+auditwheel = "^6.2.0"
+delvewheel = "^1.10.0"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
