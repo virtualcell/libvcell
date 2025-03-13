@@ -51,7 +51,7 @@ jobs:
       - name: Run cibuildwheel
         run: |
           pip install cibuildwheel
-          cibuildwheel --debug-traceback --print-build-identifiers --output-dir wheelhouse
+          cibuildwheel --debug-traceback --output-dir wheelhouse
         env:
           CIBW_BEFORE_BUILD_LINUX: |
             curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-23.0.2/graalvm-community-jdk-23.0.2_linux-x64_bin.tar.gz
