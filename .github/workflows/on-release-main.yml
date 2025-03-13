@@ -32,9 +32,6 @@ jobs:
 
       - uses: abatilo/actions-poetry@v3
 
-      - name: Install python dependencies
-        run: poetry install --no-interaction
-
       - name: setup graalvm for static native build
         uses: graalvm/setup-graalvm@v1
         with:
@@ -46,6 +43,9 @@ jobs:
           cache: "maven"
         if: ${{ startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'windows') }}
 
+      - name: Install python dependencies
+        run: poetry install --no-interaction
+
       - name: Set MACOSX_DEPLOYMENT_TARGET used by cibuildwheel
         if: ${{ startsWith(matrix.os, 'macos') }}
         run: echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.os == 'macos-14' && '14.0' || '13.0' }}" >> $GITHUB_ENV
@@ -56,14 +56,14 @@ jobs:
           cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BEFORE_BUILD_LINUX: |
-            curl -sSL https://install.python-poetry.org | python3 -
-            export PATH=$HOME/.local/bin:$PATH
-            poetry install --no-interaction
             curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-23.0.2/graalvm-community-linux-amd64-23.0.2.tar.gz
             tar -xzf graalvm.tar.gz -C /opt
             export GRAALVM_HOME=/opt/graalvm-ce-23.0.2
             export PATH=$GRAALVM_HOME/bin:$PATH
             gu install native-image
+            curl -sSL https://install.python-poetry.org | python3 -
+            export PATH=$HOME/.local/bin:$PATH
+            poetry install --no-interaction
 
       - name: Copy wheels to dist directory
         run: |
