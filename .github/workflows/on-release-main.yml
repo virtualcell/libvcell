@@ -85,12 +85,6 @@ jobs:
             native-image --version
             mvn --version
             poetry --version
-          CIBW_BEFORE_BUILD_LINUX: |
-            export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
-            export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
-            export MAVEN_HOME=/opt/apache-maven-3.9.9
-            export PATH=${JAVA_HOME}/bin:/root/.local/bin:${MAVEN_HOME}/bin:$PATH
-            poetry install --no-interaction
           CIBW_BUILD_VERBOSITY_LINUX: 3
           CIBW_DEBUG_TRACEBACK: TRUE
           CIBW_DEBUG_KEEP_CONTAINER: TRUE
