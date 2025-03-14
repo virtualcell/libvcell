@@ -14,15 +14,12 @@ def run_command(command: str, cwd: Path, env: Mapping[str, str]) -> None:
 
 def check_env() -> Mapping[str, str]:
     # print the path environment variable
-    PATH: str = os.environ["PATH"]
-    JAVA_HOME: str | None = os.environ["JAVA_HOME"] or None
-    GRAALVM_HOME: str | None = os.environ["GRAALVM_HOME"] or None
-    MAVEN_HOME: str | None = os.environ["MAVEN_HOME"] or None
+    PATH: str = os.getenv("PATH", "")
+    JAVA_HOME: str | None = os.getenv("JAVA_HOME")
+    GRAALVM_HOME: str | None = os.getenv("GRAALVM_HOME")
+    MAVEN_HOME: str | None = os.getenv("MAVEN_HOME")
     if JAVA_HOME is None and GRAALVM_HOME is None:
         print("JAVA_HOME or GRAALVM_HOME environment variable must be set")
-        sys.exit(1)
-    if MAVEN_HOME is None:
-        print("MAVEN_HOME environment variable must be set")
         sys.exit(1)
 
     print(f"PATH={PATH}")
@@ -60,7 +57,8 @@ def check_env() -> Mapping[str, str]:
         new_env["JAVA_HOME"] = JAVA_HOME
     if GRAALVM_HOME is not None:
         new_env["GRAALVM_HOME"] = GRAALVM_HOME
-    new_env["MAVEN_HOME"] = MAVEN_HOME
+    if MAVEN_HOME is not None:
+        new_env["MAVEN_HOME"] = MAVEN_HOME
 
     return new_env
 
