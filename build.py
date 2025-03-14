@@ -16,13 +16,12 @@ def check_env() -> Mapping[str, str]:
     # print the path environment variable
     PATH: str = os.getenv("PATH", "")
     LD_LIBRARY_PATH: str = os.getenv("LD_LIBRARY_PATH", "")
-    JAVA_HOME: str | None = os.getenv("JAVA_HOME")
-    GRAALVM_HOME: str | None = os.getenv("GRAALVM_HOME")
+    JAVA_HOME: str | None = os.getenv("JAVA_HOME") or os.getenv("GRAALVM_HOME")
+    GRAALVM_HOME: str | None = os.getenv("GRAALVM_HOME") or os.getenv("JAVA_HOME")
     MAVEN_HOME: str | None = os.getenv("MAVEN_HOME")
     if JAVA_HOME is None and GRAALVM_HOME is None:
         print("JAVA_HOME or GRAALVM_HOME environment variable must be set")
         sys.exit(1)
-
     print(f"PATH={PATH}")
     print(f"JAVA_HOME={JAVA_HOME}")
     print(f"GRAALVM_HOME={GRAALVM_HOME}")
@@ -49,9 +48,10 @@ def check_env() -> Mapping[str, str]:
         sys.exit(1)
     native_image_install_dir = Path(native_image_path).parent
     native_image_agent_dir = Path(GRAALVM_HOME) / "lib"
+    graalvm_bin_dir = Path(GRAALVM_HOME) / "bin"
 
     # get PATH and append mvn and poetry install directories
-    NEW_PATH = f"{mvn_install_dir}:{poetry_install_dir}:{native_image_install_dir}:{PATH}"
+    NEW_PATH = f"{mvn_install_dir}:{poetry_install_dir}:{native_image_install_dir}:{graalvm_bin_dir}:{PATH}"
 
     if LD_LIBRARY_PATH == "":
         LD_LIBRARY_PATH = f"{native_image_agent_dir}"
