@@ -63,12 +63,14 @@ jobs:
             tar -xzf graalvm.tar.gz
             export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
             export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
+            export PATH=/opt/graalvm-community-openjdk-23.0.2+7.1/bin:$PATH
             echo 'export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1' >> ~/.bashrc
             echo 'export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1' >> ~/.bashrc
             echo 'export PATH=/opt/graalvm-community-openjdk-23.0.2+7.1/bin:$PATH' >> ~/.bashrc
 
             # install Poetry
             curl -sSL https://install.python-poetry.org | python3 -
+            export PATH=/root/.local/bin:$PATH
             echo 'export PATH=/root/.local/bin:$PATH' >> ~/.bashrc
 
             # Install Maven
@@ -76,16 +78,18 @@ jobs:
             curl -L -o apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
             tar -xzf apache-maven.tar.gz
             export MAVEN_HOME=/opt/apache-maven-3.9.9
+            export PATH=/opt/apache-maven-3.9.9/bin:$PATH
             echo 'export MAVEN_HOME=/opt/apache-maven-3.9.9' >> ~/.bashrc
             echo 'export PATH=/opt/apache-maven-3.9.9/bin:$PATH' >> ~/.bashrc
 
-            cat ~/.bashrc
-            source ~/.bashrc
             native-image --version
             mvn --version
             poetry --version
           CIBW_BEFORE_BUILD_LINUX: |
-            source ~/.bashrc
+            export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
+            export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
+            export MAVEN_HOME=/opt/apache-maven-3.9.9
+            export PATH=${JAVA_HOME}/bin:/root/.local/bin:${MAVEN_HOME}/bin:$PATH
             poetry install --no-interaction
           CIBW_BUILD_VERBOSITY_LINUX: 3
           CIBW_DEBUG_TRACEBACK: TRUE
