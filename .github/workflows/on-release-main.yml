@@ -61,10 +61,11 @@ jobs:
             export ARCH=x86_64 && \
             curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAALVM_VERSION}/graalvm-community-jdk-${GRAALVM_VERSION}_linux-${ARCH}_bin.tar.gz
             tar -xzf graalvm.tar.gz
-            export GRAALVM_HOME="$(cd "$(ls | grep "$GRAALVM_VERSION" | grep graalvm)" && pwd)"
-            echo "export JAVA_HOME=$GRAALVM_HOME" >> ~/.bashrc
-            echo "export GRAALVM_HOME=$GRAALVM_HOME" >> ~/.bashrc
-            echo "export PATH=$GRAALVM_HOME/bin:\$PATH" >> ~/.bashrc
+            export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
+            export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
+            echo 'export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1' >> ~/.bashrc
+            echo 'export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1' >> ~/.bashrc
+            echo 'export PATH=/opt/graalvm-community-openjdk-23.0.2+7.1/bin:$PATH' >> ~/.bashrc
 
             # install Poetry
             curl -sSL https://install.python-poetry.org | python3 -
@@ -72,11 +73,11 @@ jobs:
 
             # Install Maven
             export MAVEN_VERSION=3.9.9
-            curl -L -o apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+            curl -L -o apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
             tar -xzf apache-maven.tar.gz
-            export MAVEN_HOME="$(cd "$(ls | grep "$MAVEN_VERSION" | grep maven)" && pwd)"
-            echo "export MAVEN_HOME=$MAVEN_HOME" >> ~/.bashrc
-            echo "export PATH=$MAVEN_HOME/bin:\$PATH" >> ~/.bashrc
+            export MAVEN_HOME=/opt/apache-maven-3.9.9
+            echo 'export MAVEN_HOME=/opt/apache-maven-3.9.9' >> ~/.bashrc
+            echo 'export PATH=/opt/apache-maven-3.9.9/bin:$PATH' >> ~/.bashrc
 
             cat ~/.bashrc
             source ~/.bashrc
