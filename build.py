@@ -15,6 +15,7 @@ def run_command(command: str, cwd: Path, env: Mapping[str, str]) -> None:
 def check_env() -> Mapping[str, str]:
     # print the path environment variable
     PATH: str = os.getenv("PATH", "")
+    LD_LIBRARY_PATH: str = os.getenv("LD_LIBRARY_PATH", "")
     JAVA_HOME: str | None = os.getenv("JAVA_HOME")
     GRAALVM_HOME: str | None = os.getenv("GRAALVM_HOME")
     MAVEN_HOME: str | None = os.getenv("MAVEN_HOME")
@@ -47,12 +48,19 @@ def check_env() -> Mapping[str, str]:
         print("native-image could not be found")
         sys.exit(1)
     native_image_install_dir = Path(native_image_path).parent
+    native_image_agent_dir = Path(GRAALVM_HOME) / "lib"
 
     # get PATH and append mvn and poetry install directories
     NEW_PATH = f"{mvn_install_dir}:{poetry_install_dir}:{native_image_install_dir}:{PATH}"
 
+    if LD_LIBRARY_PATH == "":
+        LD_LIBRARY_PATH = f"{native_image_agent_dir}"
+    else:
+        LD_LIBRARY_PATH = f"{native_image_agent_dir}/{LD_LIBRARY_PATH}"
+
     new_env = os.environ.copy()
     new_env["PATH"] = NEW_PATH
+    new_env["LD_LIBRARY_PATH"] = LD_LIBRARY_PATH
     if JAVA_HOME is not None:
         new_env["JAVA_HOME"] = JAVA_HOME
     if GRAALVM_HOME is not None:
