@@ -34,8 +34,6 @@ jobs:
           java-version: "23"
           distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: "native-image"
-          #          native-image-musl: 'true' # Now semi-static by not including libc
           native-image-job-reports: "true"
           cache: "maven"
 
@@ -74,7 +72,6 @@ jobs:
           java-version: "23"
           distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: "native-image"
           native-image-job-reports: "true"
           cache: "maven"
 
@@ -118,7 +115,6 @@ jobs:
           java-version: "23"
           distribution: "graalvm-community"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: "native-image"
           native-image-job-reports: "true"
           cache: "maven"
 
