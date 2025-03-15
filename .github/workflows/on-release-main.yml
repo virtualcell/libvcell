@@ -43,10 +43,6 @@ jobs:
           native-image-job-reports: "true"
           cache: "maven"
 
-#      - name: Install python dependencies
-#        run: poetry install --no-interaction
-#        if: ${{ startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'windows') )}}
-
       - name: Set MACOSX_DEPLOYMENT_TARGET used by cibuildwheel
         if: ${{ startsWith(matrix.os, 'macos') }}
         run: echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.os == 'macos-14' && '14.0' || '13.0' }}" >> $GITHUB_ENV
@@ -56,41 +52,7 @@ jobs:
           pip install cibuildwheel
           cibuildwheel --debug-traceback --output-dir wheelhouse
         env:
-          #          CIBW_BEFORE_ALL_LINUX: |
-          #            cd /opt
-          #
-          #            # Install GraalVM
-          #            export GRAALVM_VERSION=23.0.2
-          #            export ARCH=x86_64 && \
-          #            curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-23.0.2/graalvm-community-jdk-23.0.2_linux-x64_bin.tar.gz
-          #            tar -xzf graalvm.tar.gz
-          #            export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
-          #            export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1
-          #            export PATH=/opt/graalvm-community-openjdk-23.0.2+7.1/bin:$PATH
-          #            echo 'export JAVA_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1' >> ~/.bashrc
-          #            echo 'export GRAALVM_HOME=/opt/graalvm-community-openjdk-23.0.2+7.1' >> ~/.bashrc
-          #            echo 'export PATH=/opt/graalvm-community-openjdk-23.0.2+7.1/bin:$PATH' >> ~/.bashrc
-          #
-          #            # install Poetry
-          #            curl -sSL https://install.python-poetry.org | python3 -
-          #            export PATH=/root/.local/bin:$PATH
-          #            echo 'export PATH=/root/.local/bin:$PATH' >> ~/.bashrc
-          #
-          #            # Install Maven
-          #            export MAVEN_VERSION=3.9.9
-          #            curl -L -o apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
-          #            tar -xzf apache-maven.tar.gz
-          #            export MAVEN_HOME=/opt/apache-maven-3.9.9
-          #            export PATH=/opt/apache-maven-3.9.9/bin:$PATH
-          #            echo 'export MAVEN_HOME=/opt/apache-maven-3.9.9' >> ~/.bashrc
-          #            echo 'export PATH=/opt/apache-maven-3.9.9/bin:$PATH' >> ~/.bashrc
-          #
-          #            native-image --version
-          #            mvn --version
-          #            poetry --version
-          CIBW_BUILD_VERBOSITY_LINUX: 3
-          CIBW_DEBUG_TRACEBACK: TRUE
-          CIBW_DEBUG_KEEP_CONTAINER: TRUE
+          CIBW_BUILD_VERBOSITY_LINUX: 2
 
       - name: Copy wheels to dist directory
         run: |
