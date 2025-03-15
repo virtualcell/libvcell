@@ -36,7 +36,7 @@ def main() -> None:
     )
 
     # Build vcell-native as native shared object library
-    run_command("mvn package -P shared-dll", cwd=vcell_native_dir)
+    run_command("mvn --batch-mode package -P shared-dll", cwd=vcell_native_dir)
 
     # Copy the shared library to libvcell/lib
     for ext in ["so", "dylib", "dll"]:
