@@ -24,6 +24,9 @@ jobs:
           submodules: true
           fetch-depth: 2
 
+      - name: remove nativelibs and localsolvers
+        run: rm -rf vcell_submodule/nativelibs vcell_submodule/localsolvers
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -41,8 +44,9 @@ jobs:
           native-image-job-reports: "true"
           cache: "maven"
 
-      - name: Install python dependencies
-        run: poetry install --no-interaction
+#      - name: Install python dependencies
+#        run: poetry install --no-interaction
+#        if: ${{ startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'windows') )}}
 
       - name: Set MACOSX_DEPLOYMENT_TARGET used by cibuildwheel
         if: ${{ startsWith(matrix.os, 'macos') }}
