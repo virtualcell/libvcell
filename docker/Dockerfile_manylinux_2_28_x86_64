@@ -1,9 +1,8 @@
 FROM quay.io/pypa/manylinux_2_28_x86_64
 
-WORKDIR /opt
-
 # install graalvm community edition
-RUN curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-23.0.2/graalvm-community-jdk-23.0.2_linux-x64_bin.tar.gz && \
+RUN cd /opt && \
+    curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-23.0.2/graalvm-community-jdk-23.0.2_linux-x64_bin.tar.gz && \
     tar -xzf graalvm.tar.gz && \
     export GRAALVM_HOME="$(cd "$(ls | grep "23.0.2" )" && pwd)" && \
     echo "export JAVA_HOME=$GRAALVM_HOME" >> /root/.bashrc && \
@@ -11,11 +10,13 @@ RUN curl -L -o graalvm.tar.gz https://github.com/graalvm/graalvm-ce-builds/relea
     echo "export PATH=$GRAALVM_HOME/bin:\$PATH" >> /root/.bashrc
 
 # install Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 - && \
+RUN cd /opt && \
+    curl -sSL https://install.python-poetry.org | python3 - && \
     echo "export PATH=/root/.local/bin:\$PATH" >> /root/.bashrc
 
     # Install Maven
-RUN curl -L -o apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz && \
+RUN cd /opt && \
+    curl -L -o apache-maven.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz && \
     tar -xzf apache-maven.tar.gz && \
     export MAVEN_HOME="$(cd "$(ls | grep "3.9.9" )" && pwd)" && \
     echo "export MAVEN_HOME=$MAVEN_HOME" >> /root/.bashrc && \

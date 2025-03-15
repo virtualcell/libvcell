@@ -34,4 +34,4 @@ jobs:
           context: docker
           file: docker/Dockerfile_manylinux_2_28_x86_64
           push: true
-          tags: virtualcell/manylinux_2_28_x86_64:${{ github.event.inputs.tag }}
+          tags: ghcr.io/virtualcell/manylinux_2_28_x86_64:${{ github.event.inputs.tag }}
