@@ -41,7 +41,7 @@ mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 [tool.cibuildwheel]
 build = "cp311-* cp312-* cp313-*"
 manylinux-x86_64-image = "ghcr.io/virtualcell/manylinux_2_28_x86_64:0.0.1"
-skip = "musllinux*"
+skip = "cp311-musllinux_x86_64 cp312-musllinux_x86_64 cp313-musllinux_x86_64"
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64"]
