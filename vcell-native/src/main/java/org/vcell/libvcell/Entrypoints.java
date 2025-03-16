@@ -92,7 +92,7 @@ public class Entrypoints {
         }
         // return result as a json string
         String json = returnValue.toJson();
-        logger.info("Returning from vcmlToFiniteVolumeInput: {}", json);
+        logger.info("Returning from vcmlToFiniteVolumeInput: " + json);
         return createString(json);
     }
 
@@ -120,7 +120,7 @@ public class Entrypoints {
         }
         // return result as a json string
         String json = returnValue.toJson();
-        logger.info("Returning from sbmlToFiniteVolumeInput: {}", json);
+        logger.info("Returning from sbmlToFiniteVolumeInput: " + json);
         return createString(json);
     }
 
@@ -180,7 +180,7 @@ public class Entrypoints {
             // read sbml_file and create a string object
             try (FileInputStream fis = new FileInputStream(sbml_file)) {
                 byte[] data = fis.readAllBytes();
-                logger.info("Read {} bytes from {}", data.length, sbml_file);
+                logger.info("Read " + data.length + " bytes from " + sbml_file);
                 String sbml_str = new String(data);
                 sbmlToFiniteVolumeInput(sbml_str, new File(args[1]));
             }
