@@ -50,7 +50,7 @@ public class Entrypoints {
 
     @CEntryPoint(name = "freeString", documentation = "Release memory allocated for a string")
     public static void freeString(
-            IsolateThread thread,
+            IsolateThread ignoredThread,
             CCharPointer ptr) {
         if (ptr.isNonNull()) {
             allocatedMemory.remove(ptr.rawValue());
@@ -75,7 +75,7 @@ public class Entrypoints {
                       Returns a JSON string with success status and message"""
     )
     public static CCharPointer entrypoint_vcmlToFiniteVolumeInput(
-            IsolateThread thread,
+            IsolateThread ignoredThread,
             CCharPointer vcml_content,
             CCharPointer simulation_name,
             CCharPointer output_dir_path) {
@@ -92,7 +92,7 @@ public class Entrypoints {
         }
         // return result as a json string
         String json = returnValue.toJson();
-        logger.info("Returning from vcmlToFiniteVolumeInput: " + json);
+        logger.info("Returning from vcmlToFiniteVolumeInput: {}", json);
         return createString(json);
     }
 
@@ -105,7 +105,7 @@ public class Entrypoints {
                       Returns a JSON string with success status and message"""
     )
     public static CCharPointer entrypoint_sbmlToFiniteVolumeInput(
-            IsolateThread thread,
+            IsolateThread ignoredThread,
             CCharPointer sbml_content,
             CCharPointer output_dir_path) {
         ReturnValue returnValue;
@@ -120,7 +120,7 @@ public class Entrypoints {
         }
         // return result as a json string
         String json = returnValue.toJson();
-        logger.info("Returning from sbmlToFiniteVolumeInput: " + json);
+        logger.info("Returning from sbmlToFiniteVolumeInput: {}", json);
         return createString(json);
     }
 
@@ -128,9 +128,15 @@ public class Entrypoints {
     public static void vcmlToFiniteVolumeInput(String vcml_content, String simulation_name, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException {
         GeometrySpec.avoidAWTImageCreation = true;
         VCMongoMessage.enabled = false;
+        if (vcml_content.substring(0, 300).contains("<sbml xmlns=\"http://www.sbml.org/sbml")) {
+            throw new IllegalArgumentException("expecting VCML content, not SBML");
+        }
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
         Simulation sim = bioModel.getSimulation(simulation_name);
+        if (sim == null) {
+            throw new IllegalArgumentException("Simulation not found: " + simulation_name);
+        }
         FiniteVolumeRunUtil.writeInputFilesOnly(outputDir, sim);
     }
 
@@ -141,6 +147,9 @@ public class Entrypoints {
         SBMLExporter.MemoryVCLogger vcl = new SBMLExporter.MemoryVCLogger();
         boolean bValidateSBML = true;
         // input stream from sbml_content String
+        if (sbml_content.substring(0, 300).contains("<vcml xmlns=\"http://sourceforge.net/projects/vcell")) {
+            throw new IllegalArgumentException("expecting SBML content, not VCML");
+        }
         InputStream is = new ByteArrayInputStream(sbml_content.getBytes());
         SBMLImporter importer = new SBMLImporter(is, vcl, bValidateSBML);
         BioModel bioModel = importer.getBioModel();
@@ -171,7 +180,7 @@ public class Entrypoints {
             // read sbml_file and create a string object
             try (FileInputStream fis = new FileInputStream(sbml_file)) {
                 byte[] data = fis.readAllBytes();
-                logger.info("Read " + data.length + " bytes from " + sbml_file);
+                logger.info("Read {} bytes from {}", data.length, sbml_file);
                 String sbml_str = new String(data);
                 sbmlToFiniteVolumeInput(sbml_str, new File(args[1]));
             }
