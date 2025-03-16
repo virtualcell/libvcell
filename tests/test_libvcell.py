@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from libvcell import vcml_to_finite_volume_input, sbml_to_finite_volume_input
+from libvcell import sbml_to_finite_volume_input, vcml_to_finite_volume_input
 
 
 def test_vcml_to_finite_volume_input(temp_output_dir: Path, vcml_file_path: Path, vcml_sim_name: str) -> None:
