@@ -23,7 +23,7 @@
     <maven.compiler.source>${java.specification.version}</maven.compiler.source>
     <maven.compiler.target>${java.specification.version}</maven.compiler.target>
     <imageName>libvcell</imageName>
-    <mainClass>org.vcell.libvcell.Entrypoints</mainClass>
+    <mainClass>org.vcell.libvcell.MainRecorder</mainClass>
 </properties>
 
 <dependencies>

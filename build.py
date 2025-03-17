@@ -30,7 +30,9 @@ def main() -> None:
     run_command(
         "java -agentlib:native-image-agent=config-output-dir=target/recording "
         "-jar target/vcell-native-1.0-SNAPSHOT.jar "
-        "src/test/resources/TinySpacialProject_Application0.xml "
+        "src/test/resources/TinySpatialProject_Application0.xml "
+        "src/test/resources/TinySpatialProject_Application0.vcml "
+        "Simulation0 "
         "target/sbml-input",
         cwd=vcell_native_dir,
     )
