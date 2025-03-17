@@ -59,11 +59,16 @@ jobs:
           mkdir -p dist
           cp wheelhouse/*.whl dist/
 
-      - name: Publish to PyPI
+      - name: Publish to PyPI (dry run)
         run: |
           poetry config pypi-token.pypi "${{ secrets.PYPI_TOKEN }}"
           poetry publish --dry-run
+
+      - name: Publish to PyPI (release-only - push to PyPI)
+        run: |
+          poetry config pypi-token.pypi "${{ secrets.PYPI_TOKEN }}"
           poetry publish --skip-existing
+        if: github.event_name == 'release'
 
       - name: Setup tmate
         if: failure()
