@@ -24,21 +24,67 @@ public class MainRecorder {
             PropertyLoader.setProperty(PropertyLoader.vcellServerIDProperty, "none");
             PropertyLoader.setProperty(PropertyLoader.mongodbDatabase, "none");
 
-
+            // exercise the sbmlToFiniteVolumeInput and vcmlToFiniteVolumeInput methods
             try (FileInputStream f_sbml = new FileInputStream(sbml_file)) {
                 byte[] data = f_sbml.readAllBytes();
                 logger.info("Read " + data.length + " bytes from " + sbml_file.getAbsolutePath());
                 String sbml_str = new String(data);
                 sbmlToFiniteVolumeInput(sbml_str, output_dir);
-                //vcmlToFiniteVolumeInput(vcml_str, sim_name, new File(args[1]));
             }
-            // read sbml_file and create a string object
             try (FileInputStream f_vcml = new FileInputStream(vcml_file)) {
                 byte[] data = f_vcml.readAllBytes();
                 logger.info("Read " + data.length + " bytes from " + vcml_file.getAbsolutePath());
                 String vcml_str = new String(data);
                 vcmlToFiniteVolumeInput(vcml_str, vcml_sim_name, output_dir);
             }
+
+            // use reflection to load jsbml classes and call their default constructors
+            Class.forName("org.sbml.jsbml.AlgebraicRule").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Annotation").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.AssignmentRule").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Compartment").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.CompartmentType").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Constraint").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Delay").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Event").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.EventAssignment").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.FunctionDefinition").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.InitialAssignment").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.KineticLaw").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.ListOf").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.LocalParameter").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Model").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.ModifierSpeciesReference").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Parameter").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Priority").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.RateRule").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Reaction").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Species").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.SpeciesReference").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.SpeciesType").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.StoichiometryMath").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Trigger").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.Unit").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.UnitDefinition").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.ArraysParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.CompParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.DistribParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.DynParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.FBCParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.GroupsParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.L3LayoutParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.LayoutParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.MathMLStaxParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.MultiParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.QualParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.RenderParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.ReqParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.SBMLCoreParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.SBMLLevel1Rule").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.SBMLRDFAnnotationParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.SpatialParser").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.UncertMLXMLNodeReader").getDeclaredConstructor().newInstance();
+            Class.forName("org.sbml.jsbml.xml.parsers.XMLNodeReader").getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             logger.error("Error processing spatial model", e);
