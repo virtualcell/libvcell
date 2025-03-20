@@ -52,7 +52,7 @@ public class Entrypoints {
             documentation = """
                     Converts VCML file into Finite Volume Input files.
                       vcml_content: text of VCML XML document
-                      output_dir_path: path to the output directory
+                      output_dir_path: path to the output directory (expected to be subdirectory of the workspace)
                       Returns a JSON string with success status and message"""
     )
     public static CCharPointer entrypoint_vcmlToFiniteVolumeInput(
@@ -65,7 +65,9 @@ public class Entrypoints {
             String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
             String simulationName = CTypeConversion.toJavaString(simulation_name);
             String outputDirPathStr = CTypeConversion.toJavaString(output_dir_path);
-            vcmlToFiniteVolumeInput(vcmlContentStr, simulationName, new File(outputDirPathStr));
+            File outputDir = new File(outputDirPathStr);
+            File parentDir = outputDir.getParentFile();
+            vcmlToFiniteVolumeInput(vcmlContentStr, simulationName, parentDir, outputDir);
             returnValue = new ReturnValue(true, "Success");
         }catch (Throwable t) {
             logger.error("Error processing spatial model", t);
