@@ -68,6 +68,7 @@ public class EntrypointsTest {
         assertEquals(0, countFiles(output_dir));
         String simulationName = "Simulation0";
         vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
+        listFilesInDirectory(output_dir);
         assertEquals(10, countFiles(ext_data_dir));
         assertEquals(6, countFiles(output_dir));
     }
