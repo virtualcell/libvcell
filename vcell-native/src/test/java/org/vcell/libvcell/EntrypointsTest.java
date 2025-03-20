@@ -57,6 +57,11 @@ public class EntrypointsTest {
         File output_dir = new File(parent_dir, "output_dir");
         byte[] tgz_dir = getFileContentsAsBytes("/test2_lsm_DEMO.tgz");
         // extract the tgz_dir to parent_dir
+        File ext_data_dir = new File(parent_dir, "test2_lsm_DEMO");
+        // if the directory already exists, delete it
+        if (ext_data_dir.exists()) {
+            assertTrue(ext_data_dir.delete());
+        }
         try (FileOutputStream fos = new FileOutputStream(new File(parent_dir, "test2_lsm_DEMO.tgz"))) {
             fos.write(tgz_dir);
             // untar the tgz file
@@ -65,7 +70,6 @@ public class EntrypointsTest {
             Process p = pb.start();
             assertEquals(0, p.waitFor());
         }
-        File ext_data_dir = new File(parent_dir, "test2_lsm_DEMO");
         assertEquals(10, countFiles(ext_data_dir));
         assertEquals(0, countFiles(output_dir));
         String simulationName = "Simulation0";
@@ -81,6 +85,11 @@ public class EntrypointsTest {
         File output_dir = new File(parent_dir, "output_dir");
         byte[] tgz_dir = getFileContentsAsBytes("/test2_lsm_DEMO.tgz");
         // extract the tgz_dir to parent_dir
+        File ext_data_dir_correctly_named = new File(parent_dir, "test2_lsm_DEMO");
+        // if the directory already exists, delete it
+        if (ext_data_dir_correctly_named.exists()) {
+            assertTrue(ext_data_dir_correctly_named.delete());
+        }
         try (FileOutputStream fos = new FileOutputStream(new File(parent_dir, "test2_lsm_DEMO.tgz"))) {
             fos.write(tgz_dir);
             // untar the tgz file
@@ -89,7 +98,6 @@ public class EntrypointsTest {
             Process p = pb.start();
             assertEquals(0, p.waitFor());
         }
-        File ext_data_dir_correctly_named = new File(parent_dir, "test2_lsm_DEMO");
 
         // rename ext_data_dir on the filesystem to "test2_lsm_DEMO_MISSPELLED"
         File ext_data_dir_moved = Files.move(ext_data_dir_correctly_named.toPath(), new File(parent_dir, "test2_lsm_DEMO_MISSPELLED").toPath()).toFile();
