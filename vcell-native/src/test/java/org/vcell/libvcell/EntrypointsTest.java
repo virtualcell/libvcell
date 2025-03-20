@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,15 +54,14 @@ public class EntrypointsTest {
     @Test
     public void testVcmlToFiniteVolumeInput_field_data() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
-        File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput").toFile();
+        File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
         File output_dir = new File(parent_dir, "output_dir");
         byte[] tgz_dir = getFileContentsAsBytes("/test2_lsm_DEMO.tgz");
         // extract the tgz_dir to parent_dir
         File ext_data_dir = new File(parent_dir, "test2_lsm_DEMO");
-        // if the directory already exists, delete it
-        if (ext_data_dir.exists()) {
-            assertTrue(ext_data_dir.delete());
-        }
+        assertEquals(0, countFiles(ext_data_dir));
+        assertEquals(0, countFiles(output_dir));
+        removeDirectory(ext_data_dir);
         try (FileOutputStream fos = new FileOutputStream(new File(parent_dir, "test2_lsm_DEMO.tgz"))) {
             fos.write(tgz_dir);
             // untar the tgz file
@@ -76,20 +76,21 @@ public class EntrypointsTest {
         vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
         assertEquals(10, countFiles(ext_data_dir));
         assertEquals(6, countFiles(output_dir));
+        removeDirectory(parent_dir);
     }
 
     @Test
     public void testVcmlToFiniteVolumeInput_field_data_not_found() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
-        File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput").toFile();
+        File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
         File output_dir = new File(parent_dir, "output_dir");
         byte[] tgz_dir = getFileContentsAsBytes("/test2_lsm_DEMO.tgz");
         // extract the tgz_dir to parent_dir
         File ext_data_dir_correctly_named = new File(parent_dir, "test2_lsm_DEMO");
-        // if the directory already exists, delete it
-        if (ext_data_dir_correctly_named.exists()) {
-            assertTrue(ext_data_dir_correctly_named.delete());
-        }
+        File ext_data_dir_MISSPELLED = new File(parent_dir, "test2_lsm_DEMO_MISSPELLED");
+        assertEquals(0, countFiles(ext_data_dir_correctly_named));
+        assertEquals(0, countFiles(output_dir));
+        removeDirectory(ext_data_dir_correctly_named);
         try (FileOutputStream fos = new FileOutputStream(new File(parent_dir, "test2_lsm_DEMO.tgz"))) {
             fos.write(tgz_dir);
             // untar the tgz file
@@ -100,7 +101,7 @@ public class EntrypointsTest {
         }
 
         // rename ext_data_dir on the filesystem to "test2_lsm_DEMO_MISSPELLED"
-        File ext_data_dir_moved = Files.move(ext_data_dir_correctly_named.toPath(), new File(parent_dir, "test2_lsm_DEMO_MISSPELLED").toPath()).toFile();
+        File ext_data_dir_moved = Files.move(ext_data_dir_correctly_named.toPath(), ext_data_dir_MISSPELLED.toPath()).toFile();
         assertEquals(10, countFiles(ext_data_dir_moved));
         assertEquals(0, countFiles(output_dir));
         String simulationName = "Simulation0";
@@ -108,6 +109,7 @@ public class EntrypointsTest {
         assertTrue(exc.getMessage().contains("Field data directory does not exist") && exc.getMessage().contains(ext_data_dir_correctly_named.getName()));
         assertEquals(10, countFiles(ext_data_dir_moved));
         assertEquals(0, countFiles(output_dir));
+        removeDirectory(parent_dir);
     }
 
     @Test
@@ -189,6 +191,23 @@ public class EntrypointsTest {
             return 0;
         }
         return Objects.requireNonNull(dir.listFiles()).length;
+    }
+
+    private void removeDirectory(File dir) {
+        if (!dir.exists()) {
+            return;
+        }
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    removeDirectory(f);
+                } else {
+                    assertTrue(f.delete());
+                }
+            }
+        }
+        assertTrue(dir.delete());
     }
 
 }
