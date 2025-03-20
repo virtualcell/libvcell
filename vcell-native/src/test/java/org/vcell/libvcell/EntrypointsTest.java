@@ -6,6 +6,8 @@ import cbit.vcell.math.MathException;
 import cbit.vcell.parser.ExpressionException;
 import cbit.vcell.solver.SolverException;
 import cbit.vcell.xml.XmlParseException;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.junit.jupiter.api.Test;
 
 import java.beans.PropertyVetoException;
@@ -16,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
@@ -56,22 +59,12 @@ public class EntrypointsTest {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
         File output_dir = new File(parent_dir, "output_dir");
-        byte[] tgz_dir = getFileContentsAsBytes("/test2_lsm_DEMO.tgz");
-        // extract the tgz_dir to parent_dir
         File ext_data_dir = new File(parent_dir, "test2_lsm_DEMO");
         assertEquals(0, countFiles(ext_data_dir));
-        assertEquals(0, countFiles(output_dir));
-        removeDirectory(ext_data_dir);
-        try (FileOutputStream fos = new FileOutputStream(new File(parent_dir, "test2_lsm_DEMO.tgz"))) {
-            fos.write(tgz_dir);
-            // untar the tgz file
-            ProcessBuilder pb = new ProcessBuilder("tar", "-xzf", "test2_lsm_DEMO.tgz");
-            pb.directory(parent_dir);
-            Process p = pb.start();
-            assertEquals(0, p.waitFor());
-        }
+        extractTgz(EntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO.tgz"), parent_dir);
         listFilesInDirectory(ext_data_dir);
         assertEquals(10, countFiles(ext_data_dir));
+
         assertEquals(0, countFiles(output_dir));
         String simulationName = "Simulation0";
         vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
@@ -85,31 +78,22 @@ public class EntrypointsTest {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
         File output_dir = new File(parent_dir, "output_dir");
-        byte[] tgz_dir = getFileContentsAsBytes("/test2_lsm_DEMO.tgz");
-        // extract the tgz_dir to parent_dir
-        File ext_data_dir_correctly_named = new File(parent_dir, "test2_lsm_DEMO");
+        File ext_data_dir = new File(parent_dir, "test2_lsm_DEMO");
         File ext_data_dir_MISSPELLED = new File(parent_dir, "test2_lsm_DEMO_MISSPELLED");
-        assertEquals(0, countFiles(ext_data_dir_correctly_named));
-        assertEquals(0, countFiles(output_dir));
-        removeDirectory(ext_data_dir_correctly_named);
-        try (FileOutputStream fos = new FileOutputStream(new File(parent_dir, "test2_lsm_DEMO.tgz"))) {
-            fos.write(tgz_dir);
-            // untar the tgz file
-            ProcessBuilder pb = new ProcessBuilder("tar", "-xzf", "test2_lsm_DEMO.tgz");
-            pb.directory(parent_dir);
-            Process p = pb.start();
-            assertEquals(0, p.waitFor());
-        }
+        assertEquals(0, countFiles(ext_data_dir));
+        assertEquals(0, countFiles(ext_data_dir_MISSPELLED));
+        extractTgz(EntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO.tgz"), parent_dir);
+        Files.move(ext_data_dir.toPath(), ext_data_dir_MISSPELLED.toPath()).toFile();
+        assertEquals(0, countFiles(ext_data_dir));
+        listFilesInDirectory(ext_data_dir_MISSPELLED);
+        assertEquals(10, countFiles(ext_data_dir_MISSPELLED));
 
-        // rename ext_data_dir on the filesystem to "test2_lsm_DEMO_MISSPELLED"
-        File ext_data_dir_moved = Files.move(ext_data_dir_correctly_named.toPath(), ext_data_dir_MISSPELLED.toPath()).toFile();
-        listFilesInDirectory(ext_data_dir_moved);
-        assertEquals(10, countFiles(ext_data_dir_moved));
+        assertEquals(10, countFiles(ext_data_dir_MISSPELLED));
         assertEquals(0, countFiles(output_dir));
         String simulationName = "Simulation0";
         IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir));
-        assertTrue(exc.getMessage().contains("Field data directory does not exist") && exc.getMessage().contains(ext_data_dir_correctly_named.getName()));
-        assertEquals(10, countFiles(ext_data_dir_moved));
+        assertTrue(exc.getMessage().contains("Field data directory does not exist") && exc.getMessage().contains(ext_data_dir.getName()));
+        assertEquals(10, countFiles(ext_data_dir_MISSPELLED));
         assertEquals(0, countFiles(output_dir));
         removeDirectory(parent_dir);
     }
@@ -219,4 +203,33 @@ public class EntrypointsTest {
             }
         }
     }
+
+    public static void extractTgz(InputStream tgzFileStream, File outputDir) throws IOException {
+        try (GZIPInputStream gis = new GZIPInputStream(tgzFileStream);
+             TarArchiveInputStream tis = new TarArchiveInputStream(gis)) {
+
+            TarArchiveEntry entry;
+            while ((entry = tis.getNextTarEntry()) != null) {
+                File outputFile = new File(outputDir, entry.getName());
+                if (entry.isDirectory()) {
+                    if (!outputFile.exists()) {
+                        outputFile.mkdirs();
+                    }
+                } else {
+                    File parent = outputFile.getParentFile();
+                    if (!parent.exists()) {
+                        parent.mkdirs();
+                    }
+                    try (OutputStream os = Files.newOutputStream(outputFile.toPath())) {
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = tis.read(buffer)) != -1) {
+                            os.write(buffer, 0, len);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
