@@ -20,6 +20,7 @@ public class MainRecorder {
             File vcml_file = new File(args[1]);
             String vcml_sim_name = args[2];
             File output_dir = new File(args[3]);
+            File parent_dir = output_dir.getParentFile();
             logger.info("Logger logging");
             PropertyLoader.setProperty(PropertyLoader.vcellServerIDProperty, "none");
             PropertyLoader.setProperty(PropertyLoader.mongodbDatabase, "none");
@@ -35,7 +36,7 @@ public class MainRecorder {
                 byte[] data = f_vcml.readAllBytes();
                 logger.info("Read " + data.length + " bytes from " + vcml_file.getAbsolutePath());
                 String vcml_str = new String(data);
-                vcmlToFiniteVolumeInput(vcml_str, vcml_sim_name, output_dir);
+                vcmlToFiniteVolumeInput(vcml_str, vcml_sim_name, parent_dir, output_dir);
             }
 
             // use reflection to load jsbml classes and call their default constructors
