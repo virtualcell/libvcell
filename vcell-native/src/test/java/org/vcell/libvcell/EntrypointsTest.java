@@ -70,6 +70,7 @@ public class EntrypointsTest {
             Process p = pb.start();
             assertEquals(0, p.waitFor());
         }
+        listFilesInDirectory(ext_data_dir);
         assertEquals(10, countFiles(ext_data_dir));
         assertEquals(0, countFiles(output_dir));
         String simulationName = "Simulation0";
@@ -102,6 +103,7 @@ public class EntrypointsTest {
 
         // rename ext_data_dir on the filesystem to "test2_lsm_DEMO_MISSPELLED"
         File ext_data_dir_moved = Files.move(ext_data_dir_correctly_named.toPath(), ext_data_dir_MISSPELLED.toPath()).toFile();
+        listFilesInDirectory(ext_data_dir_moved);
         assertEquals(10, countFiles(ext_data_dir_moved));
         assertEquals(0, countFiles(output_dir));
         String simulationName = "Simulation0";
@@ -209,5 +211,12 @@ public class EntrypointsTest {
         }
         assertTrue(dir.delete());
     }
-
+    private void listFilesInDirectory(File dir) {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                System.out.println(file.getAbsolutePath());
+            }
+        }
+    }
 }
