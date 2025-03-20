@@ -169,7 +169,7 @@ public class LocalFVSolverStandalone extends FVSolverStandalone {
         for (FieldDataIdentifierSpec fdiSpec: argFieldDataIDSpecs) {
             File ext_dataDir = new File(this.parentDir, fdiSpec.getFieldFuncArgs().getFieldName());
             if (!uniqueFieldDataIDSpecAndFileH.containsKey(fdiSpec)){
-                File newResampledFieldDataFile = new File(dataDir, SimulationData.createCanonicalResampleFileName(fdiSpec.getExternalDataIdentifier(), fdiSpec.getFieldFuncArgs()));
+                File newResampledFieldDataFile = new File(dataDir, SimulationData.createCanonicalResampleFileName(getSimulationJob().getVCDataIdentifier(), fdiSpec.getFieldFuncArgs()));
                 uniqueFieldDataIDSpecAndFileH.put(fdiSpec,newResampledFieldDataFile);
                 bFieldDataResample.put(fdiSpec, bResampleFlags[i]);
             }
