@@ -70,7 +70,6 @@ public class EntrypointsTest {
         vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
         assertEquals(10, countFiles(ext_data_dir));
         assertEquals(6, countFiles(output_dir));
-        removeDirectory(parent_dir);
     }
 
     @Test
@@ -95,7 +94,6 @@ public class EntrypointsTest {
         assertTrue(exc.getMessage().contains("Field data directory does not exist") && exc.getMessage().contains(ext_data_dir.getName()));
         assertEquals(10, countFiles(ext_data_dir_MISSPELLED));
         assertEquals(0, countFiles(output_dir));
-        removeDirectory(parent_dir);
     }
 
     @Test
@@ -179,22 +177,6 @@ public class EntrypointsTest {
         return Objects.requireNonNull(dir.listFiles()).length;
     }
 
-    private void removeDirectory(File dir) {
-        if (!dir.exists()) {
-            return;
-        }
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (File f : files) {
-                if (f.isDirectory()) {
-                    removeDirectory(f);
-                } else {
-                    assertTrue(f.delete());
-                }
-            }
-        }
-        assertTrue(dir.delete());
-    }
     private void listFilesInDirectory(File dir) {
         File[] files = dir.listFiles();
         if (files != null) {
