@@ -33,6 +33,7 @@ def main() -> None:
         "src/test/resources/TinySpatialProject_Application0.xml "
         "src/test/resources/TinySpatialProject_Application0.vcml "
         "Simulation0 "
+        "unnamed_spatialGeom "
         "target/sbml-input",
         cwd=vcell_native_dir,
     )
