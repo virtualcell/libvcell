@@ -69,7 +69,7 @@ class VCellNativeCalls:
                     ctypes.c_char_p(vcml_content.encode("utf-8")),
                     ctypes.c_char_p(application_name.encode("utf-8")),
                     ctypes.c_char_p(str(sbml_file_path).encode("utf-8")),
-                    validate,
+                    ctypes.c_bool(validate),
                 )
 
             value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
@@ -90,7 +90,7 @@ class VCellNativeCalls:
                     isolate_thread,
                     ctypes.c_char_p(sbml_content.encode("utf-8")),
                     ctypes.c_char_p(str(vcml_file_path).encode("utf-8")),
-                    validate,
+                    ctypes.c_bool(validate),
                 )
 
             value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
