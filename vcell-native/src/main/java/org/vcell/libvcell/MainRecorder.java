@@ -54,8 +54,7 @@ public class MainRecorder {
 
                 // create a temporary file for the VCML output
                 File temp_vcml_file = new File(output_dir, "temp.vcml");
-                boolean validateSBML = true;
-                sbml_to_vcml(sbml_str, temp_vcml_file.toPath(), validateSBML);
+                sbml_to_vcml(sbml_str, temp_vcml_file.toPath());
                 // remove temporary file
                 if (temp_vcml_file.exists()) {
                     boolean deleted = temp_vcml_file.delete();
@@ -71,8 +70,7 @@ public class MainRecorder {
 
                 // create a temporary file for the SBML output
                 File temp_sbml_file = new File(output_dir, "temp.vcml");
-                boolean validateSBML = true;
-                vcml_to_sbml(vcml_str, vcml_app_name, temp_sbml_file.toPath(), validateSBML);
+                vcml_to_sbml(vcml_str, vcml_app_name, temp_sbml_file.toPath());
                 // remove temporary file
                 if (temp_sbml_file.exists()) {
                     boolean deleted = temp_sbml_file.delete();

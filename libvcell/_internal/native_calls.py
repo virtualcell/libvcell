@@ -60,7 +60,7 @@ class VCellNativeCalls:
             raise
 
     def vcml_to_sbml(
-        self, vcml_content: str, application_name: str, sbml_file_path: Path, validate: bool
+        self, vcml_content: str, application_name: str, sbml_file_path: Path
     ) -> ReturnValue:
         try:
             with IsolateManager(self.lib) as isolate_thread:
@@ -69,7 +69,6 @@ class VCellNativeCalls:
                     ctypes.c_char_p(vcml_content.encode("utf-8")),
                     ctypes.c_char_p(application_name.encode("utf-8")),
                     ctypes.c_char_p(str(sbml_file_path).encode("utf-8")),
-                    ctypes.c_int(1 if validate else 0),
                 )
 
             value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
@@ -83,14 +82,13 @@ class VCellNativeCalls:
             logging.exception("Error in vcml_to_sbml()", exc_info=e)
             raise
 
-    def sbml_to_vcml(self, sbml_content: str, vcml_file_path: Path, validate: bool) -> ReturnValue:
+    def sbml_to_vcml(self, sbml_content: str, vcml_file_path: Path) -> ReturnValue:
         try:
             with IsolateManager(self.lib) as isolate_thread:
                 json_ptr: ctypes.c_char_p = self.lib.sbmlToVcml(
                     isolate_thread,
                     ctypes.c_char_p(sbml_content.encode("utf-8")),
                     ctypes.c_char_p(str(vcml_file_path).encode("utf-8")),
-                    ctypes.c_int(1 if validate else 0),
                 )
 
             value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value

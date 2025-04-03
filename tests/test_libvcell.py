@@ -24,7 +24,7 @@ def test_sbml_to_finite_volume_input(temp_output_dir: Path, sbml_file_path: Path
 def test_sbml_to_vcml(temp_output_dir: Path, sbml_file_path: Path) -> None:
     sbml_content = sbml_file_path.read_text()
     vcml_file_path = temp_output_dir / "test.vcml"
-    success, msg = sbml_to_vcml(sbml_content=sbml_content, vcml_file_path=vcml_file_path, validate=False)
+    success, msg = sbml_to_vcml(sbml_content=sbml_content, vcml_file_path=vcml_file_path)
     assert vcml_file_path.exists()
     assert success is True
     assert msg == "Success"
@@ -34,7 +34,7 @@ def test_vcml_to_sbml(temp_output_dir: Path, vcml_file_path: Path, vcml_app_name
     vcml_content = vcml_file_path.read_text()
     sbml_file_path = temp_output_dir / "test.sbml"
     success, msg = vcml_to_sbml(
-        vcml_content=vcml_content, application_name=vcml_app_name, sbml_file_path=sbml_file_path, validate=False
+        vcml_content=vcml_content, application_name=vcml_app_name, sbml_file_path=sbml_file_path
     )
     assert sbml_file_path.exists()
     assert success is True

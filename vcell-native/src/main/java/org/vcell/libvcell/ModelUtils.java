@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class ModelUtils {
 
-    public static void sbml_to_vcml(String sbml_content, Path vcmlPath, boolean validateSBML)
+    public static void sbml_to_vcml(String sbml_content, Path vcmlPath)
             throws VCLoggerException, XmlParseException, IOException, MappingException {
 
         record LoggerMessage(VCLogger.Priority priority, VCLogger.ErrorType errorType, String message) {};
@@ -40,6 +40,7 @@ public class ModelUtils {
         final BioModel bioModel;
         try (InputStream inputStream = new ByteArrayInputStream(sbml_content.getBytes())) {
             // create a SBMLImporter from the XMLSource
+            boolean validateSBML = true;
             SBMLImporter sbmlImporter = new SBMLImporter(inputStream, vclogger, validateSBML);
             bioModel = sbmlImporter.getBioModel();
         }
@@ -60,12 +61,13 @@ public class ModelUtils {
     }
 
 
-    public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath, boolean validateSBML)
+    public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath)
             throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException {
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
         SimulationContext simContext = bioModel.getSimulationContext(applicationName);
+        boolean validateSBML = true;
         SBMLExporter sbmlExporter = new SBMLExporter(simContext, 3, 1, validateSBML);
         String sbml_string = sbmlExporter.getSBMLString();
         XmlUtil.writeXMLStringToFile(sbml_string, sbmlPath.toFile().getAbsolutePath(), true);

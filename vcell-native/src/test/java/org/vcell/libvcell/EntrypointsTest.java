@@ -117,8 +117,7 @@ public class EntrypointsTest {
         String sbmlContent = getFileContentsAsString("/TinySpatialProject_Application0.xml");
         File parent_dir = Files.createTempDirectory("sbmlToVcml").toFile();
         File vcml_temp_file = new File(parent_dir, "temp.vcml");
-        boolean validate = true;
-        sbml_to_vcml(sbmlContent, vcml_temp_file.toPath(), validate);
+        sbml_to_vcml(sbmlContent, vcml_temp_file.toPath());
         assert(vcml_temp_file.exists());
     }
 
@@ -128,8 +127,7 @@ public class EntrypointsTest {
         File parent_dir = Files.createTempDirectory("vcmlToSbml").toFile();
         File sbml_temp_file = new File(parent_dir, "temp.sbml");
         String applicationName = "unnamed_spatialGeom";
-        boolean validate = true;
-        vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file.toPath(), validate);
+        vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file.toPath());
         assert(sbml_temp_file.exists());
     }
 
