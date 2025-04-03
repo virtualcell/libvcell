@@ -127,13 +127,13 @@ public class Entrypoints {
             CCharPointer vcml_content,
             CCharPointer application_name,
             CCharPointer sbml_file_path,
-            boolean validate_sbml) {
+            int validate_sbml) {
         ReturnValue returnValue;
         try {
             String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
             String applicationName = CTypeConversion.toJavaString(application_name);
             Path sbmlFilePath = new File(CTypeConversion.toJavaString(sbml_file_path)).toPath();
-            vcml_to_sbml(vcmlContentStr, applicationName, sbmlFilePath, validate_sbml);
+            vcml_to_sbml(vcmlContentStr, applicationName, sbmlFilePath, CTypeConversion.toBoolean(validate_sbml));
             returnValue = new ReturnValue(true, "Success");
         }catch (Throwable t) {
             logger.error("Error translating vcml application to sbml", t);
@@ -158,12 +158,12 @@ public class Entrypoints {
             IsolateThread ignoredThread,
             CCharPointer sbml_content,
             CCharPointer vcml_file_path,
-            boolean validate_sbml) {
+            int validate_sbml) {
         ReturnValue returnValue;
         try {
             String sbmlContentStr = CTypeConversion.toJavaString(sbml_content);
             Path vcmlFilePath = new File(CTypeConversion.toJavaString(vcml_file_path)).toPath();
-            sbml_to_vcml(sbmlContentStr, vcmlFilePath, validate_sbml);
+            sbml_to_vcml(sbmlContentStr, vcmlFilePath, CTypeConversion.toBoolean(validate_sbml));
             returnValue = new ReturnValue(true, "Success");
         }catch (Throwable t) {
             logger.error("Error translating sbml to vcml", t);
