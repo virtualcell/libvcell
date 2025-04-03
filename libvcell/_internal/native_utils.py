@@ -38,6 +38,15 @@ class VCellNativeLibraryLoader:
         self.lib.sbmlToFiniteVolumeInput.restype = ctypes.c_char_p
         self.lib.sbmlToFiniteVolumeInput.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
 
+        self.lib.sbmlToVcml.restype = ctypes.c_char_p
+        self.lib.sbmlToVcml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_bool]
+
+        self.lib.vcmlToSbml.restype = ctypes.c_char_p
+        self.lib.vcmlToSbml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_bool]
+
+        self.lib.vcmlToVcml.restype = ctypes.c_char_p
+        self.lib.vcmlToVcml.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+
         self.lib.freeString.restype = None
         self.lib.freeString.argtypes = [ctypes.c_char_p]
 

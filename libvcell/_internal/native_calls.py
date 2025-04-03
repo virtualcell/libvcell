@@ -58,3 +58,68 @@ class VCellNativeCalls:
         except Exception as e:
             logging.exception("Error in sbml_to_finite_volume_input()", exc_info=e)
             raise
+
+    def vcml_to_sbml(
+        self, vcml_content: str, application_name: str, sbml_file_path: Path, validate: bool
+    ) -> ReturnValue:
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.vcmlToSbml(
+                    isolate_thread,
+                    ctypes.c_char_p(vcml_content.encode("utf-8")),
+                    ctypes.c_char_p(application_name.encode("utf-8")),
+                    ctypes.c_char_p(str(sbml_file_path).encode("utf-8")),
+                    validate,
+                )
+
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to convert vcml application to sbml")
+                return ReturnValue(success=False, message="Failed to convert vcml to sbml")
+            json_str: str = value.decode("utf-8")
+            # self.lib.freeString(json_ptr)
+            return ReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in vcml_to_sbml()", exc_info=e)
+            raise
+
+    def sbml_to_vcml(self, sbml_content: str, vcml_file_path: Path, validate: bool) -> ReturnValue:
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.sbmlToVcml(
+                    isolate_thread,
+                    ctypes.c_char_p(sbml_content.encode("utf-8")),
+                    ctypes.c_char_p(str(vcml_file_path).encode("utf-8")),
+                    validate,
+                )
+
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to convert sbml to vcml")
+                return ReturnValue(success=False, message="Failed to convert sbml to vcml")
+            json_str: str = value.decode("utf-8")
+            # self.lib.freeString(json_ptr)
+            return ReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in sbml_to_vcml()", exc_info=e)
+            raise
+
+    def vcml_to_vcml(self, vcml_content: str, vcml_file_path: Path) -> ReturnValue:
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.vcmlToVcml(
+                    isolate_thread,
+                    ctypes.c_char_p(vcml_content.encode("utf-8")),
+                    ctypes.c_char_p(str(vcml_file_path).encode("utf-8")),
+                )
+
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to regenerate vcml")
+                return ReturnValue(success=False, message="Failed to regenerate vcml")
+            json_str: str = value.decode("utf-8")
+            # self.lib.freeString(json_ptr)
+            return ReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in vcml_to_vcml()", exc_info=e)
+            raise
