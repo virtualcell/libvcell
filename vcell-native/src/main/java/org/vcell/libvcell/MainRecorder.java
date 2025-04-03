@@ -11,6 +11,7 @@ import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
 import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
+import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
 
 public class MainRecorder {
     private static final Logger logger = LogManager.getLogger(MainRecorder.class);
@@ -82,6 +83,24 @@ public class MainRecorder {
 
             }
 
+            try (FileInputStream f_vcml = new FileInputStream(vcml_file)) {
+                byte[] data = f_vcml.readAllBytes();
+                logger.info("Read " + data.length + " bytes from " + vcml_file.getAbsolutePath());
+                String vcml_str = new String(data);
+
+                // create a temporary file for the VCML output
+                File temp_vcml_file = new File(output_dir, "temp.vcml");
+                vcml_to_vcml(vcml_str, temp_vcml_file.toPath());
+                // remove temporary file
+                if (temp_vcml_file.exists()) {
+                    boolean deleted = temp_vcml_file.delete();
+                    if (!deleted) {
+                        logger.warn("Failed to delete temporary VCML file: " + temp_vcml_file.getAbsolutePath());
+                    }
+                }
+
+            }
+
             // use reflection to load jsbml classes and call their default constructors
             Class.forName("org.sbml.jsbml.AlgebraicRule").getDeclaredConstructor().newInstance();
             Class.forName("org.sbml.jsbml.Annotation").getDeclaredConstructor().newInstance();
@@ -110,25 +129,25 @@ public class MainRecorder {
             Class.forName("org.sbml.jsbml.Trigger").getDeclaredConstructor().newInstance();
             Class.forName("org.sbml.jsbml.Unit").getDeclaredConstructor().newInstance();
             Class.forName("org.sbml.jsbml.UnitDefinition").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.ArraysParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.CompParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.DistribParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.DynParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.FBCParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.GroupsParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.L3LayoutParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.LayoutParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.MathMLStaxParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.MultiParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.QualParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.RenderParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.ReqParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.SBMLCoreParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.SBMLLevel1Rule").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.SBMLRDFAnnotationParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.ArraysParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.CompParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.DistribParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.DynParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.FBCParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.GroupsParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.L3LayoutParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.LayoutParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.MathMLStaxParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.MultiParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.QualParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.RenderParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.ReqParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.SBMLCoreParser").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.SBMLLevel1Rule").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.SBMLRDFAnnotationParser").getDeclaredConstructor().newInstance();
             Class.forName("org.sbml.jsbml.xml.parsers.SpatialParser").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.UncertMLXMLNodeReader").getDeclaredConstructor().newInstance();
-            Class.forName("org.sbml.jsbml.xml.parsers.XMLNodeReader").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.UncertMLXMLNodeReader").getDeclaredConstructor().newInstance();
+//            Class.forName("org.sbml.jsbml.xml.parsers.XMLNodeReader").getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             logger.error("Error processing spatial model", e);

@@ -27,6 +27,7 @@ import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
 import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
+import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
 
 public class EntrypointsTest {
 
@@ -130,6 +131,15 @@ public class EntrypointsTest {
         boolean validate = true;
         vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file.toPath(), validate);
         assert(sbml_temp_file.exists());
+    }
+
+    @Test
+    public void test_vcml_to_vcml() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException {
+        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlToVcml").toFile();
+        File vcml_temp_file = new File(parent_dir, "temp.vcml");
+        vcml_to_vcml(vcmlContent, vcml_temp_file.toPath());
+        assert(vcml_temp_file.exists());
     }
 
     @Test

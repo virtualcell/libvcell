@@ -70,4 +70,12 @@ public class ModelUtils {
         String sbml_string = sbmlExporter.getSBMLString();
         XmlUtil.writeXMLStringToFile(sbml_string, sbmlPath.toFile().getAbsolutePath(), true);
     }
+
+    public static void vcml_to_vcml(String vcml_content, Path vcmlPath) throws XmlParseException, IOException, MappingException {
+        BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
+        bioModel.updateAll(false);
+        // write the BioModel to a VCML file
+        String vcml_str = XmlHelper.bioModelToXML(bioModel);
+        XmlUtil.writeXMLStringToFile(vcml_str, vcmlPath.toFile().getAbsolutePath(), true);
+    }
 }
