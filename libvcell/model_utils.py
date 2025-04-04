@@ -3,7 +3,9 @@ from pathlib import Path
 from libvcell._internal.native_calls import ReturnValue, VCellNativeCalls
 
 
-def vcml_to_sbml(vcml_content: str, application_name: str, sbml_file_path: Path) -> tuple[bool, str]:
+def vcml_to_sbml(
+    vcml_content: str, application_name: str, sbml_file_path: Path, round_trip_validation: bool
+) -> tuple[bool, str]:
     """
     Convert VCML content to SBML file
 
@@ -16,7 +18,12 @@ def vcml_to_sbml(vcml_content: str, application_name: str, sbml_file_path: Path)
         tuple[bool, str]: A tuple containing the success status and a message
     """
     native = VCellNativeCalls()
-    return_value: ReturnValue = native.vcml_to_sbml(vcml_content, application_name, sbml_file_path)
+    return_value: ReturnValue = native.vcml_to_sbml(
+        vcml_content=vcml_content,
+        application_name=application_name,
+        sbml_file_path=sbml_file_path,
+        round_trip_validation=round_trip_validation,
+    )
     return return_value.success, return_value.message
 
 
@@ -32,7 +39,7 @@ def sbml_to_vcml(sbml_content: str, vcml_file_path: Path) -> tuple[bool, str]:
         tuple[bool, str]: A tuple containing the success status and a message
     """
     native = VCellNativeCalls()
-    return_value: ReturnValue = native.sbml_to_vcml(sbml_content, vcml_file_path)
+    return_value: ReturnValue = native.sbml_to_vcml(sbml_content=sbml_content, vcml_file_path=vcml_file_path)
     return return_value.success, return_value.message
 
 
@@ -48,5 +55,5 @@ def vcml_to_vcml(vcml_content: str, vcml_file_path: Path) -> tuple[bool, str]:
         tuple[bool, str]: A tuple containing the success status and a message
     """
     native = VCellNativeCalls()
-    return_value: ReturnValue = native.vcml_to_vcml(vcml_content, vcml_file_path)
+    return_value: ReturnValue = native.vcml_to_vcml(vcml_content=vcml_content, vcml_file_path=vcml_file_path)
     return return_value.success, return_value.message
