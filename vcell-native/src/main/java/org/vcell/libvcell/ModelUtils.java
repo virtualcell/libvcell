@@ -1,19 +1,25 @@
 package org.vcell.libvcell;
 
+import cbit.image.ImageException;
 import cbit.util.xml.VCLogger;
 import cbit.util.xml.VCLoggerException;
 import cbit.util.xml.XmlUtil;
 import cbit.vcell.biomodel.BioModel;
+import cbit.vcell.biomodel.ModelUnitConverter;
+import cbit.vcell.geometry.GeometryException;
 import cbit.vcell.geometry.GeometrySpec;
 import cbit.vcell.mapping.MappingException;
 import cbit.vcell.mapping.SimulationContext;
 import cbit.vcell.mongodb.VCMongoMessage;
+import cbit.vcell.parser.ExpressionException;
 import cbit.vcell.xml.XMLSource;
 import cbit.vcell.xml.XmlHelper;
 import cbit.vcell.xml.XmlParseException;
 import org.vcell.sbml.SbmlException;
+import org.vcell.sbml.vcell.SBMLAnnotationUtil;
 import org.vcell.sbml.vcell.SBMLExporter;
 import org.vcell.sbml.vcell.SBMLImporter;
+import org.vcell.util.Pair;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
@@ -66,17 +72,43 @@ public class ModelUtils {
     }
 
 
-    public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath)
-            throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException {
+    public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath, boolean roundTripValidation)
+            throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException, ImageException, GeometryException, ExpressionException {
         GeometrySpec.avoidAWTImageCreation = true;
         VCMongoMessage.enabled = false;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
-        SimulationContext simContext = bioModel.getSimulationContext(applicationName);
-        boolean validateSBML = true;
-        SBMLExporter sbmlExporter = new SBMLExporter(simContext, 3, 1, validateSBML);
+
+        if (applicationName == null || applicationName.isEmpty()) {
+            throw new RuntimeException("Error: Application name is null or empty");
+        }
+
+        if (bioModel.getSimulationContext(applicationName) == null) {
+            throw new RuntimeException("Error: Simulation context not found for application name: " + applicationName);
+        }
+
+        // change the unit system to SBML preferred units if not already.
+        final BioModel sbmlPreferredUnitsBM;
+        if (!bioModel.getModel().getUnitSystem().compareEqual(ModelUnitConverter.createSbmlModelUnitSystem())) {
+            sbmlPreferredUnitsBM = ModelUnitConverter.createBioModelWithSBMLUnitSystem(bioModel);
+            if(sbmlPreferredUnitsBM == null) {
+                throw new RuntimeException("Unable to clone BioModel with SBML unit system");
+            }
+        } else {
+            sbmlPreferredUnitsBM = bioModel;
+        }
+
+        SimulationContext simContext = sbmlPreferredUnitsBM.getSimulationContext(applicationName);
+
+        int sbml_level = 3;
+        int sbml_version = 1;
+        SBMLExporter sbmlExporter = new SBMLExporter(simContext, sbml_level, sbml_version, roundTripValidation);
         String sbml_string = sbmlExporter.getSBMLString();
+
+        // cleanup the string of all the "sameAs" statements
+        sbml_string = SBMLAnnotationUtil.postProcessCleanup(sbml_string);
+
         XmlUtil.writeXMLStringToFile(sbml_string, sbmlPath.toFile().getAbsolutePath(), true);
     }
 

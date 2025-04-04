@@ -70,7 +70,7 @@ public class MainRecorder {
 
                 // create a temporary file for the SBML output
                 File temp_sbml_file = new File(output_dir, "temp.vcml");
-                vcml_to_sbml(vcml_str, vcml_app_name, temp_sbml_file.toPath());
+                vcml_to_sbml(vcml_str, vcml_app_name, temp_sbml_file.toPath(), true);
                 // remove temporary file
                 if (temp_sbml_file.exists()) {
                     boolean deleted = temp_sbml_file.delete();

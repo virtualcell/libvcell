@@ -1,7 +1,10 @@
 package org.vcell.libvcell;
 
+import cbit.image.ImageException;
 import cbit.util.xml.VCLoggerException;
+import cbit.vcell.geometry.GeometryException;
 import cbit.vcell.mapping.MappingException;
+import cbit.vcell.parser.ExpressionException;
 import cbit.vcell.xml.XmlParseException;
 import org.junit.jupiter.api.Test;
 import org.vcell.sbml.SbmlException;
@@ -26,13 +29,25 @@ public class ModelEntrypointsTest {
     }
 
     @Test
-    public void test_vcml_to_sbml() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException {
+    public void test_vcml_to_sbml_with_round_trip() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException, ImageException, GeometryException, ExpressionException {
         String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToSbml").toFile();
-        File sbml_temp_file = new File(parent_dir, "temp.sbml");
         String applicationName = "unnamed_spatialGeom";
-        vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file.toPath());
-        assert(sbml_temp_file.exists());
+
+        File sbml_temp_file_true = new File(parent_dir, "temp_true.sbml");
+        vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file_true.toPath(), true);
+        assert(sbml_temp_file_true.exists());
+    }
+
+    @Test
+    public void test_vcml_to_sbml_without_round_trip() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException, ImageException, GeometryException, ExpressionException {
+        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlToSbml").toFile();
+        String applicationName = "unnamed_spatialGeom";
+
+        File sbml_temp_file_false = new File(parent_dir, "temp_false.sbml");
+        vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file_false.toPath(), false);
+        assert(sbml_temp_file_false.exists());
     }
 
     @Test

@@ -42,7 +42,13 @@ class VCellNativeLibraryLoader:
         self.lib.sbmlToVcml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
 
         self.lib.vcmlToSbml.restype = ctypes.c_char_p
-        self.lib.vcmlToSbml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        self.lib.vcmlToSbml.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_int,
+        ]
 
         self.lib.vcmlToVcml.restype = ctypes.c_char_p
         self.lib.vcmlToVcml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]

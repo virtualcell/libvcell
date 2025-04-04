@@ -125,13 +125,15 @@ public class Entrypoints {
             IsolateThread ignoredThread,
             CCharPointer vcml_content,
             CCharPointer application_name,
-            CCharPointer sbml_file_path) {
+            CCharPointer sbml_file_path,
+            int roundTripValidation) {
         ReturnValue returnValue;
         try {
             String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
             String applicationName = CTypeConversion.toJavaString(application_name);
             Path sbmlFilePath = new File(CTypeConversion.toJavaString(sbml_file_path)).toPath();
-            vcml_to_sbml(vcmlContentStr, applicationName, sbmlFilePath);
+            boolean bRoundTripValidation = CTypeConversion.toBoolean(roundTripValidation);
+            vcml_to_sbml(vcmlContentStr, applicationName, sbmlFilePath, bRoundTripValidation);
             returnValue = new ReturnValue(true, "Success");
         }catch (Throwable t) {
             logger.error("Error translating vcml application to sbml", t);

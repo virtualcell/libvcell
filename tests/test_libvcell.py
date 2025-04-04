@@ -33,13 +33,32 @@ def test_sbml_to_vcml(sbml_file_path: Path) -> None:
         assert msg == "Success"
 
 
-def test_vcml_to_sbml(vcml_file_path: Path, vcml_app_name: str) -> None:
+def test_vcml_to_sbml_with_validation(vcml_file_path: Path, vcml_app_name: str) -> None:
     vcml_content = vcml_file_path.read_text()
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_output_dir = Path(temp_dir)
         sbml_file_path = temp_output_dir / "test.sbml"
         success, msg = vcml_to_sbml(
-            vcml_content=vcml_content, application_name=vcml_app_name, sbml_file_path=sbml_file_path
+            vcml_content=vcml_content,
+            application_name=vcml_app_name,
+            sbml_file_path=sbml_file_path,
+            round_trip_validation=True,
+        )
+        assert sbml_file_path.exists()
+        assert success is True
+        assert msg == "Success"
+
+
+def test_vcml_to_sbml_without_validation(vcml_file_path: Path, vcml_app_name: str) -> None:
+    vcml_content = vcml_file_path.read_text()
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_output_dir = Path(temp_dir)
+        sbml_file_path = temp_output_dir / "test.sbml"
+        success, msg = vcml_to_sbml(
+            vcml_content=vcml_content,
+            application_name=vcml_app_name,
+            sbml_file_path=sbml_file_path,
+            round_trip_validation=False,
         )
         assert sbml_file_path.exists()
         assert success is True
