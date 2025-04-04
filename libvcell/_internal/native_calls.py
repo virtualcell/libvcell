@@ -59,9 +59,7 @@ class VCellNativeCalls:
             logging.exception("Error in sbml_to_finite_volume_input()", exc_info=e)
             raise
 
-    def vcml_to_sbml(
-        self, vcml_content: str, application_name: str, sbml_file_path: Path
-    ) -> ReturnValue:
+    def vcml_to_sbml(self, vcml_content: str, application_name: str, sbml_file_path: Path) -> ReturnValue:
         try:
             with IsolateManager(self.lib) as isolate_thread:
                 json_ptr: ctypes.c_char_p = self.lib.vcmlToSbml(

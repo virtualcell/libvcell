@@ -4,8 +4,10 @@ import cbit.util.xml.VCLogger;
 import cbit.util.xml.VCLoggerException;
 import cbit.util.xml.XmlUtil;
 import cbit.vcell.biomodel.BioModel;
+import cbit.vcell.geometry.GeometrySpec;
 import cbit.vcell.mapping.MappingException;
 import cbit.vcell.mapping.SimulationContext;
+import cbit.vcell.mongodb.VCMongoMessage;
 import cbit.vcell.xml.XMLSource;
 import cbit.vcell.xml.XmlHelper;
 import cbit.vcell.xml.XmlParseException;
@@ -24,6 +26,9 @@ public class ModelUtils {
 
     public static void sbml_to_vcml(String sbml_content, Path vcmlPath)
             throws VCLoggerException, XmlParseException, IOException, MappingException {
+
+        GeometrySpec.avoidAWTImageCreation = true;
+        VCMongoMessage.enabled = false;
 
         record LoggerMessage(VCLogger.Priority priority, VCLogger.ErrorType errorType, String message) {};
         final ArrayList<LoggerMessage> messages = new ArrayList<>();
@@ -63,6 +68,8 @@ public class ModelUtils {
 
     public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath)
             throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException {
+        GeometrySpec.avoidAWTImageCreation = true;
+        VCMongoMessage.enabled = false;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
@@ -74,6 +81,9 @@ public class ModelUtils {
     }
 
     public static void vcml_to_vcml(String vcml_content, Path vcmlPath) throws XmlParseException, IOException, MappingException {
+        GeometrySpec.avoidAWTImageCreation = true;
+        VCMongoMessage.enabled = false;
+
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
         // write the BioModel to a VCML file
