@@ -51,6 +51,23 @@ public class SolverEntrypointsTest {
     }
 
     @Test
+    public void testVcmlToFiniteVolumeInput_field_data_already_sampled() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
+        String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
+        File output_dir = new File(parent_dir, "output_dir");
+        assertEquals(0, countFiles(output_dir));
+        // prepopulate the output_dir with the resampled field data files, should use these instead.
+        extractTgz(SolverEntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO_resampled.tgz"), output_dir);
+        listFilesInDirectory(output_dir);
+        assertEquals(2, countFiles(output_dir));
+
+        String simulationName = "Simulation0";
+        vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
+        listFilesInDirectory(output_dir);
+        assertEquals(6, countFiles(output_dir));
+    }
+
+    @Test
     public void testVcmlToFiniteVolumeInput_field_data() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
@@ -70,7 +87,7 @@ public class SolverEntrypointsTest {
     }
 
     @Test
-    public void testVcmlToFiniteVolumeInput_field_data_not_found() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
+    public void testVcmlToFiniteVolumeInput_field_data_not_found() throws IOException {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
         File output_dir = new File(parent_dir, "output_dir");

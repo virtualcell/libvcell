@@ -17,6 +17,8 @@ import cbit.vcell.simdata.VCData;
 import cbit.vcell.solver.Simulation;
 import cbit.vcell.solvers.FiniteVolumeFileWriter;
 import org.vcell.util.DataAccessException;
+import org.vcell.util.document.ExternalDataIdentifier;
+import org.vcell.util.document.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +108,8 @@ public class LocalFiniteVolumeFileWriter extends FiniteVolumeFileWriter {
             // First, look to see if the processed field data file already exists, if so, use it to determine the variable type
             //
             DataSet dataSet = new DataSet();
-            File existingFieldDataFile = new File(workingDirectory, SimulationData.createCanonicalResampleFileName(fieldDataIDSpec.getExternalDataIdentifier(), ffa));
+            ExternalDataIdentifier existingFieldDataID = new ExternalDataIdentifier(this.simTask.getSimKey(), User.tempUser, ffa.getFieldName());
+            File existingFieldDataFile = new File(workingDirectory, SimulationData.createCanonicalResampleFileName(existingFieldDataID, ffa));
             if (existingFieldDataFile.exists()) {
                 // field data file may already exist
                 // 1. from pyvcell writing the field data file directly into this directory for an image-based field data
