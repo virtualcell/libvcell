@@ -9,7 +9,9 @@ import cbit.vcell.xml.XmlParseException;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.junit.jupiter.api.Test;
+import org.vcell.sbml.SbmlException;
 
+import javax.xml.stream.XMLStreamException;
 import java.beans.PropertyVetoException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +25,9 @@ import java.util.zip.GZIPInputStream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
+import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
+import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
+import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
 
 public class EntrypointsTest {
 
@@ -105,6 +110,34 @@ public class EntrypointsTest {
         String simulationName = "Simulation0";
         vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
         assertEquals(4, countFiles(output_dir));
+    }
+
+    @Test
+    public void test_sbml_to_vcml() throws MappingException, IOException, XmlParseException, VCLoggerException {
+        String sbmlContent = getFileContentsAsString("/TinySpatialProject_Application0.xml");
+        File parent_dir = Files.createTempDirectory("sbmlToVcml").toFile();
+        File vcml_temp_file = new File(parent_dir, "temp.vcml");
+        sbml_to_vcml(sbmlContent, vcml_temp_file.toPath());
+        assert(vcml_temp_file.exists());
+    }
+
+    @Test
+    public void test_vcml_to_sbml() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException {
+        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlToSbml").toFile();
+        File sbml_temp_file = new File(parent_dir, "temp.sbml");
+        String applicationName = "unnamed_spatialGeom";
+        vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file.toPath());
+        assert(sbml_temp_file.exists());
+    }
+
+    @Test
+    public void test_vcml_to_vcml() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException {
+        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlToVcml").toFile();
+        File vcml_temp_file = new File(parent_dir, "temp.vcml");
+        vcml_to_vcml(vcmlContent, vcml_temp_file.toPath());
+        assert(vcml_temp_file.exists());
     }
 
     @Test

@@ -19,6 +19,11 @@ def vcml_sim_name() -> str:
 
 
 @pytest.fixture
+def vcml_app_name() -> str:
+    return "unnamed_spatialGeom"
+
+
+@pytest.fixture
 def sbml_file_path() -> Path:
     return fixtures_dir / "TinySpatialProject_Application0.xml"
 
