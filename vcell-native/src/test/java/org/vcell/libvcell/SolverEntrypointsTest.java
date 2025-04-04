@@ -6,30 +6,21 @@ import cbit.vcell.math.MathException;
 import cbit.vcell.parser.ExpressionException;
 import cbit.vcell.solver.SolverException;
 import cbit.vcell.xml.XmlParseException;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.junit.jupiter.api.Test;
-import org.vcell.sbml.SbmlException;
 
-import javax.xml.stream.XMLStreamException;
 import java.beans.PropertyVetoException;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.zip.GZIPInputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
-import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
-import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
-import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
+import static org.vcell.libvcell.TestUtils.*;
 
-public class EntrypointsTest {
+public class SolverEntrypointsTest {
 
     @Test
     public void testSbmlToFiniteVolumeInput() throws PropertyVetoException, SolverException, ExpressionException, MappingException, VCLoggerException, IOException {
@@ -60,13 +51,30 @@ public class EntrypointsTest {
     }
 
     @Test
+    public void testVcmlToFiniteVolumeInput_field_data_already_sampled() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
+        String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
+        File output_dir = new File(parent_dir, "output_dir");
+        assertEquals(0, countFiles(output_dir));
+        // prepopulate the output_dir with the resampled field data files, should use these instead.
+        extractTgz(SolverEntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO_resampled.tgz"), output_dir);
+        listFilesInDirectory(output_dir);
+        assertEquals(2, countFiles(output_dir));
+
+        String simulationName = "Simulation0";
+        vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
+        listFilesInDirectory(output_dir);
+        assertEquals(6, countFiles(output_dir));
+    }
+
+    @Test
     public void testVcmlToFiniteVolumeInput_field_data() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
         File output_dir = new File(parent_dir, "output_dir");
         File ext_data_dir = new File(parent_dir, "test2_lsm_DEMO");
         assertEquals(0, countFiles(ext_data_dir));
-        extractTgz(EntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO.tgz"), parent_dir);
+        extractTgz(SolverEntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO.tgz"), parent_dir);
         listFilesInDirectory(ext_data_dir);
         assertEquals(10, countFiles(ext_data_dir));
 
@@ -79,7 +87,7 @@ public class EntrypointsTest {
     }
 
     @Test
-    public void testVcmlToFiniteVolumeInput_field_data_not_found() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException, InterruptedException {
+    public void testVcmlToFiniteVolumeInput_field_data_not_found() throws IOException {
         String vcmlContent = getFileContentsAsString("/FieldDataDemo.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToFiniteVolumeInput_"+UUID.randomUUID()).toFile();
         File output_dir = new File(parent_dir, "output_dir");
@@ -87,7 +95,7 @@ public class EntrypointsTest {
         File ext_data_dir_MISSPELLED = new File(parent_dir, "test2_lsm_DEMO_MISSPELLED");
         assertEquals(0, countFiles(ext_data_dir));
         assertEquals(0, countFiles(ext_data_dir_MISSPELLED));
-        extractTgz(EntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO.tgz"), parent_dir);
+        extractTgz(SolverEntrypointsTest.class.getResourceAsStream("/test2_lsm_DEMO.tgz"), parent_dir);
         Files.move(ext_data_dir.toPath(), ext_data_dir_MISSPELLED.toPath()).toFile();
         assertEquals(0, countFiles(ext_data_dir));
         listFilesInDirectory(ext_data_dir_MISSPELLED);
@@ -110,34 +118,6 @@ public class EntrypointsTest {
         String simulationName = "Simulation0";
         vcmlToFiniteVolumeInput(vcmlContent, simulationName, parent_dir, output_dir);
         assertEquals(4, countFiles(output_dir));
-    }
-
-    @Test
-    public void test_sbml_to_vcml() throws MappingException, IOException, XmlParseException, VCLoggerException {
-        String sbmlContent = getFileContentsAsString("/TinySpatialProject_Application0.xml");
-        File parent_dir = Files.createTempDirectory("sbmlToVcml").toFile();
-        File vcml_temp_file = new File(parent_dir, "temp.vcml");
-        sbml_to_vcml(sbmlContent, vcml_temp_file.toPath());
-        assert(vcml_temp_file.exists());
-    }
-
-    @Test
-    public void test_vcml_to_sbml() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException {
-        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
-        File parent_dir = Files.createTempDirectory("vcmlToSbml").toFile();
-        File sbml_temp_file = new File(parent_dir, "temp.sbml");
-        String applicationName = "unnamed_spatialGeom";
-        vcml_to_sbml(vcmlContent, applicationName, sbml_temp_file.toPath());
-        assert(sbml_temp_file.exists());
-    }
-
-    @Test
-    public void test_vcml_to_vcml() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException {
-        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
-        File parent_dir = Files.createTempDirectory("vcmlToVcml").toFile();
-        File vcml_temp_file = new File(parent_dir, "temp.vcml");
-        vcml_to_vcml(vcmlContent, vcml_temp_file.toPath());
-        assert(vcml_temp_file.exists());
     }
 
     @Test
@@ -175,77 +155,6 @@ public class EntrypointsTest {
         // expect to throw an IllegalArgumentException
         IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToFiniteVolumeInput(vcmlContent_actually_sbml, simulationName, parent_dir, output_dir));
         assertEquals("expecting VCML content, not SBML", exc.getMessage());
-    }
-
-    private static String getFileContentsAsString(String filename) throws IOException {
-        try (InputStream inputStream = EntrypointsTest.class.getResourceAsStream(filename)) {
-            if (inputStream == null) {
-                throw new FileNotFoundException("file not found! " + filename);
-            }
-            return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                    .lines().collect(Collectors.joining("\n"));
-        }
-    }
-
-    private static byte[] getFileContentsAsBytes(String filename) throws IOException {
-        try (InputStream inputStream = EntrypointsTest.class.getResourceAsStream(filename)) {
-            if (inputStream == null) {
-                throw new FileNotFoundException("file not found! " + filename);
-            }
-            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = inputStream.read(buffer)) != -1) {
-                    byteArrayOutputStream.write(buffer, 0, length);
-                }
-                return byteArrayOutputStream.toByteArray();
-            }
-        }
-    }
-
-    private int countFiles(File dir) {
-        File[] files = dir.listFiles();
-        if (files == null) {
-            return 0;
-        }
-        return Objects.requireNonNull(dir.listFiles()).length;
-    }
-
-    private void listFilesInDirectory(File dir) {
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                System.out.println(file.getAbsolutePath());
-            }
-        }
-    }
-
-    public static void extractTgz(InputStream tgzFileStream, File outputDir) throws IOException {
-        try (GZIPInputStream gis = new GZIPInputStream(tgzFileStream);
-             TarArchiveInputStream tis = new TarArchiveInputStream(gis)) {
-
-            TarArchiveEntry entry;
-            while ((entry = tis.getNextTarEntry()) != null) {
-                File outputFile = new File(outputDir, entry.getName());
-                if (entry.isDirectory()) {
-                    if (!outputFile.exists()) {
-                        outputFile.mkdirs();
-                    }
-                } else {
-                    File parent = outputFile.getParentFile();
-                    if (!parent.exists()) {
-                        parent.mkdirs();
-                    }
-                    try (OutputStream os = Files.newOutputStream(outputFile.toPath())) {
-                        byte[] buffer = new byte[1024];
-                        int len;
-                        while ((len = tis.read(buffer)) != -1) {
-                            os.write(buffer, 0, len);
-                        }
-                    }
-                }
-            }
-        }
     }
 
 }

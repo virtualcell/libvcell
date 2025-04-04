@@ -12,6 +12,7 @@ import cbit.vcell.math.MathException;
 import cbit.vcell.messaging.server.SimulationTask;
 import cbit.vcell.mongodb.VCMongoMessage;
 import cbit.vcell.parser.ExpressionException;
+import cbit.vcell.simdata.SimulationData;
 import cbit.vcell.solver.*;
 import cbit.vcell.xml.XMLSource;
 import cbit.vcell.xml.XmlHelper;
@@ -30,6 +31,7 @@ import java.beans.PropertyVetoException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,17 +51,35 @@ public class SolverUtils {
         if (sim == null) {
             throw new IllegalArgumentException("Simulation not found: " + simulation_name);
         }
-        FieldDataIdentifierSpec[] fdiSpecs = getFieldDataIdentifierSpecs(sim, parentDir);
+        FieldDataIdentifierSpec[] fdiSpecs = getFieldDataIdentifierSpecs(sim, outputDir, parentDir);
 
         TempSimulation tempSimulation = new TempSimulation(sim, false);
         tempSimulation.setSimulationOwner(sim.getSimulationOwner());
         SimulationJob tempSimulationJob = new SimulationJob(tempSimulation, 0, fdiSpecs);
+
+        renameExistingFieldDataFiles(tempSimulation.getKey(), tempSimulationJob.getJobIndex(), outputDir);
+
         SimulationTask simTask = new SimulationTask(tempSimulationJob, 0);
         LocalFVSolverStandalone solver = new LocalFVSolverStandalone(simTask, outputDir);
         solver.initialize();
     }
 
-    private static FieldDataIdentifierSpec[] getFieldDataIdentifierSpecs(Simulation sim, File parentDir) throws MathException, ExpressionException {
+    private static void renameExistingFieldDataFiles(KeyValue tempSimKey, int jobId, File outputDir) {
+        File[] files = outputDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().startsWith("SimID_SIMULATIONKEY_JOBINDEX_")) {
+                    String newName = file.getName().replace("SIMULATIONKEY",tempSimKey.toString()).replace("JOBINDEX",String.valueOf(jobId));
+                    File newFile = new File(outputDir, newName);
+                    if (!file.renameTo(newFile)){
+                        throw new RuntimeException("Could not rename " + file.getName() + " to " + newFile.getAbsolutePath());
+                    }
+                }
+            }
+        }
+    }
+
+    private static FieldDataIdentifierSpec[] getFieldDataIdentifierSpecs(Simulation sim, File outputDir, File parentDir) throws MathException, ExpressionException {
         FieldDataIdentifierSpec[] fdiSpecs = null;
         FieldFunctionArguments[] fieldFuncArgs =  FieldUtilities.getFieldFunctionArguments(sim.getMathDescription());
         if (fieldFuncArgs != null) {
@@ -67,6 +87,21 @@ public class SolverUtils {
             for (FieldFunctionArguments fieldFuncArg : fieldFuncArgs) {
                 if (fieldFuncArg != null) {
                     String name = fieldFuncArg.getFieldName();
+                    //
+                    // First, check if the resampled field data files are already present (e.g. if pyvcell wrote the files directly from image data)
+                    //
+                    ExternalDataIdentifier fakeExtDataId = new ExternalDataIdentifier(sim.getKey(), User.tempUser, name);
+                    String fieldDataFileName = SimulationData.createCanonicalResampleFileName(fakeExtDataId, fieldFuncArg);
+                    fieldDataFileName = fieldDataFileName.replace("SimID_" + sim.getKey().toString() + "_0_", "SimID_SIMULATIONKEY_JOBINDEX_");
+                    File preexistingFieldDataFile = new File(outputDir, fieldDataFileName);
+                    if (preexistingFieldDataFile.exists()) {
+                        fdiSpecList.add(new FieldDataIdentifierSpec(fieldFuncArg, fakeExtDataId));
+                        continue;
+                    }
+
+                    //
+                    // If not, check if the field data directory exists as a subdirectory of the parentDir - holding simulation results.
+                    //
                     File fieldDataDir = new File(parentDir, name);
                     if (!fieldDataDir.exists()) {
                         throw new IllegalArgumentException("Field data directory does not exist: " + fieldDataDir.getAbsolutePath());

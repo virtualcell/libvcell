@@ -167,7 +167,6 @@ public class LocalFVSolverStandalone extends FVSolverStandalone {
         HashMap<FieldDataIdentifierSpec, Boolean> bFieldDataResample = new HashMap<>();
         int i=0;
         for (FieldDataIdentifierSpec fdiSpec: argFieldDataIDSpecs) {
-            File ext_dataDir = new File(this.parentDir, fdiSpec.getFieldFuncArgs().getFieldName());
             if (!uniqueFieldDataIDSpecAndFileH.containsKey(fdiSpec)){
                 File newResampledFieldDataFile = new File(dataDir, SimulationData.createCanonicalResampleFileName(getSimulationJob().getVCDataIdentifier(), fdiSpec.getFieldFuncArgs()));
                 uniqueFieldDataIDSpecAndFileH.put(fdiSpec,newResampledFieldDataFile);
@@ -179,6 +178,9 @@ public class LocalFVSolverStandalone extends FVSolverStandalone {
             Set<Map.Entry<FieldDataIdentifierSpec, File>> resampleSet = uniqueFieldDataIDSpecAndFileH.entrySet();
             for (Map.Entry<FieldDataIdentifierSpec, File> resampleEntry : resampleSet) {
                 if (resampleEntry.getValue().exists()) {
+                    // field data file has already been written
+                    // 1. in a previous loop iteration
+                    // 2. from pyvcell writing the field data file directly into this directory for an image-based field data
                     continue;
                 }
                 FieldDataIdentifierSpec fieldDataIdSpec = resampleEntry.getKey();

@@ -7,14 +7,18 @@ import cbit.vcell.geometry.Geometry;
 import cbit.vcell.math.Variable;
 import cbit.vcell.math.VariableType;
 import cbit.vcell.messaging.server.SimulationTask;
+import cbit.vcell.parser.DivideByZeroException;
 import cbit.vcell.parser.Expression;
 import cbit.vcell.parser.ExpressionException;
+import cbit.vcell.simdata.DataSet;
 import cbit.vcell.simdata.SimDataBlock;
 import cbit.vcell.simdata.SimulationData;
 import cbit.vcell.simdata.VCData;
 import cbit.vcell.solver.Simulation;
 import cbit.vcell.solvers.FiniteVolumeFileWriter;
 import org.vcell.util.DataAccessException;
+import org.vcell.util.document.ExternalDataIdentifier;
+import org.vcell.util.document.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,15 +70,7 @@ public class LocalFiniteVolumeFileWriter extends FiniteVolumeFileWriter {
                 );
                 uniqueFieldDataIDSpecs.add(fieldDataIDSpec);
                 VariableType varType = fieldDataIDSpec.getFieldFuncArgs().getVariableType();
-                final VariableType dataVarType;
-                try {
-                    File ext_data_dir = new File(workingDirectory.getParentFile(), ffa.getFieldName());
-                    VCData vcData = new SimulationData(fieldDataIDSpec.getExternalDataIdentifier(), ext_data_dir, ext_data_dir, null);
-                    SimDataBlock simDataBlock = vcData.getSimDataBlock(null, ffa.getVariableName(), ffa.getTime().evaluateConstant());
-                    dataVarType = simDataBlock.getVariableType();
-                } catch (IOException e) {
-                    throw new DataAccessException("Error reading field data file: " + e.getMessage());
-                }
+                final VariableType dataVarType = getVariableTypeFromFieldDataFiles(fieldDataIDSpec, ffa);
                 if (varType.equals(VariableType.UNKNOWN)) {
                     varType = dataVarType;
                 } else if (!varType.equals(dataVarType)) {
@@ -102,6 +98,37 @@ public class LocalFiniteVolumeFileWriter extends FiniteVolumeFileWriter {
         }
         printWriter.println("FIELD_DATA_END");
         printWriter.println();
+    }
+
+    private VariableType getVariableTypeFromFieldDataFiles(FieldDataIdentifierSpec fieldDataIDSpec, FieldFunctionArguments ffa) throws DataAccessException {
+
+        try {
+            final VariableType dataVarType;
+            //
+            // First, look to see if the processed field data file already exists, if so, use it to determine the variable type
+            //
+            DataSet dataSet = new DataSet();
+            ExternalDataIdentifier existingFieldDataID = new ExternalDataIdentifier(this.simTask.getSimKey(), User.tempUser, ffa.getFieldName());
+            File existingFieldDataFile = new File(workingDirectory, SimulationData.createCanonicalResampleFileName(existingFieldDataID, ffa));
+            if (existingFieldDataFile.exists()) {
+                // field data file may already exist
+                // 1. from pyvcell writing the field data file directly into this directory for an image-based field data
+                dataSet.read(existingFieldDataFile, null);
+                int varTypeInteger = dataSet.getVariableTypeInteger(fieldDataIDSpec.getFieldFuncArgs().getVariableName());
+                dataVarType = VariableType.getVariableTypeFromInteger(varTypeInteger);
+            }else {
+                //
+                // Else, read the unprocessed simulation results referenced in the FieldDataIdentifierSpec and extract the VariableType
+                //
+                File ext_data_dir = new File(workingDirectory.getParentFile(), ffa.getFieldName());
+                VCData vcData = new SimulationData(fieldDataIDSpec.getExternalDataIdentifier(), ext_data_dir, ext_data_dir, null);
+                SimDataBlock simDataBlock = vcData.getSimDataBlock(null, ffa.getVariableName(), ffa.getTime().evaluateConstant());
+                dataVarType = simDataBlock.getVariableType();
+            }
+            return dataVarType;
+        } catch (IOException | ExpressionException | DataAccessException e) {
+            throw new DataAccessException("Error reading field data file: " + e.getMessage());
+        }
     }
 
 }
