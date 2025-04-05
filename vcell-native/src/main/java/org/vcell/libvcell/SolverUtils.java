@@ -31,7 +31,6 @@ import java.beans.PropertyVetoException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,9 +89,10 @@ public class SolverUtils {
                     //
                     // First, check if the resampled field data files are already present (e.g. if pyvcell wrote the files directly from image data)
                     //
-                    ExternalDataIdentifier fakeExtDataId = new ExternalDataIdentifier(sim.getKey(), User.tempUser, name);
+                    KeyValue random_key = new KeyValue("123456789");
+                    ExternalDataIdentifier fakeExtDataId = new ExternalDataIdentifier(random_key, User.tempUser, name);
                     String fieldDataFileName = SimulationData.createCanonicalResampleFileName(fakeExtDataId, fieldFuncArg);
-                    fieldDataFileName = fieldDataFileName.replace("SimID_" + sim.getKey().toString() + "_0_", "SimID_SIMULATIONKEY_JOBINDEX_");
+                    fieldDataFileName = fieldDataFileName.replace("SimID_" + random_key + "_0_", "SimID_SIMULATIONKEY_JOBINDEX_");
                     File preexistingFieldDataFile = new File(outputDir, fieldDataFileName);
                     if (preexistingFieldDataFile.exists()) {
                         fdiSpecList.add(new FieldDataIdentifierSpec(fieldFuncArg, fakeExtDataId));
