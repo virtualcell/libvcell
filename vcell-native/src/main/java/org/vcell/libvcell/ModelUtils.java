@@ -35,6 +35,7 @@ public class ModelUtils {
 
         GeometrySpec.avoidAWTImageCreation = true;
         VCMongoMessage.enabled = false;
+        XmlHelper.cloneUsingXML = true;
 
         record LoggerMessage(VCLogger.Priority priority, VCLogger.ErrorType errorType, String message) {};
         final ArrayList<LoggerMessage> messages = new ArrayList<>();
@@ -76,6 +77,7 @@ public class ModelUtils {
             throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException, ImageException, GeometryException, ExpressionException {
         GeometrySpec.avoidAWTImageCreation = true;
         VCMongoMessage.enabled = false;
+        XmlHelper.cloneUsingXML = true;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
@@ -115,6 +117,7 @@ public class ModelUtils {
     public static void vcml_to_vcml(String vcml_content, Path vcmlPath) throws XmlParseException, IOException, MappingException {
         GeometrySpec.avoidAWTImageCreation = true;
         VCMongoMessage.enabled = false;
+        XmlHelper.cloneUsingXML = true;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
