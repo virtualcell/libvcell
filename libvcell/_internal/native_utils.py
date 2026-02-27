@@ -53,6 +53,14 @@ class VCellNativeLibraryLoader:
         self.lib.vcmlToVcml.restype = ctypes.c_char_p
         self.lib.vcmlToVcml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
 
+        self.lib.vcellInfixToPythonInfix.restype = ctypes.c_char_p
+        self.lib.vcellInfixToPythonInfix.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_longlong,
+        ]
+
         self.lib.freeString.restype = None
         self.lib.freeString.argtypes = [ctypes.c_char_p]
 

@@ -59,4 +59,19 @@ public class ModelEntrypointsTest {
         assert(vcml_temp_file.exists());
     }
 
+	@Test
+	public void test_get_python_infix(){
+		String vcellInfix = "id_1 * csc(id_0 ^ 2.2)";
+		String pythonInfix;
+		try {
+			pythonInfix = get_python_infix(vcellInfix);
+		} catch (ExpressionException e) {
+			System.err.println("get_python_infix exception: " + e.getMessage());
+			assert(false);
+			return;
+		}
+		String expected = "(id_1 * (1.0/math.sin(((id_0)**(2.2)))))";
+		assert expected.equals(pythonInfix);
+	}
+
 }
