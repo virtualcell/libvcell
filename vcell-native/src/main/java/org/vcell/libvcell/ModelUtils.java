@@ -35,6 +35,7 @@ public class ModelUtils {
             throws VCLoggerException, XmlParseException, IOException, MappingException {
 
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
 
         record LoggerMessage(VCLogger.Priority priority, VCLogger.ErrorType errorType, String message) {};
@@ -76,6 +77,7 @@ public class ModelUtils {
     public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath, boolean roundTripValidation)
             throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException, ImageException, GeometryException, ExpressionException {
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
@@ -115,6 +117,7 @@ public class ModelUtils {
 
     public static void vcml_to_vcml(String vcml_content, Path vcmlPath) throws XmlParseException, IOException, MappingException {
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
@@ -126,6 +129,7 @@ public class ModelUtils {
 
 	public static String get_python_infix(String vcellInfix) throws ExpressionException {
 		GeometrySpec.avoidAWTImageCreation = true;
+		XmlHelper.cloneUsingXML = true;
 		VCMongoMessage.enabled = false;
 		return new Expression(vcellInfix).infix_Python();
 	}
