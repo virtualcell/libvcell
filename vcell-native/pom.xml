@@ -223,7 +223,10 @@
 
 <profiles>
     <profile>
-        <id>native</id>
+        <id>native-windows</id>
+        <activation>
+            <os><family>windows</family></os>
+        </activation>
         <build>
             <plugins>
                 <plugin>
@@ -254,6 +257,9 @@
     </profile>
     <profile>
         <id>shared-dll</id>
+        <activation>
+            <os><family>windows</family></os>
+        </activation>
         <build>
             <plugins>
                 <plugin>
@@ -268,6 +274,142 @@
                             <arg>-g</arg>
                             <arg>--shared</arg>
                             <arg>-H:ConfigurationFileDirectories=target/recording</arg>
+                        </buildArgs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>build-native</id>
+                            <goals>
+                                <goal>compile-no-fork</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>native-linux</id>
+        <activation>
+            <os><family>unix</family></os>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>${native.maven.plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
+                            <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
+                            <arg>-g</arg>
+                            <arg>-H:ConfigurationFileDirectories=target/recording</arg>
+                        </buildArgs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>build-native</id>
+                            <goals>
+                                <goal>compile-no-fork</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>shared-so</id>
+        <activation>
+            <os><family>unix</family></os>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>${native.maven.plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
+                            <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
+                            <arg>-g</arg>
+                            <arg>--shared</arg>
+                            <arg>-H:ConfigurationFileDirectories=target/recording</arg>
+                        </buildArgs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>build-native</id>
+                            <goals>
+                                <goal>compile-no-fork</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>native-mac</id>
+        <activation>
+            <os><family>mac</family></os>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>${native.maven.plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
+                            <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
+                            <arg>-g</arg>
+                            <arg>-H:ConfigurationFileDirectories=target/recording</arg>
+                            <arg>-H:CCompilerOption=-mmacosx-version-min=11.0</arg>
+                        </buildArgs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>build-native</id>
+                            <goals>
+                                <goal>compile-no-fork</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>shared-dylib</id>
+        <activation>
+            <os><family>mac</family></os>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>${native.maven.plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <buildArgs>
+                            <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
+                            <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
+                            <arg>-g</arg>
+                            <arg>--shared</arg>
+                            <arg>-H:ConfigurationFileDirectories=target/recording</arg>
+                            <arg>-H:CCompilerOption=-mmacosx-version-min=11.0</arg>
                         </buildArgs>
                     </configuration>
                     <executions>
