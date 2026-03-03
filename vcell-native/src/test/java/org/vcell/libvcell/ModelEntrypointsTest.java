@@ -74,4 +74,17 @@ public class ModelEntrypointsTest {
 		assert expected.equals(pythonInfix);
 	}
 
+	@Test
+	public void test_bad_python_infix_attempt(){
+		String vcellInfix = "id_1 / + / /-  cos(/ / /) id_2";
+		String pythonInfix;
+		try {
+			pythonInfix = get_python_infix(vcellInfix);
+		} catch (ExpressionException e) {
+			return; // this is what we'd expect
+		}
+		System.err.println("test_bad_python_infix_attempt did not throw an exception");
+		assert(false);
+	}
+
 }

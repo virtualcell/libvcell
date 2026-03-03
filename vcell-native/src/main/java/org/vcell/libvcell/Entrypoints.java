@@ -236,7 +236,7 @@ public class Entrypoints {
 		}
 		// return result as a json string
 		String json = returnValue.toJson();
-		logger.info("Returning from vcellToVcml: " + json);
+		logger.info("Returning from vcellInfixToPythonInfix: " + json);
 		return createString(json);
 	}
 

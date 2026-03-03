@@ -90,3 +90,9 @@ def test_vcell_infix_to_python_infix() -> None:
     assert success is True
     assert msg == "Success"
     assert value == expectedResult
+
+
+def test_bad_vcell_infix() -> None:
+    vcellInfix = "id_1 / + / /-  cos(/ / /) id_2"
+    success, msg, value = vcell_infix_to_python_infix(vcellInfix)
+    assert success is False
