@@ -1,7 +1,14 @@
 import tempfile
 from pathlib import Path
 
-from libvcell import sbml_to_finite_volume_input, sbml_to_vcml, vcml_to_finite_volume_input, vcml_to_sbml, vcml_to_vcml
+from libvcell import (
+    sbml_to_finite_volume_input,
+    sbml_to_vcml,
+    vcell_infix_to_python_infix,
+    vcml_to_finite_volume_input,
+    vcml_to_sbml,
+    vcml_to_vcml,
+)
 
 
 def test_vcml_to_finite_volume_input(temp_output_dir: Path, vcml_file_path: Path, vcml_sim_name: str) -> None:
@@ -74,3 +81,18 @@ def test_vcml_to_vcml(vcml_file_path: Path) -> None:
         assert vcml_file_path.exists()
         assert success is True
         assert msg == "Success"
+
+
+def test_vcell_infix_to_python_infix() -> None:
+    vcell_infix = "id_1 * csc(id_0 ^ 2.2)"
+    success, msg, value = vcell_infix_to_python_infix(vcell_infix)
+    expectedResult = "(id_1 * (1.0/math.sin(((id_0)**(2.2)))))"
+    assert success is True
+    assert msg == "Success"
+    assert value == expectedResult
+
+
+def test_bad_vcell_infix() -> None:
+    vcellInfix = "id_1 / + / /-  cos(/ / /) id_2"
+    success, msg, value = vcell_infix_to_python_infix(vcellInfix)
+    assert success is False

@@ -1,22 +1,24 @@
 package org.vcell.libvcell;
 
+import cbit.vcell.parser.Expression;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CIntPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.word.WordFactory;
 import org.json.simple.JSONValue;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.vcell.libvcell.ModelUtils.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
-import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
-import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
-import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
 
 
 public class Entrypoints {
@@ -200,5 +202,42 @@ public class Entrypoints {
         logger.info("Returning from vcellToVcml: " + json);
         return createString(json);
     }
+
+	@CEntryPoint(
+			name = "vcellInfixToPythonInfix",
+			documentation = """
+                    converts a vcell infix into a python-safe version"""
+	)
+	public static CCharPointer entrypoint_vcellInfixToPythonInfix(
+			IsolateThread ignoredThread,
+			CCharPointer vcellInfixPtr,
+			CCharPointer targetBufferForPythonInfix,
+			long sizeOfBuffer
+	){
+		System.err.println("Entrypoint_vcellInfixToPythonInfix");
+		ReturnValue returnValue;
+		try {
+			String vcellInfix = CTypeConversion.toJavaString(vcellInfixPtr);
+			String pythonInfix = get_python_infix(vcellInfix);
+			if (pythonInfix.length() >= sizeOfBuffer){
+				// not enough room
+				returnValue = new ReturnValue(false, "not enough room, need: `" + pythonInfix.length() + 1 + "`");
+			} else {
+				CTypeConversion.toCString(
+						pythonInfix,
+						targetBufferForPythonInfix,
+						WordFactory.unsigned(pythonInfix.length() + 1)
+				);
+				returnValue = new ReturnValue(true, "Success");
+			}
+		} catch (Throwable t) {
+			logger.error("Error translating vcell infix to python infix", t);
+			returnValue = new ReturnValue(false, t.getMessage());
+		}
+		// return result as a json string
+		String json = returnValue.toJson();
+		logger.info("Returning from vcellInfixToPythonInfix: " + json);
+		return createString(json);
+	}
 
 }

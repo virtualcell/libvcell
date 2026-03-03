@@ -11,6 +11,7 @@ import cbit.vcell.geometry.GeometrySpec;
 import cbit.vcell.mapping.MappingException;
 import cbit.vcell.mapping.SimulationContext;
 import cbit.vcell.mongodb.VCMongoMessage;
+import cbit.vcell.parser.Expression;
 import cbit.vcell.parser.ExpressionException;
 import cbit.vcell.xml.XMLSource;
 import cbit.vcell.xml.XmlHelper;
@@ -34,8 +35,8 @@ public class ModelUtils {
             throws VCLoggerException, XmlParseException, IOException, MappingException {
 
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
-        XmlHelper.cloneUsingXML = true;
 
         record LoggerMessage(VCLogger.Priority priority, VCLogger.ErrorType errorType, String message) {};
         final ArrayList<LoggerMessage> messages = new ArrayList<>();
@@ -76,8 +77,8 @@ public class ModelUtils {
     public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath, boolean roundTripValidation)
             throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException, ImageException, GeometryException, ExpressionException {
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
-        XmlHelper.cloneUsingXML = true;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
@@ -116,8 +117,8 @@ public class ModelUtils {
 
     public static void vcml_to_vcml(String vcml_content, Path vcmlPath) throws XmlParseException, IOException, MappingException {
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
-        XmlHelper.cloneUsingXML = true;
 
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
@@ -125,4 +126,11 @@ public class ModelUtils {
         String vcml_str = XmlHelper.bioModelToXML(bioModel);
         XmlUtil.writeXMLStringToFile(vcml_str, vcmlPath.toFile().getAbsolutePath(), true);
     }
+
+	public static String get_python_infix(String vcellInfix) throws ExpressionException {
+		GeometrySpec.avoidAWTImageCreation = true;
+		XmlHelper.cloneUsingXML = true;
+		VCMongoMessage.enabled = false;
+		return new Expression(vcellInfix).infix_Python();
+	}
 }

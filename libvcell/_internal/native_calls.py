@@ -12,6 +12,11 @@ class ReturnValue(BaseModel):
     message: str
 
 
+class MutableString:
+    def __init__(self, value: str):
+        self.value: str = value
+
+
 class VCellNativeCalls:
     def __init__(self) -> None:
         self.loader = VCellNativeLibraryLoader()
@@ -121,4 +126,42 @@ class VCellNativeCalls:
             return ReturnValue.model_validate_json(json_data=json_str)
         except Exception as e:
             logging.exception("Error in vcml_to_vcml()", exc_info=e)
+            raise
+
+    def vcell_infix_to_python_infix(
+        self, vcell_infix: str, target_python_infix: MutableString, buffer_size: int | None = None
+    ) -> ReturnValue:
+        try:
+            needed_buffer_size = int(1.5 * len(vcell_infix)) if buffer_size is None else buffer_size
+            buff = ctypes.create_string_buffer(needed_buffer_size)
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr = self.lib.vcellInfixToPythonInfix(
+                    isolate_thread, ctypes.c_char_p(vcell_infix.encode("utf-8")), buff, needed_buffer_size
+                )
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to regenerate vcml")
+                return ReturnValue(success=False, message="Failed to generate python infix")
+            json_str = value.decode("utf-8")
+            if "not enough room, need: `" in json_str:
+                if buffer_size is not None:
+                    logging.error("Failed to identify correct buffer size reported by previous error")
+                    return ReturnValue(
+                        success=False, message="Failed to identify correct buffer size reported by previous error"
+                    )
+                # get the size from the error
+                index = json_str.find("not enough room, need: `") + len("not enough room, need: `")
+                end_index = json_str.find("`", index)
+                size_as_string: str = json_str[index:end_index]
+                if not size_as_string.isnumeric():
+                    logging.error("Buffer size reported by previous error is not an integer!")
+                    return ReturnValue(
+                        success=False, message="Buffer size reported by previous error is not an integer!"
+                    )
+                return self.vcell_infix_to_python_infix(vcell_infix, target_python_infix, int(size_as_string))
+            # self.lib.freeString(json_ptr)
+            target_python_infix.value = buff.value.decode("utf-8")
+            return ReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in vcell_infix_to_python_infix()", exc_info=e)
             raise

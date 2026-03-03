@@ -40,8 +40,8 @@ public class SolverUtils {
 
     public static void vcmlToFiniteVolumeInput(String vcml_content, String simulation_name, File parentDir, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException, MathException {
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
-        XmlHelper.cloneUsingXML = true;
 
         if (vcml_content.substring(0, 300).contains("<sbml xmlns=\"http://www.sbml.org/sbml")) {
             throw new IllegalArgumentException("expecting VCML content, not SBML");
@@ -135,8 +135,8 @@ public class SolverUtils {
 
     public static void sbmlToFiniteVolumeInput(String sbml_content, File outputDir) throws MappingException, PropertyVetoException, SolverException, ExpressionException, VCLoggerException {
         GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
-        XmlHelper.cloneUsingXML = true;
 
         SBMLExporter.MemoryVCLogger vcl = new SBMLExporter.MemoryVCLogger();
         boolean bValidateSBML = true;

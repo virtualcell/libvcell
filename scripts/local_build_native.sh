@@ -11,8 +11,6 @@ echo "ROOT_DIR: $ROOT_DIR"
 cd "$ROOT_DIR"/vcell_submodule || ( echo "'vcell' directory not found" && exit 1 )
 mvn clean install -DskipTests
 
-export JAVA_HOME=$(jenv javahome)
-
 # test if JAVA_HOME is set
 if [ -z "$JAVA_HOME" ]; then
   echo "JAVA_HOME is not set"
