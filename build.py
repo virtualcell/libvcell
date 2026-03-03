@@ -80,6 +80,20 @@ def main() -> None:
         if shared_lib.exists():
             shutil.copy(shared_lib, libvcell_lib_dir / f"libvcell.{ext}")
 
+    # Copy the shared library to libvcell/lib
+    copied = False
+    for ext in ["so", "dylib", "dll"]:
+        shared_lib = vcell_native_dir / f"target/libvcell.{ext}"
+        if shared_lib.exists():
+            shutil.copy(shared_lib, libvcell_lib_dir / f"libvcell.{ext}")
+            copied = True
+            print(f"Copied {shared_lib} to {libvcell_lib_dir}")
+
+    if not copied:
+        print(f"ERROR: No shared library found in {vcell_native_dir / 'target'}", file=sys.stderr)
+        print(f"Contents: {list((vcell_native_dir / 'target').glob('*'))}", file=sys.stderr)
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "libvcell"
-version = "0.0.13"
+version = "0.0.14.4"
 description = "This is a python package which wraps a subset of VCell Java code as a native python package."
 authors = ["Jim Schaff <schaff@uchc.edu>", "Ezequiel Valencia <evalencia@uchc.edu>"]
 repository = "https://github.com/virtualcell/libvcell"
@@ -39,6 +39,7 @@ mkdocs-material = "^9.5.50"
 mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 
 [tool.cibuildwheel]
+build-frontend = "pip"
 build = "cp311-* cp312-* cp313-*"
 manylinux-x86_64-image = "ghcr.io/virtualcell/manylinux_2_28_x86_64:0.0.1"
 skip = "cp311-musllinux_x86_64 cp312-musllinux_x86_64 cp313-musllinux_x86_64"

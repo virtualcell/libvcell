@@ -45,7 +45,7 @@ jobs:
 
       - name: Set MACOSX_DEPLOYMENT_TARGET used by cibuildwheel
         if: ${{ startsWith(matrix.os, 'macos') }}
-        run: echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.os == 'macos-14' && '14.0' || '13.0' }}" >> $GITHUB_ENV
+        run: echo "MACOSX_DEPLOYMENT_TARGET=15.0" >> $GITHUB_ENV
 
       - name: Run cibuildwheel
         run: |
