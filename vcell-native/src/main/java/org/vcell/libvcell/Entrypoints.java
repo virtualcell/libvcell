@@ -240,4 +240,40 @@ public class Entrypoints {
 		return createString(json);
 	}
 
+	@CEntryPoint(
+			name = "vcellInfixToNumExprInfix",
+			documentation = """
+                    converts a vcell infix into a NumExpr-safe version"""
+	)
+	public static CCharPointer entrypoint_vcellInfixToNumExprInfix(
+			IsolateThread ignoredThread,
+			CCharPointer vcellInfixPtr,
+			CCharPointer targetBufferForConvertedInfix,
+			long sizeOfBuffer
+	){
+		System.err.println("Entrypoint_vcellInfixToNumExprInfix");
+		ReturnValue returnValue;
+		try {
+			String vcellInfix = CTypeConversion.toJavaString(vcellInfixPtr);
+			String pythonInfix = get_numexpr_infix(vcellInfix);
+			if (pythonInfix.length() >= sizeOfBuffer){
+				// not enough room
+				returnValue = new ReturnValue(false, "not enough room, need: `" + pythonInfix.length() + 1 + "`");
+			} else {
+				CTypeConversion.toCString(
+						pythonInfix,
+						targetBufferForConvertedInfix,
+						WordFactory.unsigned(pythonInfix.length() + 1)
+				);
+				returnValue = new ReturnValue(true, "Success");
+			}
+		} catch (Throwable t) {
+			logger.error("Error translating vcell infix to NumExpr infix", t);
+			returnValue = new ReturnValue(false, t.getMessage());
+		}
+		// return result as a json string
+		String json = returnValue.toJson();
+		logger.info("Returning from vcellInfixToNumExprInfix: " + json);
+		return createString(json);
+	}
 }

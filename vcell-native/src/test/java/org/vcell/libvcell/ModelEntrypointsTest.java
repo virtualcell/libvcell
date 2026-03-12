@@ -87,4 +87,31 @@ public class ModelEntrypointsTest {
 		assert(false);
 	}
 
+	@Test
+	public void test_get_num_expr_infix(){
+		String vcellInfix = "(id_2 || 3.2) * id_1 * csc(id_0 ^ 2.2)";
+		String convertedInfix;
+		try {
+			convertedInfix = get_numexpr_infix(vcellInfix);
+		} catch (ExpressionException e) {
+			System.err.println("get_python_infix exception: " + e.getMessage());
+			assert(false);
+			return;
+		}
+		String expected = "(where(((0.0!=id_2) | (0.0!=3.2)), id_1 * (1.0/sin(((id_0)**(2.2)))), 0.0))";
+		assert expected.equals(convertedInfix);
+	}
+
+	@Test
+	public void test_bad_num_expr_infix_attempt(){
+		String vcellInfix = "id_1 / + / /-  cos(/ / /) id_2";
+		String convertedInfix;
+		try {
+			convertedInfix = get_numexpr_infix(vcellInfix);
+		} catch (ExpressionException e) {
+			return; // this is what we'd expect
+		}
+		System.err.println("test_bad_python_infix_attempt did not throw an exception");
+		assert(false);
+	}
 }
