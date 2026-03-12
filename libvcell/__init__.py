@@ -1,4 +1,10 @@
-from libvcell.model_utils import sbml_to_vcml, vcell_infix_to_python_infix, vcml_to_sbml, vcml_to_vcml
+from libvcell.model_utils import (
+    sbml_to_vcml,
+    vcell_infix_to_num_expr_infix,
+    vcell_infix_to_python_infix,
+    vcml_to_sbml,
+    vcml_to_vcml,
+)
 from libvcell.solver_utils import sbml_to_finite_volume_input, vcml_to_finite_volume_input
 
 __all__ = [
@@ -8,4 +14,5 @@ __all__ = [
     "vcml_to_sbml",
     "vcml_to_vcml",
     "vcell_infix_to_python_infix",
+    "vcell_infix_to_num_expr_infix",
 ]

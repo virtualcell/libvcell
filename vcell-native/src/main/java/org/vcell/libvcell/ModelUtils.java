@@ -133,4 +133,11 @@ public class ModelUtils {
 		VCMongoMessage.enabled = false;
 		return new Expression(vcellInfix).infix_Python();
 	}
+
+	public static String get_numexpr_infix(String vcellInfix) throws ExpressionException {
+		GeometrySpec.avoidAWTImageCreation = true;
+		XmlHelper.cloneUsingXML = true;
+		VCMongoMessage.enabled = false;
+		return new Expression(vcellInfix).infix_NumExpr();
+	}
 }

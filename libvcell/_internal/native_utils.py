@@ -61,6 +61,14 @@ class VCellNativeLibraryLoader:
             ctypes.c_longlong,
         ]
 
+        self.lib.vcellInfixToNumExprInfix.restype = ctypes.c_char_p
+        self.lib.vcellInfixToNumExprInfix.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_longlong,
+        ]
+
         self.lib.freeString.restype = None
         self.lib.freeString.argtypes = [ctypes.c_char_p]
 

@@ -4,6 +4,7 @@ from pathlib import Path
 from libvcell import (
     sbml_to_finite_volume_input,
     sbml_to_vcml,
+    vcell_infix_to_num_expr_infix,
     vcell_infix_to_python_infix,
     vcml_to_finite_volume_input,
     vcml_to_sbml,
@@ -92,7 +93,24 @@ def test_vcell_infix_to_python_infix() -> None:
     assert value == expectedResult
 
 
-def test_bad_vcell_infix() -> None:
+def test_bad_vcell_infix_through_python_conversion() -> None:
     vcellInfix = "id_1 / + / /-  cos(/ / /) id_2"
     success, msg, value = vcell_infix_to_python_infix(vcellInfix)
     assert success is False
+    assert "Parse Error while parsing expression" in msg
+
+
+def test_vcell_infix_to_num_expr_infix() -> None:
+    vcell_infix = "(id_2 || 3.2) * id_1 * csc(id_0 ^ 2.2)"
+    success, msg, value = vcell_infix_to_num_expr_infix(vcell_infix)
+    expectedResult = "(where(((0.0!=id_2) | (0.0!=3.2)), id_1 * (1.0/sin(((id_0)**(2.2)))), 0.0))"
+    assert success is True
+    assert msg == "Success"
+    assert value == expectedResult
+
+
+def test_bad_vcell_infix_through_num_expr_conversion() -> None:
+    vcellInfix = "id_1 / + / /-  cos(/ / /) id_2"
+    success, msg, value = vcell_infix_to_num_expr_infix(vcellInfix)
+    assert success is False
+    assert "Parse Error while parsing expression" in msg

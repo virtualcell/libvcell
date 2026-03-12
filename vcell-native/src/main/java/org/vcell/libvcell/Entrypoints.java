@@ -214,7 +214,6 @@ public class Entrypoints {
 			CCharPointer targetBufferForPythonInfix,
 			long sizeOfBuffer
 	){
-		System.err.println("Entrypoint_vcellInfixToPythonInfix");
 		ReturnValue returnValue;
 		try {
 			String vcellInfix = CTypeConversion.toJavaString(vcellInfixPtr);
@@ -240,4 +239,39 @@ public class Entrypoints {
 		return createString(json);
 	}
 
+	@CEntryPoint(
+			name = "vcellInfixToNumExprInfix",
+			documentation = """
+                    converts a vcell infix into a NumExpr-safe version"""
+	)
+	public static CCharPointer entrypoint_vcellInfixToNumExprInfix(
+			IsolateThread ignoredThread,
+			CCharPointer vcellInfixPtr,
+			CCharPointer targetBufferForConvertedInfix,
+			long sizeOfBuffer
+	){
+		ReturnValue returnValue;
+		try {
+			String vcellInfix = CTypeConversion.toJavaString(vcellInfixPtr);
+			String numExprInfix = get_numexpr_infix(vcellInfix);
+			if (numExprInfix.length() >= sizeOfBuffer){
+				// not enough room
+				returnValue = new ReturnValue(false, "not enough room, need: `" + numExprInfix.length() + 1 + "`");
+			} else {
+				CTypeConversion.toCString(
+						numExprInfix,
+						targetBufferForConvertedInfix,
+						WordFactory.unsigned(numExprInfix.length() + 1)
+				);
+				returnValue = new ReturnValue(true, "Success");
+			}
+		} catch (Throwable t) {
+			logger.error("Error translating vcell infix to NumExpr infix", t);
+			returnValue = new ReturnValue(false, t.getMessage());
+		}
+		// return result as a json string
+		String json = returnValue.toJson();
+		logger.info("Returning from vcellInfixToNumExprInfix: " + json);
+		return createString(json);
+	}
 }
