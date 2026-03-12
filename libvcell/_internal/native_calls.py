@@ -179,7 +179,7 @@ class VCellNativeCalls:
             value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
             if value is None:
                 logging.error("Failed to regenerate vcml")
-                return ReturnValue(success=False, message="Failed to generate python infix")
+                return ReturnValue(success=False, message="Failed to generate NumExpr infix")
             json_str = value.decode("utf-8")
             if "not enough room, need: `" in json_str:
                 if buffer_size is not None:

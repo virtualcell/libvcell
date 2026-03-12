@@ -86,6 +86,6 @@ def vcell_infix_to_num_expr_infix(vcell_infix: str) -> tuple[bool, str, str]:
         tuple[bool, str, str]: A tuple containing the success status, a message, and the converted infix
     """
     native = VCellNativeCalls()
-    target_python_infix = MutableString("")
-    return_value: ReturnValue = native.vcell_infix_to_num_expr_infix(vcell_infix, target_python_infix)
-    return return_value.success, return_value.message, target_python_infix.value
+    target_num_expr_infix = MutableString("")
+    return_value: ReturnValue = native.vcell_infix_to_num_expr_infix(vcell_infix, target_num_expr_infix)
+    return return_value.success, return_value.message, target_num_expr_infix.value

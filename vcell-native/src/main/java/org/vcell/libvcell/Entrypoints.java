@@ -214,7 +214,6 @@ public class Entrypoints {
 			CCharPointer targetBufferForPythonInfix,
 			long sizeOfBuffer
 	){
-		System.err.println("Entrypoint_vcellInfixToPythonInfix");
 		ReturnValue returnValue;
 		try {
 			String vcellInfix = CTypeConversion.toJavaString(vcellInfixPtr);
@@ -251,19 +250,18 @@ public class Entrypoints {
 			CCharPointer targetBufferForConvertedInfix,
 			long sizeOfBuffer
 	){
-		System.err.println("Entrypoint_vcellInfixToNumExprInfix");
 		ReturnValue returnValue;
 		try {
 			String vcellInfix = CTypeConversion.toJavaString(vcellInfixPtr);
-			String pythonInfix = get_numexpr_infix(vcellInfix);
-			if (pythonInfix.length() >= sizeOfBuffer){
+			String numExprInfix = get_numexpr_infix(vcellInfix);
+			if (numExprInfix.length() >= sizeOfBuffer){
 				// not enough room
-				returnValue = new ReturnValue(false, "not enough room, need: `" + pythonInfix.length() + 1 + "`");
+				returnValue = new ReturnValue(false, "not enough room, need: `" + numExprInfix.length() + 1 + "`");
 			} else {
 				CTypeConversion.toCString(
-						pythonInfix,
+						numExprInfix,
 						targetBufferForConvertedInfix,
-						WordFactory.unsigned(pythonInfix.length() + 1)
+						WordFactory.unsigned(numExprInfix.length() + 1)
 				);
 				returnValue = new ReturnValue(true, "Success");
 			}

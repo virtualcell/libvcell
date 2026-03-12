@@ -97,6 +97,7 @@ def test_bad_vcell_infix_through_python_conversion() -> None:
     vcellInfix = "id_1 / + / /-  cos(/ / /) id_2"
     success, msg, value = vcell_infix_to_python_infix(vcellInfix)
     assert success is False
+    assert "Parse Error while parsing expression" in msg
 
 
 def test_vcell_infix_to_num_expr_infix() -> None:
@@ -112,3 +113,4 @@ def test_bad_vcell_infix_through_num_expr_conversion() -> None:
     vcellInfix = "id_1 / + / /-  cos(/ / /) id_2"
     success, msg, value = vcell_infix_to_num_expr_infix(vcellInfix)
     assert success is False
+    assert "Parse Error while parsing expression" in msg
