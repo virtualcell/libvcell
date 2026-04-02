@@ -45,7 +45,9 @@ jobs:
 
       - name: Set MACOSX_DEPLOYMENT_TARGET used by cibuildwheel
         if: ${{ startsWith(matrix.os, 'macos') }}
-        run: echo "MACOSX_DEPLOYMENT_TARGET=13.0" >> $GITHUB_ENV
+        run: |
+          echo "MACOSX_DEPLOYMENT_TARGET=13.0" >> $GITHUB_ENV
+          echo "NATIVE_IMAGE_OPTIONS=--native-compiler-options=-mmacosx-version-min=13.0 -H:NativeLinkerOption=-mmacosx-version-min=13.0" >> $GITHUB_ENV
 
       - name: Run cibuildwheel
         run: |
