@@ -1,16 +1,22 @@
-# build and publish manylinux_2_28_x86_64 with GraalVM, Maven and Poetry
+# build and publish custom manylinux with GraalVM, Maven, and Poetry
 name: Docker
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag for the Docker image"
+        description: "Tag for the Many-Linux Docker image"
         required: true
-        default: "latest"
 
 jobs:
   login:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch:
+          - os: ubuntu-latest
+            type: x86_64
+          - os: ubuntu-24.04-arm
+            type: aarch64
+    runs-on: ${{ matrix.arch.os }}
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -32,6 +38,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: docker
-          file: docker/Dockerfile_manylinux_2_28_x86_64
+          file: docker/Dockerfile_manylinux_2_34_${{ matrix.arch.type }}
           push: true
-          tags: ghcr.io/virtualcell/manylinux_2_28_x86_64:${{ github.event.inputs.tag }}
+          tags: |
+            ghcr.io/virtualcell/manylinux_2_34_${{ matrix.arch.type }}:${{ github.event.inputs.tag }}
+            ghcr.io/virtualcell/manylinux_2_34_${{ matrix.arch.type }}:latest

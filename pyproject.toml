@@ -40,15 +40,17 @@ mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 
 [tool.cibuildwheel]
 build-frontend = "pip"
-build = "cp311-* cp312-* cp313-* cp314-*"
-manylinux-x86_64-image = "ghcr.io/virtualcell/manylinux_2_34_x86_64:0.0.1"
-skip = "*-musllinux*"
+manylinux-x86_64-image = "ghcr.io/virtualcell/manylinux_2_34_x86_64:latest"
+manylinux-pypy_x86_64-image = "ghcr.io/virtualcell/manylinux_2_34_x86_64:latest"
+manylinux-aarch64-image = "ghcr.io/virtualcell/manylinux_2_34_aarch64:latest"
+manylinux-pypy_aarch64-image = "ghcr.io/virtualcell/manylinux_2_34_aarch64:latest"
+skip = "*-musllinux* *i686 *ppc64le *s390x *armv7l *riscv64"
 
-[tool.cibuildwheel.linux]
-archs = ["x86_64"]
-
-[tool.cibuildwheel.windows]
-archs = ["AMD64"]
+#[tool.cibuildwheel.linux]
+#archs = ["x86_64"]
+#
+#[tool.cibuildwheel.windows]
+#archs = ["AMD64"]
 
 [tool.setuptools.package-data]
 libvcell = ["lib/*"]

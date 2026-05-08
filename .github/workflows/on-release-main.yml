@@ -10,7 +10,14 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-15-intel, windows-latest, ubuntu-latest, macos-15]
+        os:
+          [
+            macos-15-intel,
+            windows-latest,
+            ubuntu-latest,
+            ubuntu-24.04-arm,
+            macos-15,
+          ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
@@ -49,13 +56,26 @@ jobs:
           echo "MACOSX_DEPLOYMENT_TARGET=13.0" >> $GITHUB_ENV
           echo "NATIVE_IMAGE_OPTIONS=--native-compiler-options=-mmacosx-version-min=13.0 -H:NativeLinkerOption=-mmacosx-version-min=13.0" >> $GITHUB_ENV
 
+      - name: Set cibuildwheel archs
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: |
+          ARCH=$(uname -m)
+          echo "ARCH_DEF=$ARCH" >> $GITHUB_ENV
+
       - name: Run cibuildwheel
+        uses: pypa/cibuildwheel@v3.4.0
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        env:
+          CIBW_BUILD: "cp311-*${{ env.ARCH_DEF }} cp312-*${{ env.ARCH_DEF }} cp313-*${{ env.ARCH_DEF }} cp314-*${{ env.ARCH_DEF }}"
+      #          CIBW_BUILD_VERBOSITY_LINUX: 2
+
+      - name: Run cibuildwheel
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: |
           pip install cibuildwheel
           cibuildwheel --debug-traceback --output-dir wheelhouse
         env:
-          CIBW_BUILD_VERBOSITY_LINUX: 2
-
+          CIBW_BUILD: "cp311-* cp312-* cp313-* cp314-*"
       - name: Copy wheels to dist directory
         run: |
           mkdir -p dist
