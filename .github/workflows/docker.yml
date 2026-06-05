@@ -16,6 +16,7 @@ jobs:
             type: x86_64
           - os: ubuntu-24.04-arm
             type: aarch64
+        glibc: [2_28, 2_34]
     runs-on: ${{ matrix.arch.os }}
     steps:
       - name: Check out
@@ -28,6 +29,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Determine Maven Version
+        run: |
+          MAVEN_VERSION="$(curl -s https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/ | grep -o '3\.9\.[0-9]*' | sort -V | tail -1)"
+          if [ -z "${MAVEN_VERSION}" ]; then
+            echo "No valid maven version of 3.9.X found!"
+            exit 1
+          fi
+          echo "MAVEN_VERSION=${MAVEN_VERSION}" >> $GITHUB_ENV
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -38,8 +48,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: docker
-          file: docker/Dockerfile_manylinux_2_34_${{ matrix.arch.type }}
+          file: docker/Dockerfile_manylinux_${{ matrix.glibc }}_${{ matrix.arch.type }}
           push: true
+          build-args: |
+            MAVEN_VERSION=${{ env.MAVEN_VERSION }}
           tags: |
-            ghcr.io/virtualcell/manylinux_2_34_${{ matrix.arch.type }}:${{ github.event.inputs.tag }}
-            ghcr.io/virtualcell/manylinux_2_34_${{ matrix.arch.type }}:latest
+            ghcr.io/virtualcell/manylinux_${{ matrix.glibc }}_${{ matrix.arch.type }}:${{ github.event.inputs.tag }}
+            ghcr.io/virtualcell/manylinux_${{ matrix.glibc }}_${{ matrix.arch.type }}:latest
