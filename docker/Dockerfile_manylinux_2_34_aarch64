@@ -3,7 +3,8 @@ FROM quay.io/pypa/manylinux_2_34_aarch64
 ARG GRAALVM_VERSION=23.0.2
 ARG GRAALVM_BUILD=7.1
 ARG GRAALVM_ARCH=aarch64
-ARG MAVEN_VERSION=3.9.15
+# Due to how often maven yanks old patch-versions, we now require you provide the maven version at build time!
+ARG MAVEN_VERSION
 
 # install graalvm community edition
 RUN cd /opt && \

@@ -18,6 +18,8 @@ jobs:
             ubuntu-24.04-arm,
             macos-15,
           ]
+        glibc: [2_28, 2_34]
+
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
@@ -37,7 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
       - uses: abatilo/actions-poetry@v3
 
@@ -61,12 +63,27 @@ jobs:
         run: |
           ARCH=$(uname -m)
           echo "ARCH_DEF=$ARCH" >> $GITHUB_ENV
+          echo "MANYLINUX_IMAGE_TARGET=ghcr.io/virtualcell/manylinux_${{ matrix.glibc }}_$ARCH:latest" >> $GITHUB_ENV
+          CIBW_BUILD_STRING="cp310-*${{ env.ARCH_DEF }} cp311-*${{ env.ARCH_DEF }} cp312-*${{ env.ARCH_DEF }} cp313-*${{ env.ARCH_DEF }}"
+          if [ "${{ matrix.glibc }}" = "2_34" ]; then
+            CIBW_BUILD_STRING="$CIBW_BUILD_STRING cp314-*${{ env.ARCH_DEF }}"
+          fi
+          echo "CIBW_BUILD_TARGETS=$CIBW_BUILD_STRING" >> $GITHUB_ENV
 
-      - name: Run cibuildwheel
+      - name: Run cibuildwheel (Ubuntu, x86_64)
         uses: pypa/cibuildwheel@v3.4.0
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        if: ${{ startsWith(matrix.os, 'ubuntu') && env.ARCH_DEF == 'x86_64' }}
         env:
-          CIBW_BUILD: "cp311-*${{ env.ARCH_DEF }} cp312-*${{ env.ARCH_DEF }} cp313-*${{ env.ARCH_DEF }} cp314-*${{ env.ARCH_DEF }}"
+          CIBW_BUILD: "${{ env.CIBW_BUILD_TARGETS }}"
+          CIBW_MANYLINUX_X86_64_IMAGE: "${{ env.MANYLINUX_IMAGE_TARGET }}"
+      #          CIBW_BUILD_VERBOSITY_LINUX: 2
+
+      - name: Run cibuildwheel (Ubuntu, aarch64)
+        uses: pypa/cibuildwheel@v3.4.0
+        if: ${{ startsWith(matrix.os, 'ubuntu') && env.ARCH_DEF == 'aarch64' }}
+        env:
+          CIBW_BUILD: "${{ env.CIBW_BUILD_TARGETS }}"
+          CIBW_MANYLINUX_AARCH64_IMAGE: "${{ env.MANYLINUX_IMAGE_TARGET }}"
       #          CIBW_BUILD_VERBOSITY_LINUX: 2
 
       - name: Run cibuildwheel
@@ -75,7 +92,7 @@ jobs:
           pip install cibuildwheel
           cibuildwheel --debug-traceback --output-dir wheelhouse
         env:
-          CIBW_BUILD: "cp311-* cp312-* cp313-* cp314-*"
+          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
       - name: Copy wheels to dist directory
         run: |
           mkdir -p dist
