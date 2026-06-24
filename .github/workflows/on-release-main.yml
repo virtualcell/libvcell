@@ -15,13 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os:
-          [
-            windows-latest,
-            ubuntu-latest,
-            ubuntu-24.04-arm,
-            macos-15,
-          ]
+        os: [windows-latest, ubuntu-latest, ubuntu-24.04-arm, macos-15]
         glibc: [2_28, 2_34]
         # glibc (manylinux) only applies to the Linux builds. Exclude the duplicate
         # 2_34 combination for the non-Linux OSes so macOS/Windows build once each
