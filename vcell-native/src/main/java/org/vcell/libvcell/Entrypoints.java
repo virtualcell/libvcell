@@ -14,6 +14,13 @@ import org.json.simple.JSONValue;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Set;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.vcell.libvcell.ModelUtils.*;
@@ -33,6 +40,47 @@ public class Entrypoints {
         allocatedMemory.put(ptr.rawValue(), holder);
         return ptr;
     }
+
+	// should only be externally invoked by tests!
+	public static String generateErrorReport(String topMostMessage, Throwable exceptionEncountered){
+		boolean hasNoMessage = topMostMessage == null;
+		boolean hasNoException = exceptionEncountered == null;
+		if (hasNoMessage && hasNoException) throw new IllegalArgumentException("Both arguments cannot be null");
+		if (hasNoException) return topMostMessage;
+		StringBuilder errorMessage = new StringBuilder();
+		errorMessage.append(hasNoMessage ? "VCell encountered the following error" : topMostMessage).append("\n");
+
+		List<String> exceptionTypes = new ArrayList<>();
+		List<String> stackMessages = new ArrayList<>();
+		List<StackTraceElement[]> stackTraces = new ArrayList<>();
+		Map<StackTraceElement[], Set<StackTraceElement>> stackTraceMapping = new LinkedHashMap<>();
+		Throwable cause = exceptionEncountered;
+		do {
+			exceptionTypes.add(cause.getClass().getSimpleName());
+			stackMessages.add(cause.getMessage());
+			StackTraceElement[] stack = cause.getStackTrace();
+			stackTraces.add(stack);
+			stackTraceMapping.put(stack, Arrays.stream(stack).collect(Collectors.toSet()));
+		} while (null != (cause = cause.getCause()));
+
+		errorMessage.append("Error:\n");
+		for (int i = 0; i < exceptionTypes.size(); i++) {
+			errorMessage.append(i).append(" ").repeat("-", 3 * (i + 1) - 1).append("> ");
+			errorMessage.append(exceptionTypes.get(i)).append(" :: ").append(stackMessages.get(i)).append("\n");
+		}
+		errorMessage.append("\nStack Traces:\n");
+		for (int i = exceptionTypes.size() - 1; i >= 0; i--) {
+			errorMessage.append(i).append(") ").append(exceptionTypes.get(i)).append(":\n");
+			StackTraceElement[] stack = stackTraces.get(i);
+			Set<StackTraceElement> oldStackTraceSet = i > 0 ? stackTraceMapping.get(stackTraces.get(i - 1)): Set.of();
+			for (StackTraceElement ste : stack) {
+				if (oldStackTraceSet.contains(ste)) break;
+				errorMessage.append(ste).append("\n");
+			}
+			errorMessage.append("\n");
+		}
+		return errorMessage.toString();
+	}
 
 
     @CEntryPoint(name = "freeString", documentation = "Release memory allocated for a string")

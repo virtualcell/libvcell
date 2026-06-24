@@ -1,0 +1,1740 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<vcml Version="Alpha_Version_7.7.0_build_15">
+  <BioModel Name="006_10_26 CPC_metacentric_relaxed_MCF10A_chr19_PMP1">
+    <Model Name="model">
+      <ModelParameters>
+        <Parameter Name="kpp" Role="user defined" Unit="s-1">(kpp_ref * (0.5 + ((SGO1 + pH2A_SGO1 + pH2A_SGO1_CPCi + pH2A_SGO1_CPCa + SGO1_CPCi + SGO1_CPCa) / (SGO1 + pH2A_SGO1 + pH2A_SGO1_CPCi + pH2A_SGO1_CPCa + SGO1_CPCi + SGO1_CPCa + SGO1_ic))))</Parameter>
+        <Parameter Name="HASPIN_ic" Role="user defined" Unit="uM">(((HASPIN_copiespc * chrN_scaling) / avogadrosnumber) * (mol2umol / (has_vol * cum2liter)))</Parameter>
+        <Parameter Name="Dimmob" Role="user defined" Unit="um2.s-1">0.0</Parameter>
+        <Parameter Name="Dcyt" Role="user defined" Unit="um2.s-1">1.0</Parameter>
+        <Parameter Name="PLK1_ic" Role="user defined" Unit="uM">(((PLK1_copiespc * chrN_scaling) / avogadrosnumber) * (mol2umol / (cyt_vol * cum2liter)))</Parameter>
+        <Parameter Name="PLK1a_frac" Role="user defined" Unit="tbd">0.1</Parameter>
+        <Parameter Name="kcatCPC" Role="user defined" Unit="s-1">0.0205</Parameter>
+        <Parameter Name="KmCPC" Role="user defined" Unit="uM">82.41</Parameter>
+        <Parameter Name="kin_y1" Role="user defined" Unit="um">((chrH * 0.5) - (kinH * 0.5))</Parameter>
+        <Parameter Name="chrH" Role="user defined" Unit="um">3.4</Parameter>
+        <Parameter Name="chrW" Role="user defined" Unit="um">1.3</Parameter>
+        <Parameter Name="kinH" Role="user defined" Unit="um">0.3</Parameter>
+        <Parameter Name="kinW" Role="user defined" Unit="um">0.075</Parameter>
+        <Parameter Name="Histone_ic" Role="user defined" Unit="uM">(max_nucleosome * 2.0 * nucleosome_acces * condensation_state)</Parameter>
+        <Parameter Name="kin_y2" Role="user defined" Unit="um">((chrH * 0.5) + (kinH * 0.5))</Parameter>
+        <Parameter Name="L_kin_x2" Role="user defined" Unit="um">(x_mid - (KK_disSim / 2.0))</Parameter>
+        <Parameter Name="x_mid" Role="user defined" Unit="um">(chrW / 2.0)</Parameter>
+        <Parameter Name="KK_disRef" Role="user defined" Unit="um">0.575</Parameter>
+        <Parameter Name="R_kin_x1" Role="user defined" Unit="um">(x_mid + (KK_disSim / 2.0))</Parameter>
+        <Parameter Name="L_kin_x1" Role="user defined" Unit="um">(x_mid - (KK_disSim / 2.0) - kinW)</Parameter>
+        <Parameter Name="R_kin_x2" Role="user defined" Unit="um">(x_mid + (KK_disSim / 2.0) + kinW)</Parameter>
+        <Parameter Name="Histone_densadj" Role="user defined" Unit="tbd">(KK_disRef / KK_disSim)</Parameter>
+        <Parameter Name="Dslow_histones" Role="user defined" Unit="um2.s-1">(Da * alpha * ((t + t_step) ^ (alpha - 1.0)))</Parameter>
+        <Parameter Name="hasW" Role="user defined" Unit="um">0.1</Parameter>
+        <Parameter Name="hasH" Role="user defined" Unit="um">chrH</Parameter>
+        <Parameter Name="KK_disSim" Role="user defined" Unit="um">1.15</Parameter>
+        <Parameter Name="kbind" Role="user defined" Unit="uM-1.s-1">0.2</Parameter>
+        <Parameter Name="kppKT" Role="user defined" Unit="s-1">(kpp_ref * (0.5 + ((SGO1 + pH2A_SGO1 + pH2A_SGO1_CPCi + pH2A_SGO1_CPCa + SGO1_CPCi + SGO1_CPCa) / (SGO1 + pH2A_SGO1 + pH2A_SGO1_CPCi + pH2A_SGO1_CPCa + SGO1_CPCi + SGO1_CPCa + SGO1_ic))))</Parameter>
+        <Parameter Name="KNL1_ic" Role="user defined" Unit="uM">((KNL1_copiespc / avogadrosnumber) * (mol2umol / (chr_number * kin_vol * cum2liter)))</Parameter>
+        <Parameter Name="SGO1_ic" Role="user defined" Unit="uM">(((SGO1_copiespc * chrN_scaling) / avogadrosnumber) * (mol2umol / (cyt_vol * cum2liter)))</Parameter>
+        <Parameter Name="KdpH3" Role="user defined" Unit="uM">0.09</Parameter>
+        <Parameter Name="CPC_ic" Role="user defined" Unit="uM">(((CPC_copiespc * chrN_scaling) / avogadrosnumber) * (mol2umol / (cyt_vol * cum2liter)))</Parameter>
+        <Parameter Name="kcisCPC" Role="user defined" Unit="s-1">1.07e-07</Parameter>
+        <Parameter Name="PLK1i_frac" Role="user defined" Unit="tbd">(1.0 - PLK1a_frac)</Parameter>
+        <Parameter Name="TTK_ic" Role="user defined" Unit="uM">(((TTK_copiespc * chrN_scaling) / avogadrosnumber) * (mol2umol / (cyt_vol * cum2liter)))</Parameter>
+        <Parameter Name="NDC80_ic" Role="user defined" Unit="uM">((NDC80_copiespc / avogadrosnumber) * (mol2umol / (chr_number * kin_vol * cum2liter)))</Parameter>
+        <Parameter Name="KdNDC80TTK" Role="user defined" Unit="uM">KdNDC80TTK_MT</Parameter>
+        <Parameter Name="phiNdc80" Role="user defined" Unit="tbd">0.1</Parameter>
+        <Parameter Name="KdNDC80pTTK" Role="user defined" Unit="uM">KdNDC80pTTK_MT</Parameter>
+        <Parameter Name="kcisTTK" Role="user defined" Unit="s-1">5e-05</Parameter>
+        <Parameter Name="kcatTTK" Role="user defined" Unit="s-1">1.5833</Parameter>
+        <Parameter Name="KmTTK" Role="user defined" Unit="uM">54.0</Parameter>
+        <Parameter Name="TTKa_frac" Role="user defined" Unit="tbd">0.1</Parameter>
+        <Parameter Name="TTKi_frac" Role="user defined" Unit="tbd">(1.0 - TTKa_frac)</Parameter>
+        <Parameter Name="KdSgo1" Role="user defined" Unit="uM">0.0528</Parameter>
+        <Parameter Name="chr_number" Role="user defined" Unit="tbd">46.0</Parameter>
+        <Parameter Name="vcell_depth" Role="user defined" Unit="um">1.0</Parameter>
+        <Parameter Name="kcatPLK1" Role="user defined" Unit="s-1">12.0</Parameter>
+        <Parameter Name="KmPLK1" Role="user defined" Unit="uM">79.0</Parameter>
+        <Parameter Name="BUB1_ic" Role="user defined" Unit="uM">(((BUB1_copiespc * chrN_scaling) / avogadrosnumber) * (mol2umol / (cyt_vol * cum2liter)))</Parameter>
+        <Parameter Name="KdpH2ASgo1" Role="user defined" Unit="uM">0.1</Parameter>
+        <Parameter Name="KdH3" Role="user defined" Unit="uM">0.38</Parameter>
+        <Parameter Name="t_step" Role="user defined" Unit="s">10.0</Parameter>
+        <Parameter Name="alpha" Role="user defined" Unit="tbd">0.5</Parameter>
+        <Parameter Name="Da" Role="user defined" Unit="um2">0.001</Parameter>
+        <Parameter Name="KiacH2A" Role="user defined" Unit="uM">(((KmH2AH3 * kbind) - kcatH2AH3) / kbind)</Parameter>
+        <Parameter Name="kcatH2AH3" Role="user defined" Unit="s-1">1.71</Parameter>
+        <Parameter Name="I_arms" Role="user defined" Unit="tbd">0.6</Parameter>
+        <Parameter Name="I_cent" Role="user defined" Unit="tbd">0.1</Parameter>
+        <Parameter Name="Havail_arms" Role="user defined" Unit="tbd">(1.0 - I_arms)</Parameter>
+        <Parameter Name="Havail_cent" Role="user defined" Unit="tbd">(1.0 - I_cent)</Parameter>
+        <Parameter Name="chr_vol" Role="user defined" Unit="um3">(3.1416 * ((chrW / 4.0) ^ 2.0) * chrH)</Parameter>
+        <Parameter Name="voxelL" Role="user defined" Unit="um">0.5</Parameter>
+        <Parameter Name="avogadrosnumber" Role="user defined" Unit="mol-1">6.0221408e+23</Parameter>
+        <Parameter Name="mol2umol" Role="user defined" Unit="tbd">1000000.0</Parameter>
+        <Parameter Name="cum2liter" Role="user defined" Unit="tbd">1e-15</Parameter>
+        <Parameter Name="CPC_copiespc" Role="user defined" Unit="tbd">399012.8583</Parameter>
+        <Parameter Name="NDC80_copiespc" Role="user defined" Unit="tbd">292918.585</Parameter>
+        <Parameter Name="kinL" Role="user defined" Unit="um">voxelL</Parameter>
+        <Parameter Name="kin_vol" Role="user defined" Unit="um3">(kinH * (kinW * 2.0) * kinL)</Parameter>
+        <Parameter Name="KNL1_copiespc" Role="user defined" Unit="tbd">146459.2925</Parameter>
+        <Parameter Name="BUB1_copiespc" Role="user defined" Unit="tbd">325993.635</Parameter>
+        <Parameter Name="SGO1_copiespc" Role="user defined" Unit="tbd">476121.3929</Parameter>
+        <Parameter Name="TTK_copiespc" Role="user defined" Unit="tbd">149153.275</Parameter>
+        <Parameter Name="HASPIN_copiespc" Role="user defined" Unit="tbd">105675.9525</Parameter>
+        <Parameter Name="hasL" Role="user defined" Unit="um">voxelL</Parameter>
+        <Parameter Name="has_vol" Role="user defined" Unit="um3">(hasH * hasW * hasL)</Parameter>
+        <Parameter Name="PLK1_copiespc" Role="user defined" Unit="tbd">1305065.94</Parameter>
+        <Parameter Name="max_nucleosome" Role="user defined" Unit="uM">400.0</Parameter>
+        <Parameter Name="nucleosome_acces" Role="user defined" Unit="tbd">0.15</Parameter>
+        <Parameter Name="L_has_x3" Role="user defined" Unit="um">(x_mid - (hasW / 2.0))</Parameter>
+        <Parameter Name="R_has_x4" Role="user defined" Unit="um">(x_mid + (hasW / 2.0))</Parameter>
+        <Parameter Name="kcatH3" Role="user defined" Unit="s-1">0.467</Parameter>
+        <Parameter Name="condensation_state" Role="user defined" Unit="tbd">1.0</Parameter>
+        <Parameter Name="chrN_scaling" Role="user defined" Unit="tbd">0.009669547</Parameter>
+        <Parameter Name="cyt_vol" Role="user defined" Unit="um3">((chrW * voxelL * chrH) - chr_vol)</Parameter>
+        <Parameter Name="CPCi_frac" Role="user defined" Unit="tbd">(1.0 - CPCa_frac)</Parameter>
+        <Parameter Name="kcatCPCsub" Role="user defined" Unit="s-1">0.7</Parameter>
+        <Parameter Name="KmCPCsub" Role="user defined" Unit="uM">22.12</Parameter>
+        <Parameter Name="kppCPC" Role="user defined" Unit="s-1">0.00063</Parameter>
+        <Parameter Name="kcatTTKsub" Role="user defined" Unit="s-1">0.0342</Parameter>
+        <Parameter Name="kmTTKsub" Role="user defined" Unit="uM">19.2</Parameter>
+        <Parameter Name="CPCa_frac" Role="user defined" Unit="tbd">0.6</Parameter>
+        <Parameter Name="Dslow_kt" Role="user defined" Unit="um2.s-1">(Da_kt * alpha_kt * ((t + t_step) ^ (alpha_kt - 1.0)))</Parameter>
+        <Parameter Name="alpha_kt" Role="user defined" Unit="tbd">0.5</Parameter>
+        <Parameter Name="Da_kt" Role="user defined" Unit="um2">0.001</Parameter>
+        <Parameter Name="KmH2AH3" Role="user defined" Unit="uM">10.4</Parameter>
+        <Parameter Name="kpp_ref" Role="user defined" Unit="s-1">0.01</Parameter>
+        <Parameter Name="prebound_frac" Role="user defined" Unit="tbd">(CPC_ic / (KdSgo1 + CPC_ic))</Parameter>
+        <Parameter Name="kcatplk1" Role="user defined" Unit="s-1">1.5</Parameter>
+        <Parameter Name="Kmplk1" Role="user defined" Unit="uM">76.0</Parameter>
+        <Parameter Name="KdNDC80TTK_MT" Role="user defined" Unit="">1261.5</Parameter>
+        <Parameter Name="KdNDC80pTTK_MT" Role="user defined" Unit="">30.5</Parameter>
+        <Parameter Name="delT" Role="user defined" Unit="">17.1</Parameter>
+        <Parameter Name="t_transition" Role="user defined" Unit="">100.0</Parameter>
+        <Parameter Name="KT_distance_move" Role="user defined" Unit="">(KK_disSim-KK_disRef) / 2.0</Parameter>
+        <Parameter Name="max_vel" Role="user defined" Unit="">KT_distance_move/delT</Parameter>
+        <Parameter Name="L_kin_x2_relaxed" Role="user defined" Unit="">x_mid - KK_disRef/2</Parameter>
+        <Parameter Name="R_kin_x1_relaxed" Role="user defined" Unit="">x_mid + KK_disRef/2</Parameter>
+        <Parameter Name="sigma_y" Role="user defined" Unit="">kinH/2</Parameter>
+        <Parameter Name="sigma_x" Role="user defined" Unit="">KT_distance_move</Parameter>
+        <Parameter Name="scale_y" Role="user defined" Unit="">0.3</Parameter>
+        <Parameter Name="norm_x" Role="user defined" Unit="">exp(( - ((L_kin_x2_relaxed - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0))))</Parameter>
+        <Parameter Name="y_mid" Role="user defined" Unit="">chrH/2</Parameter>
+      </ModelParameters>
+      <Compound Name="HASPINi">
+        <Annotation>HASPINi</Annotation>
+      </Compound>
+      <Compound Name="HASPINa">
+        <Annotation>HASPINa</Annotation>
+      </Compound>
+      <Compound Name="PLK1a">
+        <Annotation>PLK1a</Annotation>
+      </Compound>
+      <Compound Name="H3">
+        <Annotation>H3</Annotation>
+      </Compound>
+      <Compound Name="pH3">
+        <Annotation>pH3</Annotation>
+      </Compound>
+      <Compound Name="pKNL1">
+        <Annotation>pKNL1</Annotation>
+      </Compound>
+      <Compound Name="BUB1a">
+        <Annotation>BUB1a</Annotation>
+      </Compound>
+      <Compound Name="H2A">
+        <Annotation>H2A</Annotation>
+      </Compound>
+      <Compound Name="pH2A">
+        <Annotation>pH2A</Annotation>
+      </Compound>
+      <Compound Name="SGO1">
+        <Annotation>SGO1</Annotation>
+      </Compound>
+      <Compound Name="pH2A_SGO1">
+        <Annotation>pH2A_SGO1</Annotation>
+      </Compound>
+      <Compound Name="CPCi">
+        <Annotation>CPCi</Annotation>
+      </Compound>
+      <Compound Name="pH3_CPCi">
+        <Annotation>pH3_CPCi</Annotation>
+      </Compound>
+      <Compound Name="pH2A_SGO1_CPCi">
+        <Annotation>pH2A_SGO1_CPCi</Annotation>
+      </Compound>
+      <Compound Name="CPCa">
+        <Annotation>CPCa</Annotation>
+      </Compound>
+      <Compound Name="pH3_CPCa">
+        <Annotation>pH3_CPCa</Annotation>
+      </Compound>
+      <Compound Name="pH2A_SGO1_CPCa">
+        <Annotation>pH2A_SGO1_CPCa</Annotation>
+      </Compound>
+      <Compound Name="PLK1i">
+        <Annotation>PLK1i</Annotation>
+      </Compound>
+      <Compound Name="TTKi">
+        <Annotation>TTKi</Annotation>
+      </Compound>
+      <Compound Name="pTTKi">
+        <Annotation>pTTKi</Annotation>
+      </Compound>
+      <Compound Name="TTKa">
+        <Annotation>TTKa</Annotation>
+      </Compound>
+      <Compound Name="pTTKa">
+        <Annotation>pTTKa</Annotation>
+      </Compound>
+      <Compound Name="NDC80">
+        <Annotation>NDC80</Annotation>
+      </Compound>
+      <Compound Name="pNDC80">
+        <Annotation>pNDC80</Annotation>
+      </Compound>
+      <Compound Name="NDC80_TTKi">
+        <Annotation>NDC80_TTKi</Annotation>
+      </Compound>
+      <Compound Name="NDC80_pTTKi">
+        <Annotation>NDC80_pTTKi</Annotation>
+      </Compound>
+      <Compound Name="pNDC80_TTKi">
+        <Annotation>pNDC80_TTKi</Annotation>
+      </Compound>
+      <Compound Name="pNDC80_pTTKi">
+        <Annotation>pNDC80_pTTKi</Annotation>
+      </Compound>
+      <Compound Name="NDC80_TTKa">
+        <Annotation>NDC80_TTKa</Annotation>
+      </Compound>
+      <Compound Name="NDC80_pTTKa">
+        <Annotation>NDC80_pTTKa</Annotation>
+      </Compound>
+      <Compound Name="pNDC80_TTKa">
+        <Annotation>pNDC80_TTKa</Annotation>
+      </Compound>
+      <Compound Name="pNDC80_pTTKa">
+        <Annotation>pNDC80_pTTKa</Annotation>
+      </Compound>
+      <Compound Name="KNL1">
+        <Annotation>KNL1</Annotation>
+      </Compound>
+      <Compound Name="SGO1_CPCi">
+        <Annotation>SGO1_CPCi</Annotation>
+      </Compound>
+      <Compound Name="SGO1_CPCa">
+        <Annotation>SGO1_CPCa</Annotation>
+      </Compound>
+      <Compound Name="H3_CPCi">
+        <Annotation>H3_CPCi</Annotation>
+      </Compound>
+      <Compound Name="H3_CPCa">
+        <Annotation>H3_CPCa</Annotation>
+      </Compound>
+      <Compound Name="I">
+        <Annotation>I</Annotation>
+      </Compound>
+      <Compound Name="H3S10rep">
+        <Annotation>H3S10rep</Annotation>
+      </Compound>
+      <Compound Name="pH3S10rep">
+        <Annotation>pH3S10rep</Annotation>
+      </Compound>
+      <Compound Name="pKNL1_bub1a">
+        <Annotation>pKNL1_bub1a</Annotation>
+      </Compound>
+      <Compound Name="BUB1a_pknl1">
+        <Annotation>BUB1a_pknl1</Annotation>
+      </Compound>
+      <Feature Name="void"/>
+      <Feature Name="chr"/>
+      <LocalizedCompound Name="HASPINi" CompoundRef="HASPINi" Structure="chr"/>
+      <LocalizedCompound Name="HASPINa" CompoundRef="HASPINa" Structure="chr"/>
+      <LocalizedCompound Name="PLK1a" CompoundRef="PLK1a" Structure="chr"/>
+      <LocalizedCompound Name="H3" CompoundRef="H3" Structure="chr"/>
+      <LocalizedCompound Name="pH3" CompoundRef="pH3" Structure="chr"/>
+      <LocalizedCompound Name="pKNL1" CompoundRef="pKNL1" Structure="chr"/>
+      <LocalizedCompound Name="BUB1a" CompoundRef="BUB1a" Structure="chr"/>
+      <LocalizedCompound Name="H2A" CompoundRef="H2A" Structure="chr"/>
+      <LocalizedCompound Name="pH2A" CompoundRef="pH2A" Structure="chr"/>
+      <LocalizedCompound Name="SGO1" CompoundRef="SGO1" Structure="chr"/>
+      <LocalizedCompound Name="pH2A_SGO1" CompoundRef="pH2A_SGO1" Structure="chr"/>
+      <LocalizedCompound Name="CPCi" CompoundRef="CPCi" Structure="chr"/>
+      <LocalizedCompound Name="pH3_CPCi" CompoundRef="pH3_CPCi" Structure="chr"/>
+      <LocalizedCompound Name="pH2A_SGO1_CPCi" CompoundRef="pH2A_SGO1_CPCi" Structure="chr"/>
+      <LocalizedCompound Name="CPCa" CompoundRef="CPCa" Structure="chr"/>
+      <LocalizedCompound Name="pH3_CPCa" CompoundRef="pH3_CPCa" Structure="chr"/>
+      <LocalizedCompound Name="pH2A_SGO1_CPCa" CompoundRef="pH2A_SGO1_CPCa" Structure="chr"/>
+      <LocalizedCompound Name="PLK1i" CompoundRef="PLK1i" Structure="chr"/>
+      <LocalizedCompound Name="TTKi" CompoundRef="TTKi" Structure="chr"/>
+      <LocalizedCompound Name="pTTKi" CompoundRef="pTTKi" Structure="chr"/>
+      <LocalizedCompound Name="TTKa" CompoundRef="TTKa" Structure="chr"/>
+      <LocalizedCompound Name="pTTKa" CompoundRef="pTTKa" Structure="chr"/>
+      <LocalizedCompound Name="NDC80" CompoundRef="NDC80" Structure="chr"/>
+      <LocalizedCompound Name="pNDC80" CompoundRef="pNDC80" Structure="chr"/>
+      <LocalizedCompound Name="NDC80_TTKi" CompoundRef="NDC80_TTKi" Structure="chr"/>
+      <LocalizedCompound Name="NDC80_pTTKi" CompoundRef="NDC80_pTTKi" Structure="chr"/>
+      <LocalizedCompound Name="pNDC80_TTKi" CompoundRef="pNDC80_TTKi" Structure="chr"/>
+      <LocalizedCompound Name="pNDC80_pTTKi" CompoundRef="pNDC80_pTTKi" Structure="chr"/>
+      <LocalizedCompound Name="NDC80_TTKa" CompoundRef="NDC80_TTKa" Structure="chr"/>
+      <LocalizedCompound Name="NDC80_pTTKa" CompoundRef="NDC80_pTTKa" Structure="chr"/>
+      <LocalizedCompound Name="pNDC80_TTKa" CompoundRef="pNDC80_TTKa" Structure="chr"/>
+      <LocalizedCompound Name="pNDC80_pTTKa" CompoundRef="pNDC80_pTTKa" Structure="chr"/>
+      <LocalizedCompound Name="KNL1" CompoundRef="KNL1" Structure="chr"/>
+      <LocalizedCompound Name="SGO1_CPCi" CompoundRef="SGO1_CPCi" Structure="chr"/>
+      <LocalizedCompound Name="SGO1_CPCa" CompoundRef="SGO1_CPCa" Structure="chr"/>
+      <LocalizedCompound Name="H3_CPCi" CompoundRef="H3_CPCi" Structure="chr"/>
+      <LocalizedCompound Name="H3_CPCa" CompoundRef="H3_CPCa" Structure="chr"/>
+      <LocalizedCompound Name="I" CompoundRef="I" Structure="chr"/>
+      <LocalizedCompound Name="H3S10rep" CompoundRef="H3S10rep" Structure="chr"/>
+      <LocalizedCompound Name="pH3S10rep" CompoundRef="pH3S10rep" Structure="chr"/>
+      <LocalizedCompound Name="pKNL1_bub1a" CompoundRef="pKNL1_bub1a" Structure="chr"/>
+      <LocalizedCompound Name="BUB1a_pknl1" CompoundRef="BUB1a_pknl1" Structure="chr"/>
+      <SimpleReaction Structure="chr" Name="HASPIN_activation_PLK1a">
+        <Reactant LocalizedCompoundRef="HASPINi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="HASPINa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * HASPINi) / (Km + HASPINi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmPLK1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatPLK1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="HASPIN_deactivation">
+        <Reactant LocalizedCompoundRef="HASPINa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="HASPINi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * HASPINa) - (Kr * HASPINi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kpp</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H3_phos_HASPINa">
+        <Reactant LocalizedCompoundRef="H3" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH3" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * H3) / (Km + H3))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmH3</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcat * HASPINa)</Parameter>
+          <Parameter Name="kcat" Role="user defined" Unit="s-1">kcatH3</Parameter>
+          <Parameter Name="KmH3" Role="user defined" Unit="uM">2.391</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH3_dephos">
+        <Reactant LocalizedCompoundRef="pH3" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="H3" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pH3) - (Kr * H3))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kpp</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pKNL1_BUB1a_binding">
+        <Reactant LocalizedCompoundRef="pKNL1" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="BUB1a" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pKNL1_bub1a" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="BUB1a_pknl1" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * pKNL1) * BUB1a) - ((Kr * pKNL1_bub1a) * BUB1a_pknl1))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1.uM-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H2A_phos_BUB1a">
+        <Reactant LocalizedCompoundRef="H2A" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * H2A) / (Km_app + H2A))</Parameter>
+          <Parameter Name="Km_app" Role="Km (1/2 max)" Unit="uM">(KmH2AH3 * (1.0 + (I / KiacH2A)))</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatH2AH3 * BUB1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH2A_dephos">
+        <Reactant LocalizedCompoundRef="pH2A" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="H2A" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pH2A) - (Kr * H2A))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kpp</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="BUB1a:pknl1_unbinding">
+        <Reactant LocalizedCompoundRef="BUB1a_pknl1" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="BUB1a" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * BUB1a_pknl1) - (Kr * BUB1a))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">(kbind * Kd)</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+          <Parameter Name="Kd" Role="user defined" Unit="uM">0.2</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH2A_SGO1_binding">
+        <Reactant LocalizedCompoundRef="pH2A" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="SGO1" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A_SGO1" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * pH2A) * SGO1) - (Kr * pH2A_SGO1))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdpH2ASgo1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH3_CPCi_binding">
+        <Reactant LocalizedCompoundRef="CPCi" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pH3" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH3_CPCi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * CPCi) * pH3) - (Kr * pH3_CPCi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdpH3)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH2A:SGO1_CPCi_binding">
+        <Reactant LocalizedCompoundRef="CPCi" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pH2A_SGO1" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A_SGO1_CPCi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * CPCi) * pH2A_SGO1) - (Kr * pH2A_SGO1_CPCi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdSgo1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="CPC_cis_activation">
+        <Reactant LocalizedCompoundRef="CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * CPCi) - (Kr * CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisCPC</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppCPC</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH3:CPC_cis_activation">
+        <Reactant LocalizedCompoundRef="pH3_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH3_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pH3_CPCi) - (Kr * pH3_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisCPC</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppCPC</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH2A:SGO1:CPC_cis_activation">
+        <Reactant LocalizedCompoundRef="pH2A_SGO1_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A_SGO1_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pH2A_SGO1_CPCi) - (Kr * pH2A_SGO1_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisCPC</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppCPC</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="CPC_trans_activation_panCPCa">
+        <Reactant LocalizedCompoundRef="CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * CPCi) / (Km + CPCi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPC</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPC * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH3:CPC_trans_activation_panCPCa">
+        <Reactant LocalizedCompoundRef="pH3_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH3_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pH3_CPCi) / (Km + pH3_CPCi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPC</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPC * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH2A:SGO1:CPC_trans_activation_panCPCa">
+        <Reactant LocalizedCompoundRef="pH2A_SGO1_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A_SGO1_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pH2A_SGO1_CPCi) / (Km + pH2A_SGO1_CPCi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPC</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPC * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH3_CPCa_binding">
+        <Reactant LocalizedCompoundRef="CPCa" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pH3" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH3_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * CPCa) * pH3) - (Kr * pH3_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdpH3)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH2A:SGO1_CPCa_binding">
+        <Reactant LocalizedCompoundRef="pH2A_SGO1" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="CPCa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A_SGO1_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * pH2A_SGO1) * CPCa) - (Kr * pH2A_SGO1_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdSgo1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="PLK1_activation_panCPCa">
+        <Reactant LocalizedCompoundRef="PLK1i" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="PLK1a" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * PLK1i) / (Km + PLK1i))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="PLK1_deactivation">
+        <Reactant LocalizedCompoundRef="PLK1a" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="PLK1i" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * PLK1a) - (Kr * PLK1i))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kpp</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="TTKi_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * TTKi) / (Km + TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pTTKi_dephos">
+        <Reactant LocalizedCompoundRef="pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="TTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pTTKi) - (Kr * TTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kpp</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="TTKa_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * TTKa) / (Km + TTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pTTKa_dephos">
+        <Reactant LocalizedCompoundRef="pTTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pTTKa) - (Kr * TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kpp</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="NDC80" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80) / (Km + NDC80))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80_dephos">
+        <Reactant LocalizedCompoundRef="pNDC80" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80) - (Kr * NDC80))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80_TTKi_binding">
+        <Reactant LocalizedCompoundRef="NDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * NDC80) * TTKi) - (Kr * NDC80_TTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80TTK)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80_pTTKi_binding">
+        <Reactant LocalizedCompoundRef="NDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * NDC80) * pTTKi) - (Kr * NDC80_pTTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80pTTK)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80_TTKi_binding">
+        <Reactant LocalizedCompoundRef="pNDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * pNDC80) * TTKi) - (Kr * pNDC80_TTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80TTK * phiNdc80)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80_pTTKi_binding">
+        <Reactant LocalizedCompoundRef="pNDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * pNDC80) * pTTKi) - (Kr * pNDC80_pTTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80pTTK * phiNdc80)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80_TTKa_binding">
+        <Reactant LocalizedCompoundRef="NDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * NDC80) * TTKa) - (Kr * NDC80_TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80TTK)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80_pTTKa_binding">
+        <Reactant LocalizedCompoundRef="NDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pTTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * NDC80) * pTTKa) - (Kr * NDC80_pTTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80pTTK)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80_TTKa_binding">
+        <Reactant LocalizedCompoundRef="pNDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * pNDC80) * TTKa) - (Kr * pNDC80_TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80TTK * phiNdc80)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80_pTTKa_binding">
+        <Reactant LocalizedCompoundRef="pNDC80" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pTTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * pNDC80) * pTTKa) - (Kr * pNDC80_pTTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdNDC80pTTK * phiNdc80)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTK_cis_activation">
+        <Reactant LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * NDC80_TTKi) - (Kr * NDC80_TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisTTK</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppKT</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTK_cis_activation">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_TTKi) - (Kr * pNDC80_TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisTTK</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppKT</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:pTTK_cis_activation">
+        <Reactant LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_pTTKi) - (Kr * pNDC80_pTTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisTTK</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppKT</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:pTTK_cis_activation">
+        <Reactant LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_pTTKi) - (Kr * pNDC80_pTTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisTTK</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppKT</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTK_trans_activation">
+        <Reactant LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_TTKi) / (Km + NDC80_TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmTTK</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatTTK * (TTKa + pTTKa + NDC80_TTKa + NDC80_pTTKa + pNDC80_TTKa + pNDC80_pTTKa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTK_trans_activation">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pNDC80_TTKi) / (Km + pNDC80_TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmTTK</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatTTK * (TTKa + pTTKa + NDC80_TTKa + NDC80_pTTKa + pNDC80_TTKa + pNDC80_pTTKa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:pTTK_trans_activation">
+        <Reactant LocalizedCompoundRef="NDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_pTTKi) / (Km + NDC80_pTTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmTTK</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatTTK * (TTKa + pTTKa + NDC80_TTKa + NDC80_pTTKa + pNDC80_TTKa + pNDC80_pTTKa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:pTTK_trans_activation">
+        <Reactant LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pNDC80_pTTKi) / (Km + pNDC80_pTTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmTTK</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatTTK * (TTKa + pTTKa + NDC80_TTKa + NDC80_pTTKa + pNDC80_TTKa + pNDC80_pTTKa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="KNL1_phos_panTTK">
+        <Reactant LocalizedCompoundRef="KNL1" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pKNL1" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * KNL1) / (Km + KNL1))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">kmTTKsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatTTKsub * (TTKa + pTTKa + NDC80_TTKa + NDC80_pTTKa + pNDC80_TTKa + pNDC80_pTTKa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pKNL1_dephos">
+        <Reactant LocalizedCompoundRef="pKNL1" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="KNL1" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pKNL1) - (Kr * KNL1))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="TTK_cis_activation">
+        <Reactant LocalizedCompoundRef="TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * TTKi) - (Kr * TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisTTK</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kpp</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pTTK_cis_activation">
+        <Reactant LocalizedCompoundRef="pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pTTKi) - (Kr * pTTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisTTK</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kpp</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="TTKi_phos_PLK1a">
+        <Reactant LocalizedCompoundRef="TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * TTKi) / (Km + TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmPLK1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatPLK1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="TTKa_phos_PLK1a">
+        <Reactant LocalizedCompoundRef="TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * TTKa) / (Km + TTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmPLK1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatPLK1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="TTK_trans_activation">
+        <Reactant LocalizedCompoundRef="TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * TTKi) / (Km + TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmTTK</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatTTK * (TTKa + pTTKa + NDC80_TTKa + NDC80_pTTKa + pNDC80_TTKa + pNDC80_pTTKa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pTTK_trans_activation">
+        <Reactant LocalizedCompoundRef="pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pTTKi) / (Km + pTTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmTTK</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatTTK * (TTKa + pTTKa + NDC80_TTKa + NDC80_pTTKa + pNDC80_TTKa + pNDC80_pTTKa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="KNL1_phos_PLK1a">
+        <Reactant LocalizedCompoundRef="KNL1" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pKNL1" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * KNL1) / (Km + KNL1))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">Kmplk1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatplk1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="HASPIN_activation_panCPCa">
+        <Reactant LocalizedCompoundRef="HASPINi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="HASPINa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * HASPINi) / (Km + HASPINi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="SGO1_CPCi_binding">
+        <Reactant LocalizedCompoundRef="SGO1" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="SGO1_CPCi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * SGO1) * CPCi) - (Kr * SGO1_CPCi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdSgo1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="SGO1:CPCi_pH2A_binding">
+        <Reactant LocalizedCompoundRef="SGO1_CPCi" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pH2A" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A_SGO1_CPCi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * SGO1_CPCi) * pH2A) - (Kr * pH2A_SGO1_CPCi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdpH2ASgo1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="SGO1_CPCa_binding">
+        <Reactant LocalizedCompoundRef="SGO1" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="CPCa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="SGO1_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * SGO1) * CPCa) - (Kr * SGO1_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdSgo1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="SGO1:CPCa_pH2A_binding">
+        <Reactant LocalizedCompoundRef="SGO1_CPCa" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="pH2A" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A_SGO1_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * SGO1_CPCa) * pH2A) - (Kr * pH2A_SGO1_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdpH2ASgo1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="SGO1:CPC_cis_activation">
+        <Reactant LocalizedCompoundRef="SGO1_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="SGO1_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * SGO1_CPCi) - (Kr * SGO1_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisCPC</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppCPC</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="SGO1:CPC_trans_activation_panCPCa">
+        <Reactant LocalizedCompoundRef="SGO1_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="SGO1_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * SGO1_CPCi) / (Km + SGO1_CPCi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPC</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPC * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H3_CPCi_binding">
+        <Reactant LocalizedCompoundRef="H3" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="H3_CPCi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * H3) * CPCi) - (Kr * H3_CPCi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdH3)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H3:CPC_cis_activation">
+        <Reactant LocalizedCompoundRef="H3_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="H3_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * H3_CPCi) - (Kr * H3_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kcisCPC</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">kppCPC</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H3:CPC_trans_activation_panCPCa">
+        <Reactant LocalizedCompoundRef="H3_CPCi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="H3_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * H3_CPCi) / (Km + H3_CPCi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPC</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPC * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H3_CPCa_binding">
+        <Reactant LocalizedCompoundRef="H3" Stoichiometry="1"/>
+        <Reactant LocalizedCompoundRef="CPCa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="H3_CPCa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">(((Kf * H3) * CPCa) - (Kr * H3_CPCa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1.uM-1">kbind</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Kf * KdH3)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTKi_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_TTKi) / (Km + NDC80_TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:pTTKi_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="NDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_pTTKi) / (Km + NDC80_pTTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:pTTKa_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="NDC80_pTTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_pTTKa) / (Km + NDC80_pTTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTKi_dephos">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_TTKi) - (Kr * NDC80_TTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTKi_phosalt_panCPCa">
+        <Reactant LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_TTKi) / (Km + NDC80_TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:pTTKi_dephos">
+        <Reactant LocalizedCompoundRef="NDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * NDC80_pTTKi) - (Kr * NDC80_TTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTKi_phos_PLK1a">
+        <Reactant LocalizedCompoundRef="NDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_TTKi) / (Km + NDC80_TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmPLK1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatPLK1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:pTTKi_dephos">
+        <Reactant LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_pTTKi) - (Kr * NDC80_pTTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:pTTKi_dephosalt">
+        <Reactant LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_pTTKi) - (Kr * pNDC80_TTKi))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTKa_dephos">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_TTKa) - (Kr * NDC80_TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTKa_phosalt_panCPCa">
+        <Reactant LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_TTKa) / (Km + NDC80_TTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:pTTKa_dephos">
+        <Reactant LocalizedCompoundRef="NDC80_pTTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * NDC80_pTTKa) - (Kr * NDC80_TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTKa_phos_PLK1a">
+        <Reactant LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_TTKa) / (Km + NDC80_TTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmPLK1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatPLK1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:pTTKa_dephos">
+        <Reactant LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="NDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_pTTKa) - (Kr * NDC80_pTTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:pTTKa_dephosalt">
+        <Reactant LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pNDC80_pTTKa) - (Kr * pNDC80_TTKa))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kppKT</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTKa_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pNDC80_TTKa) / (Km + pNDC80_TTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTKa_phos_PLK1a">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pNDC80_TTKa) / (Km + pNDC80_TTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmPLK1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatPLK1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTKi_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pNDC80_TTKi) / (Km + pNDC80_TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pNDC80:TTKi_phos_PLK1a">
+        <Reactant LocalizedCompoundRef="pNDC80_TTKi" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_pTTKi" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * pNDC80_TTKi) / (Km + pNDC80_TTKi))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmPLK1</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatPLK1 * PLK1a)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="NDC80:TTKa_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="NDC80_TTKa" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pNDC80_TTKa" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * NDC80_TTKa) / (Km + NDC80_TTKa))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H3S10rep_phos_panCPCa">
+        <Reactant LocalizedCompoundRef="H3S10rep" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH3S10rep" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * H3S10rep) / (Km + H3S10rep))</Parameter>
+          <Parameter Name="Km" Role="Km (1/2 max)" Unit="uM">KmCPCsub</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatCPCsub * (CPCa + H3_CPCa + pH3_CPCa + SGO1_CPCa + pH2A_SGO1_CPCa))</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pH3S10rep_dephos">
+        <Reactant LocalizedCompoundRef="pH3S10rep" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="H3S10rep" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pH3S10rep) - (Kr * H3S10rep))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">kpp</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="pKNL1:bub1a_unbinding">
+        <Reactant LocalizedCompoundRef="pKNL1_bub1a" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pKNL1" Stoichiometry="1"/>
+        <Kinetics KineticsType="MassAction">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Kf * pKNL1_bub1a) - (Kr * pKNL1))</Parameter>
+          <Parameter Name="Kf" Role="forward rate constant" Unit="s-1">(kbind * Kd)</Parameter>
+          <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">0.0</Parameter>
+          <Parameter Name="Kd" Role="user defined" Unit="uM">0.2</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+      <SimpleReaction Structure="chr" Name="H2A_phos_BUB1a:pknl1">
+        <Reactant LocalizedCompoundRef="H2A" Stoichiometry="1"/>
+        <Product LocalizedCompoundRef="pH2A" Stoichiometry="1"/>
+        <Kinetics KineticsType="HMMIrreversible">
+          <Parameter Name="J" Role="reaction rate" Unit="uM.s-1">((Vmax * H2A) / (Km_app + H2A))</Parameter>
+          <Parameter Name="Km_app" Role="Km (1/2 max)" Unit="uM">(KmH2AH3 * (1.0 + (I / KiacH2A)))</Parameter>
+          <Parameter Name="Vmax" Role="max reaction rate" Unit="uM.s-1">(kcatH2AH3 * BUB1a_pknl1)</Parameter>
+        </Kinetics>
+      </SimpleReaction>
+    </Model>
+    <SimulationSpec Name="Spatial">
+      <Geometry Name="Geometry137632321" Dimension="2">
+        <Extent X="1.3" Y="3.4" Z="10.0"/>
+        <Origin X="0.0" Y="0.0" Z="0.0"/>
+        <SubVolume Name="void" Handle="2" Type="Analytical">
+          <AnalyticExpression>(((x &gt;= 0.0) &amp;&amp; (x &lt; ((1.3 / 2.0) - (1.15 / 2.0) - 0.075)) &amp;&amp; (y &gt;= ((3.4 * 0.5) - (0.3 * 0.5))) &amp;&amp; (y &lt;= ((3.4 * 0.5) + (0.3 * 0.5)))) || ((x &gt; ((1.3 / 2.0) + (1.15 / 2.0) + 0.075)) &amp;&amp; (x &lt;= 1.3) &amp;&amp; (y &gt;=((3.4 * 0.5) - (0.3 * 0.5))) &amp;&amp; (y &lt;= ((3.4 * 0.5) + (0.3 * 0.5)))))</AnalyticExpression>
+        </SubVolume>
+        <SubVolume Name="chromosome" Handle="0" Type="Analytical">
+          <AnalyticExpression>1.0</AnalyticExpression>
+        </SubVolume>
+        <SurfaceClass Name="chromosome_void_membrane" SubVolume1Ref="chromosome" SubVolume2Ref="void"/>
+      </Geometry>
+      <ApplicationParameters>
+        <Parameter Name="appParm0" Role="user defined" Unit="1">1.0</Parameter>
+        <Parameter Name="appParm1" Role="user defined" Unit="1">1.0</Parameter>
+        <Parameter Name="appParm2" Role="user defined" Unit="1">1.0</Parameter>
+        <Parameter Name="appParm3" Role="user defined" Unit="1">1.0</Parameter>
+      </ApplicationParameters>
+      <GeometryContext>
+        <FeatureMapping Feature="void" GeometryClass="void" Size="50000.0" VolumePerUnitVolume="1.0">
+          <BoundariesTypes Xm="Flux" Xp="Flux" Ym="Flux" Yp="Flux" Zm="Flux" Zp="Flux"/>
+        </FeatureMapping>
+        <FeatureMapping Feature="chr" GeometryClass="chromosome" Size="50000.0" VolumePerUnitVolume="1.0">
+          <BoundariesTypes Xm="Flux" Xp="Flux" Ym="Flux" Yp="Flux" Zm="Flux" Zp="Flux"/>
+        </FeatureMapping>
+      </GeometryContext>
+      <ReactionContext>
+        <LocalizedCompoundSpec LocalizedCompoundRef="HASPINi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'HASPINi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="HASPINa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'HASPINa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="PLK1a">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'PLK1a', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="H3">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'H3', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH3">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH3', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pKNL1">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pKNL1', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="BUB1a">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'BUB1a', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="H2A">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'H2A', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH2A">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH2A', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="SGO1">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'SGO1', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH2A_SGO1">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH2A_SGO1', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="CPCi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'CPCi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH3_CPCi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH3_CPCi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH2A_SGO1_CPCi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH2A_SGO1_CPCi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="CPCa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'CPCa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH3_CPCa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH3_CPCa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH2A_SGO1_CPCa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH2A_SGO1_CPCa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="PLK1i">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'PLK1i', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="TTKi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'TTKi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pTTKi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pTTKi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="TTKa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'TTKa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pTTKa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pTTKa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="NDC80">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'NDC80', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pNDC80">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pNDC80', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="NDC80_TTKi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'NDC80_TTKi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="NDC80_pTTKi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'NDC80_pTTKi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pNDC80_TTKi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pNDC80_TTKi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pNDC80_pTTKi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pNDC80_pTTKi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="NDC80_TTKa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'NDC80_TTKa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="NDC80_pTTKa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'NDC80_pTTKa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pNDC80_TTKa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pNDC80_TTKa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pNDC80_pTTKa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pNDC80_pTTKa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="KNL1">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'KNL1', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="SGO1_CPCi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'SGO1_CPCi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="SGO1_CPCa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'SGO1_CPCa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dcyt</Diffusion>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="H3_CPCi">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'H3_CPCi', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="H3_CPCa">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'H3_CPCa', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="I">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'I', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="H3S10rep">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'H3S10rep', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pH3S10rep">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pH3S10rep', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_histones</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="pKNL1_bub1a">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'pKNL1_bub1a', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dimmob</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <LocalizedCompoundSpec LocalizedCompoundRef="BUB1a_pknl1">
+          <InitialConcentration>vcField('_006_10_26_CPC_metacentric_relaxed_MCF10A_chr19_PMP1', 'BUB1a_pknl1', t_transition, 'Volume')</InitialConcentration>
+          <Diffusion>Dslow_kt</Diffusion>
+          <Velocity X="((((x - x_mid) / delT) * exp(( - ((x - x_mid) ^ 2.0) / (2.0 * (sigma_x ^ 2.0)))) / norm_X * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * ((x &gt;= L_kin_x2_relaxed) &amp;&amp; (x &lt;= R_kin_x1_relaxed))) + ( - max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &lt; L_kin_x2_relaxed)) + (max_vel * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))) * (x &gt; R_kin_x1_relaxed)))* (t &lt;= delT)" Y="( - (y - y_mid) / delT * scale_y * exp(( - ((y - y_mid) ^ 2.0) / (2.0 * (sigma_y ^ 2.0)))))* (t &lt;= delT)"/>
+        </LocalizedCompoundSpec>
+        <ReactionSpec ReactionStepRef="HASPIN_activation_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="HASPIN_deactivation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H3_phos_HASPINa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH3_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pKNL1_BUB1a_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H2A_phos_BUB1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH2A_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="BUB1a:pknl1_unbinding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH2A_SGO1_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH3_CPCi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH2A:SGO1_CPCi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="CPC_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH3:CPC_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH2A:SGO1:CPC_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="CPC_trans_activation_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH3:CPC_trans_activation_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH2A:SGO1:CPC_trans_activation_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH3_CPCa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH2A:SGO1_CPCa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="PLK1_activation_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="PLK1_deactivation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="TTKi_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pTTKi_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="TTKa_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pTTKa_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80_TTKi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80_pTTKi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80_TTKi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80_pTTKi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80_TTKa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80_pTTKa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80_TTKa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80_pTTKa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTK_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTK_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:pTTK_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:pTTK_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTK_trans_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTK_trans_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:pTTK_trans_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:pTTK_trans_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="KNL1_phos_panTTK" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pKNL1_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="TTK_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pTTK_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="TTKi_phos_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="TTKa_phos_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="TTK_trans_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pTTK_trans_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="KNL1_phos_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="HASPIN_activation_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="SGO1_CPCi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="SGO1:CPCi_pH2A_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="SGO1_CPCa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="SGO1:CPCa_pH2A_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="SGO1:CPC_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="SGO1:CPC_trans_activation_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H3_CPCi_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H3:CPC_cis_activation" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H3:CPC_trans_activation_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H3_CPCa_binding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTKi_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:pTTKi_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:pTTKa_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTKi_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTKi_phosalt_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:pTTKi_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTKi_phos_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:pTTKi_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:pTTKi_dephosalt" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTKa_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTKa_phosalt_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:pTTKa_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTKa_phos_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:pTTKa_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:pTTKa_dephosalt" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTKa_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTKa_phos_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTKi_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pNDC80:TTKi_phos_PLK1a" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="NDC80:TTKa_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H3S10rep_phos_panCPCa" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pH3S10rep_dephos" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="pKNL1:bub1a_unbinding" ReactionMapping="included"/>
+        <ReactionSpec ReactionStepRef="H2A_phos_BUB1a:pknl1" ReactionMapping="included"/>
+      </ReactionContext>
+      <MathDescription Name="dummy_math_description"/>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="20.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="1.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030881" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1" BranchId="316030882" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_icacH2A">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030884" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_icacH2A" BranchId="316030885" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_SGO1_scanup">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030887" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_SGO1_scanup" BranchId="316030888" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_acH2Aremoval_t0s">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030890" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_acH2Aremoval_t0s" BranchId="316030891" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_HASPINInh">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030893" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_preboundSGO1_CPC_HASPINInh" BranchId="316030894" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_BUB1Inh">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="1000.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030896" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_BUB1Inh" BranchId="316030897" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_SGO1_2x_BUB1Inh">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030899" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_SGO1_2x_BUB1Inh" BranchId="316030900" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_SGO1_5x_BUB1Inh">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030902" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_SGO1_5x_BUB1Inh" BranchId="316030903" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_SGO1_10x_BUB1Inh">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030905" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_SGO1_10x_BUB1Inh" BranchId="316030906" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_PLK1Inh_100P">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030908" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_PLK1Inh_100P" BranchId="316030909" Date="11-Jun-2026 20:03:48">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_TTKInh_100P">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030911" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_TTKInh_100P" BranchId="316030912" Date="11-Jun-2026 20:03:49">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_CPCInh_100P">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030914" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_CPCInh_100P" BranchId="316030915" Date="11-Jun-2026 20:03:49">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_KNL1_KO">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030917" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_KNL1_KO" BranchId="316030918" Date="11-Jun-2026 20:03:49">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_TTK_PLK1_Inh_100P">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030920" Name="06_10_26_metacentric_relaxed_MCF10A_chr19_PMP1_prebound_TTK_PLK1_Inh_100P" BranchId="316030921" Date="11-Jun-2026 20:03:49">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_11_26_metacentric_relaxed_MCF10A_chr19_PMP1_kbind">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030923" Name="06_11_26_metacentric_relaxed_MCF10A_chr19_PMP1_kbind" BranchId="316030924" Date="11-Jun-2026 20:03:49">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="06_11_26_metacentric_relaxed_MCF10A_chr19_PMP1_kbind_KM">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="500.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030926" Name="06_11_26_metacentric_relaxed_MCF10A_chr19_PMP1_kbind_KM" BranchId="316030927" Date="11-Jun-2026 20:03:49">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+      <Simulation Name="Copy of 06_11_26_metacentric_relaxed_MCF10A_chr19_PMP1_kbind">
+        <SolverTaskDescription TaskType="Unsteady" UseSymbolicJacobian="false" Solver="Sundials Stiff PDE Solver (Variable Time Step)">
+          <TimeBound StartTime="0.0" EndTime="1000.0"/>
+          <TimeStep DefaultTime="0.05" MinTime="0.0" MaxTime="0.1"/>
+          <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-7"/>
+          <OutputOptions OutputTimeStep="10.0"/>
+          <SundialsSolverOptions>
+            <maxOrderAdvection>2</maxOrderAdvection>
+          </SundialsSolverOptions>
+          <NumberProcessors>1</NumberProcessors>
+        </SolverTaskDescription>
+        <MathOverrides/>
+        <MeshSpecification>
+          <Size X="52" Y="136" Z="1"/>
+        </MeshSpecification>
+        <Version KeyValue="316030929" Name="Copy of 06_11_26_metacentric_relaxed_MCF10A_chr19_PMP1_kbind" BranchId="316030930" Date="11-Jun-2026 20:03:49">
+          <Owner Name="smgroves" Identifier="258078704"/>
+        </Version>
+      </Simulation>
+    </SimulationSpec>
+    <Version KeyValue="316030932" Name="006_10_26 CPC_metacentric_relaxed_MCF10A_chr19_PMP1" BranchId="316030933" Date="11-Jun-2026 20:03:49">
+      <Owner Name="smgroves" Identifier="258078704"/>
+    </Version>
+  </BioModel>
+</vcml>
