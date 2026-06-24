@@ -34,6 +34,7 @@ java -agentlib:native-image-agent=config-output-dir=target/recording \
      "$ROOT_DIR/vcell-native/src/test/resources/TinySpatialProject_Application0.xml" \
      "$ROOT_DIR/vcell-native/src/test/resources/TinySpatialProject_Application0.vcml" \
      "Simulation0" \
+     "unnamed_spatialGeom" \
      "$ROOT_DIR/vcell-native/target/sbml-input"
 
 # build vcell-native as native shared object library
