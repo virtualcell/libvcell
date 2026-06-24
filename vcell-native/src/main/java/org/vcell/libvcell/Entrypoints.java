@@ -43,7 +43,8 @@ public class Entrypoints {
 
 	// should only be externally invoked by tests!
 	public static String generateErrorReport(String topMostMessage, Throwable exceptionEncountered){
-		boolean hasNoMessage = null == topMostMessage, hasNoException = null == exceptionEncountered;
+		boolean hasNoMessage = topMostMessage == null;
+		boolean hasNoException = exceptionEncountered == null;
 		if (hasNoMessage && hasNoException) throw new IllegalArgumentException("Both arguments cannot be null");
 		if (hasNoException) return topMostMessage;
 		StringBuilder errorMessage = new StringBuilder();
