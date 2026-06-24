@@ -64,11 +64,10 @@ jobs:
           ARCH=$(uname -m)
           echo "ARCH_DEF=$ARCH" >> $GITHUB_ENV
           echo "MANYLINUX_IMAGE_TARGET=ghcr.io/virtualcell/manylinux_${{ matrix.glibc }}_$ARCH:latest" >> $GITHUB_ENV
-          CIBW_BUILD_STRING="cp310-*${{ env.ARCH_DEF }} cp311-*${{ env.ARCH_DEF }} cp312-*${{ env.ARCH_DEF }} cp313-*${{ env.ARCH_DEF }}"
-          if [ "${{ matrix.glibc }}" = "2_34" ]; then
-            CIBW_BUILD_STRING="$CIBW_BUILD_STRING cp314-*${{ env.ARCH_DEF }}"
-          fi
-          echo "CIBW_BUILD_TARGETS=$CIBW_BUILD_STRING" >> $GITHUB_ENV
+          # libvcell is pure Python + a ctypes-loaded GraalVM native library (no CPython
+          # extension), so the wheel is not tied to a Python version. Build a single
+          # interpreter per platform and retag it to py3-none below.
+          echo "CIBW_BUILD_TARGETS=cp311-*" >> $GITHUB_ENV
 
       - name: Run cibuildwheel (Ubuntu, x86_64)
         uses: pypa/cibuildwheel@v3.4.0
@@ -92,7 +91,21 @@ jobs:
           pip install cibuildwheel
           cibuildwheel --debug-traceback --output-dir wheelhouse
         env:
-          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_BUILD: "cp311-*"
+
+      - name: Retag wheels as py3-none (ABI-independent, one wheel per platform)
+        run: |
+          python -m pip install --upgrade wheel
+          for whl in wheelhouse/*.whl; do
+            echo "retagging $whl"
+            # Change cp311-cp311 -> py3-none, preserving the (manylinux/macosx/win) platform tag.
+            # The bundled native lib is loaded via ctypes, so it has no CPython ABI dependency
+            # and the resulting wheel installs on any supported Python 3.x. Requires-Python in
+            # the wheel metadata still enforces the >=3.10 floor.
+            python -m wheel tags --python-tag py3 --abi-tag none --remove "$whl"
+          done
+          ls -l wheelhouse
+
       - name: Copy wheels to dist directory
         run: |
           mkdir -p dist
