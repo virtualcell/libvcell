@@ -18,6 +18,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
+import static org.vcell.libvcell.SolverUtils.vcmlToMovingBoundaryInput;
 import static org.vcell.libvcell.TestUtils.*;
 
 public class SolverEntrypointsTest {
@@ -154,6 +155,55 @@ public class SolverEntrypointsTest {
         String simulationName = "wrong_sim_name";
         // expect to throw an IllegalArgumentException
         IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToFiniteVolumeInput(vcmlContent_actually_sbml, simulationName, parent_dir, output_dir));
+        assertEquals("expecting VCML content, not SBML", exc.getMessage());
+    }
+
+    @Test
+    public void testVcmlToMovingBoundaryInput() throws SolverException, ExpressionException, MappingException, IOException, XmlParseException, MathException {
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToMovingBoundaryInput_" + UUID.randomUUID()).toFile();
+        assertEquals(0, countFiles(output_dir));
+
+        String simulationName = "Simulation33";  // a Moving Boundary simulation in the "2D kinematics analytic" application
+        vcmlToMovingBoundaryInput(vcmlContent, simulationName, output_dir);
+
+        // The solver input is a MovingBoundarySetup XML (consumed by vcell-mbsolver's from_xml).
+        File[] files = output_dir.listFiles();
+        assertNotNull(files);
+        File mbInputFile = null;
+        for (File f : files) {
+            if (f.getName().endsWith("mb.xml")) {
+                mbInputFile = f;
+                break;
+            }
+        }
+        assertNotNull(mbInputFile, "expected a *mb.xml MovingBoundarySetup input file to be written");
+        String mbXml = new String(Files.readAllBytes(mbInputFile.toPath()), java.nio.charset.StandardCharsets.UTF_8);
+        assertTrue(mbXml.contains("<MovingBoundarySetup"), mbXml);
+    }
+
+    @Test
+    public void testVcmlToMovingBoundaryInput_bad_simname() throws IOException {
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToMovingBoundaryInput").toFile();
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToMovingBoundaryInput(vcmlContent, "wrong_sim_name", output_dir));
+        assertEquals("Simulation not found: wrong_sim_name", exc.getMessage());
+    }
+
+    @Test
+    public void testVcmlToMovingBoundaryInput_wrong_solver() throws IOException {
+        // Simulation0 in TinySpatialProject is a Finite Volume simulation, not Moving Boundary
+        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToMovingBoundaryInput").toFile();
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToMovingBoundaryInput(vcmlContent, "Simulation0", output_dir));
+        assertTrue(exc.getMessage().contains("expected the Moving Boundary solver"), exc.getMessage());
+    }
+
+    @Test
+    public void testVcmlToMovingBoundaryInput_sbml_instead() throws IOException {
+        String vcmlContent_actually_sbml = getFileContentsAsString("/TinySpatialProject_Application0.xml");
+        File output_dir = Files.createTempDirectory("vcmlToMovingBoundaryInput").toFile();
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToMovingBoundaryInput(vcmlContent_actually_sbml, "anything", output_dir));
         assertEquals("expecting VCML content, not SBML", exc.getMessage());
     }
 

@@ -20,6 +20,7 @@ import cbit.vcell.xml.XmlParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vcell.libvcell.solvers.LocalFVSolverStandalone;
+import org.vcell.libvcell.solvers.LocalMovingBoundarySolverStandalone;
 import org.vcell.sbml.FiniteVolumeRunUtil;
 import org.vcell.sbml.vcell.SBMLExporter;
 import org.vcell.sbml.vcell.SBMLImporter;
@@ -63,6 +64,38 @@ public class SolverUtils {
         SimulationTask simTask = new SimulationTask(tempSimulationJob, 0);
         LocalFVSolverStandalone solver = new LocalFVSolverStandalone(simTask, outputDir);
         solver.initialize();
+    }
+
+    public static void vcmlToMovingBoundaryInput(String vcml_content, String simulation_name, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException, MathException {
+        GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
+        VCMongoMessage.enabled = false;
+
+        if (vcml_content.substring(0, 300).contains("<sbml xmlns=\"http://www.sbml.org/sbml")) {
+            throw new IllegalArgumentException("expecting VCML content, not SBML");
+        }
+        BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
+        bioModel.updateAll(false);
+        Simulation sim = bioModel.getSimulation(simulation_name);
+        if (sim == null) {
+            throw new IllegalArgumentException("Simulation not found: " + simulation_name);
+        }
+        // Require the simulation to already target the Moving Boundary solver - the input file is
+        // generated from MovingBoundary-specific math (spatial processes / front velocities), so this
+        // entry point is meaningless for simulations configured for other solvers.
+        SolverDescription solverDescription = sim.getSolverTaskDescription().getSolverDescription();
+        if (solverDescription != SolverDescription.MovingBoundary) {
+            String actual = (solverDescription == null) ? "none" : solverDescription.getDisplayLabel();
+            throw new IllegalArgumentException("Simulation '" + simulation_name + "' is configured for the '" + actual + "' solver, expected the Moving Boundary solver");
+        }
+
+        TempSimulation tempSimulation = new TempSimulation(sim, false);
+        tempSimulation.setSimulationOwner(sim.getSimulationOwner());
+        SimulationJob tempSimulationJob = new SimulationJob(tempSimulation, 0, null);
+
+        SimulationTask simTask = new SimulationTask(tempSimulationJob, 0);
+        LocalMovingBoundarySolverStandalone solver = new LocalMovingBoundarySolverStandalone(simTask, outputDir);
+        solver.writeInputFiles();
     }
 
     private static void renameExistingFieldDataFiles(KeyValue tempSimKey, int jobId, File outputDir) {

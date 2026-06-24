@@ -1,15 +1,29 @@
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from libvcell import (
     sbml_to_finite_volume_input,
     sbml_to_vcml,
     vcell_infix_to_num_expr_infix,
     vcell_infix_to_python_infix,
     vcml_to_finite_volume_input,
+    vcml_to_moving_boundary_input,
     vcml_to_sbml,
     vcml_to_vcml,
 )
+from libvcell._internal.native_utils import VCellNativeLibraryLoader
+
+
+def _native_lib_has_moving_boundary() -> bool:
+    """The vcmlToMovingBoundaryInput symbol only exists in native libraries rebuilt with
+    moving-boundary support; older shared libraries won't have it yet. Returns False (skip)
+    if the native library is missing or too old to even load."""
+    try:
+        return hasattr(VCellNativeLibraryLoader().lib, "vcmlToMovingBoundaryInput")
+    except Exception:
+        return False
 
 
 def test_vcml_to_finite_volume_input(temp_output_dir: Path, vcml_file_path: Path, vcml_sim_name: str) -> None:
@@ -20,6 +34,25 @@ def test_vcml_to_finite_volume_input(temp_output_dir: Path, vcml_file_path: Path
     assert len(list(temp_output_dir.iterdir())) > 0
     assert success is True
     assert msg == "Success"
+
+
+@pytest.mark.skipif(
+    not _native_lib_has_moving_boundary(),
+    reason="native library not yet rebuilt with vcmlToMovingBoundaryInput; run scripts/local_build_native.sh",
+)
+def test_vcml_to_moving_boundary_input(
+    temp_output_dir: Path, moving_boundary_vcml_file_path: Path, moving_boundary_sim_name: str
+) -> None:
+    vcml_content = moving_boundary_vcml_file_path.read_text()
+    success, msg = vcml_to_moving_boundary_input(
+        vcml_content=vcml_content, simulation_name=moving_boundary_sim_name, output_dir_path=temp_output_dir
+    )
+    assert success is True
+    assert msg == "Success"
+    # a MovingBoundarySetup XML input file (consumed by vcell-mbsolver) should be written
+    mb_inputs = list(temp_output_dir.glob("*mb.xml"))
+    assert len(mb_inputs) == 1
+    assert "<MovingBoundarySetup" in mb_inputs[0].read_text()
 
 
 def test_sbml_to_finite_volume_input(temp_output_dir: Path, sbml_file_path: Path, vcml_sim_name: str) -> None:

@@ -45,6 +45,29 @@ class VCellNativeCalls:
             logging.exception("Error in vcml_to_finite_volume_input()", exc_info=e)
             raise
 
+    def vcml_to_moving_boundary_input(
+        self, vcml_content: str, simulation_name: str, output_dir_path: Path
+    ) -> ReturnValue:
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.vcmlToMovingBoundaryInput(
+                    isolate_thread,
+                    ctypes.c_char_p(vcml_content.encode("utf-8")),
+                    ctypes.c_char_p(simulation_name.encode("utf-8")),
+                    ctypes.c_char_p(str(output_dir_path).encode("utf-8")),
+                )
+
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to convert vcml to moving boundary input")
+                return ReturnValue(success=False, message="Failed to convert vcml to moving boundary input")
+            json_str: str = value.decode("utf-8")
+            # self.lib.freeString(json_ptr)
+            return ReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in vcml_to_moving_boundary_input()", exc_info=e)
+            raise
+
     def sbml_to_finite_volume_input(self, sbml_content: str, output_dir_path: Path) -> ReturnValue:
         try:
             with IsolateManager(self.lib) as isolate_thread:

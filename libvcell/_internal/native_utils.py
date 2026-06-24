@@ -53,6 +53,17 @@ class VCellNativeLibraryLoader:
         self.lib.vcmlToVcml.restype = ctypes.c_char_p
         self.lib.vcmlToVcml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
 
+        # vcmlToMovingBoundaryInput is only present in native libraries built with moving-boundary
+        # support; guard so the package still loads against older shared libraries.
+        if hasattr(self.lib, "vcmlToMovingBoundaryInput"):
+            self.lib.vcmlToMovingBoundaryInput.restype = ctypes.c_char_p
+            self.lib.vcmlToMovingBoundaryInput.argtypes = [
+                ctypes.c_void_p,
+                ctypes.c_char_p,
+                ctypes.c_char_p,
+                ctypes.c_char_p,
+            ]
+
         self.lib.vcellInfixToPythonInfix.restype = ctypes.c_char_p
         self.lib.vcellInfixToPythonInfix.argtypes = [
             ctypes.c_void_p,
