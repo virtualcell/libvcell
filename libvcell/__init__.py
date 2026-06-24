@@ -7,7 +7,11 @@ from libvcell.model_utils import (
     vcml_to_sbml,
     vcml_to_vcml,
 )
-from libvcell.solver_utils import sbml_to_finite_volume_input, vcml_to_finite_volume_input
+from libvcell.solver_utils import (
+    sbml_to_finite_volume_input,
+    vcml_to_finite_volume_input,
+    vcml_to_moving_boundary_input,
+)
 
 try:
     __version__ = version("libvcell")
@@ -16,11 +20,12 @@ except PackageNotFoundError:  # pragma: no cover - source tree, package not inst
 
 __all__ = [
     "__version__",
-    "vcml_to_finite_volume_input",
     "sbml_to_finite_volume_input",
     "sbml_to_vcml",
+    "vcell_infix_to_num_expr_infix",
+    "vcell_infix_to_python_infix",
+    "vcml_to_finite_volume_input",
+    "vcml_to_moving_boundary_input",
     "vcml_to_sbml",
     "vcml_to_vcml",
-    "vcell_infix_to_python_infix",
-    "vcell_infix_to_num_expr_infix",
 ]

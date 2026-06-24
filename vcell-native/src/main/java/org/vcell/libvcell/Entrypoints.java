@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.vcell.libvcell.ModelUtils.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
+import static org.vcell.libvcell.SolverUtils.vcmlToMovingBoundaryInput;
 
 
 public class Entrypoints {
@@ -131,6 +132,38 @@ public class Entrypoints {
         // return result as a json string
         String json = returnValue.toJson();
         logger.info("Returning from vcmlToFiniteVolumeInput: " + json);
+        return createString(json);
+    }
+
+    @CEntryPoint(
+            name = "vcmlToMovingBoundaryInput",
+            documentation = """
+                    Converts a VCML file into Moving Boundary solver input (a MovingBoundarySetup XML file).
+                      vcml_content: text of VCML XML document
+                      simulation_name: name of the simulation to convert (must be configured for the Moving Boundary solver)
+                      output_dir_path: path to the output directory (expected to be subdirectory of the workspace)
+                      Returns a JSON string with success status and message"""
+    )
+    public static CCharPointer entrypoint_vcmlToMovingBoundaryInput(
+            IsolateThread ignoredThread,
+            CCharPointer vcml_content,
+            CCharPointer simulation_name,
+            CCharPointer output_dir_path) {
+        ReturnValue returnValue;
+        try {
+            String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
+            String simulationName = CTypeConversion.toJavaString(simulation_name);
+            String outputDirPathStr = CTypeConversion.toJavaString(output_dir_path);
+            File outputDir = new File(outputDirPathStr);
+            vcmlToMovingBoundaryInput(vcmlContentStr, simulationName, outputDir);
+            returnValue = new ReturnValue(true, "Success");
+        }catch (Throwable t) {
+            logger.error("Error processing moving boundary model", t);
+            returnValue = new ReturnValue(false, t.getMessage());
+        }
+        // return result as a json string
+        String json = returnValue.toJson();
+        logger.info("Returning from vcmlToMovingBoundaryInput: " + json);
         return createString(json);
     }
 

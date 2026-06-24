@@ -28,6 +28,16 @@ def sbml_file_path() -> Path:
     return fixtures_dir / "TinySpatialProject_Application0.xml"
 
 
+@pytest.fixture
+def moving_boundary_vcml_file_path() -> Path:
+    return fixtures_dir / "Solver_Suite_6_2.vcml"
+
+
+@pytest.fixture
+def moving_boundary_sim_name() -> str:
+    return "Simulation33"
+
+
 @pytest.fixture(scope="function")
 def temp_output_dir() -> Generator[Path, None, None]:
     output_dir = fixtures_dir / "output"

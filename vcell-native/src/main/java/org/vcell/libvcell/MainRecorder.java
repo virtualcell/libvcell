@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
+import static org.vcell.libvcell.SolverUtils.vcmlToMovingBoundaryInput;
 import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
@@ -97,6 +98,25 @@ public class MainRecorder {
                     }
                 }
 
+            }
+
+            // exercise the moving boundary input generation so native-image records the needed
+            // reflection/resource config. Uses a fixed moving-boundary model from the test resources
+            // (relative to the recorder's working dir); guarded so a missing file doesn't abort recording.
+            try {
+                File mb_vcml_file = new File("src/test/resources/Solver_Suite_6_2.vcml");
+                if (mb_vcml_file.exists()) {
+                    try (FileInputStream f_mb_vcml = new FileInputStream(mb_vcml_file)) {
+                        byte[] data = f_mb_vcml.readAllBytes();
+                        logger.info("Read " + data.length + " bytes from " + mb_vcml_file.getAbsolutePath());
+                        String mb_vcml_str = new String(data);
+                        vcmlToMovingBoundaryInput(mb_vcml_str, "Simulation33", output_dir);
+                    }
+                } else {
+                    logger.warn("Moving boundary recording model not found: " + mb_vcml_file.getAbsolutePath());
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to exercise vcmlToMovingBoundaryInput during recording: " + e.getMessage());
             }
 
             // use reflection to load jsbml classes and call their default constructors
