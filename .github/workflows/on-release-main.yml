@@ -15,15 +15,16 @@ jobs:
   build:
     strategy:
       matrix:
-        os:
-          [
-            macos-15-intel,
-            windows-latest,
-            ubuntu-latest,
-            ubuntu-24.04-arm,
-            macos-15,
-          ]
+        os: [windows-latest, ubuntu-latest, ubuntu-24.04-arm, macos-15]
         glibc: [2_28, 2_34]
+        # glibc (manylinux) only applies to the Linux builds. Exclude the duplicate
+        # 2_34 combination for the non-Linux OSes so macOS/Windows build once each
+        # (otherwise they would build the identical wheel twice, once per glibc value).
+        exclude:
+          - os: windows-latest
+            glibc: 2_34
+          - os: macos-15
+            glibc: 2_34
 
       fail-fast: false
     runs-on: ${{ matrix.os }}
