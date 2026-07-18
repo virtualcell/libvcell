@@ -10,6 +10,7 @@ import org.graalvm.nativeimage.c.type.CIntPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.word.WordFactory;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.io.File;
@@ -99,6 +100,64 @@ public class Entrypoints {
             String escaped_message = JSONValue.escape(message);
             return "{\"success\":" + success + ",\"message\":\"" + escaped_message + "\"}";
         }
+    }
+
+    @CEntryPoint(
+            name = "evaluateExpression",
+            documentation = """
+                    Evaluate a native VCell infix expression using a JSON symbol table.
+                      expression_infix: native VCell infix expression string
+                      symbol_table_json: JSON object mapping symbol name -> numeric value, e.g. {"a":1.0,"b":2.0}
+                      Returns a JSON document:
+                        {"success":true,"value":<double>} on success, or
+                        {"success":false,"error_type":<exceptionClassName>,"message":<text>} on failure"""
+    )
+    public static CCharPointer entrypoint_evaluateExpression(
+            IsolateThread ignoredThread,
+            CCharPointer expressionInfixPtr,
+            CCharPointer symbolTableJsonPtr) {
+        String json;
+        try {
+            String infix = CTypeConversion.toJavaString(expressionInfixPtr);
+            String symbolTableJson = CTypeConversion.toJavaString(symbolTableJsonPtr);
+            Map<String, Double> symbolValues = parseSymbolTableJson(symbolTableJson);
+            double result = evaluateExpression(infix, symbolValues);
+            if (Double.isFinite(result)) {
+                json = "{\"success\":true,\"value\":" + result + "}";
+            } else {
+                // JSON cannot represent Infinity/NaN; surface non-finite results as an error.
+                json = evalErrorJson("NonFiniteResultException", "expression evaluated to a non-finite value: " + result);
+            }
+        } catch (Throwable t) {
+            logger.error("Error evaluating expression", t);
+            json = evalErrorJson(t.getClass().getSimpleName(), t.getMessage());
+        }
+        logger.info("Returning from evaluateExpression: " + json);
+        return createString(json);
+    }
+
+    private static String evalErrorJson(String errorType, String message) {
+        String safeType = JSONValue.escape(errorType == null ? "" : errorType);
+        String safeMessage = JSONValue.escape(message == null ? "" : message);
+        return "{\"success\":false,\"error_type\":\"" + safeType + "\",\"message\":\"" + safeMessage + "\"}";
+    }
+
+    // Parse a JSON object of {name: number} into an ordered name->value map.
+    // JSONValue.parse returns null on malformed input, so validate the shape explicitly.
+    private static Map<String, Double> parseSymbolTableJson(String symbolTableJson) {
+        Object parsed = JSONValue.parse(symbolTableJson);
+        if (!(parsed instanceof JSONObject jsonObject)) {
+            throw new IllegalArgumentException("symbol table must be a JSON object of {name: number}");
+        }
+        Map<String, Double> symbolValues = new LinkedHashMap<>();
+        for (Object key : jsonObject.keySet()) {
+            Object value = jsonObject.get(key);
+            if (!(value instanceof Number number)) {
+                throw new IllegalArgumentException("value for symbol '" + key + "' is not a number");
+            }
+            symbolValues.put((String) key, number.doubleValue());
+        }
+        return symbolValues;
     }
 
 

@@ -13,6 +13,7 @@ import cbit.vcell.mapping.SimulationContext;
 import cbit.vcell.mongodb.VCMongoMessage;
 import cbit.vcell.parser.Expression;
 import cbit.vcell.parser.ExpressionException;
+import cbit.vcell.parser.SimpleSymbolTable;
 import cbit.vcell.xml.XMLSource;
 import cbit.vcell.xml.XmlHelper;
 import cbit.vcell.xml.XmlParseException;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ModelUtils {
 
@@ -139,5 +141,30 @@ public class ModelUtils {
 		XmlHelper.cloneUsingXML = true;
 		VCMongoMessage.enabled = false;
 		return new Expression(vcellInfix).infix_NumExpr();
+	}
+
+	/**
+	 * Evaluate a native VCell infix expression given a table of symbol values.
+	 * <p>
+	 * The expression is parsed, bound against a {@link SimpleSymbolTable} built from the supplied
+	 * symbol names, and evaluated. Any symbol referenced by the expression must be present in
+	 * {@code symbolValues}; extra (unreferenced) symbols are permitted and ignored.
+	 *
+	 * @param vcellInfix   native VCell infix expression string
+	 * @param symbolValues map of symbol name to value; iteration order defines the binding order
+	 * @return the evaluated value
+	 * @throws ExpressionException on parse errors ({@code ParserException}), unbound symbols
+	 *                             ({@code ExpressionBindingException}), or evaluation errors
+	 *                             ({@code DivideByZeroException}, {@code FunctionDomainException}, ...)
+	 */
+	public static double evaluateExpression(String vcellInfix, Map<String, Double> symbolValues) throws ExpressionException {
+		String[] names = symbolValues.keySet().toArray(new String[0]);
+		double[] values = new double[names.length];
+		for (int i = 0; i < names.length; i++) {
+			values[i] = symbolValues.get(names[i]);
+		}
+		Expression exp = new Expression(vcellInfix);
+		exp.bindExpression(new SimpleSymbolTable(names));
+		return exp.evaluateVector(values);
 	}
 }

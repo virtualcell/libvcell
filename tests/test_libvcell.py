@@ -4,6 +4,8 @@ from pathlib import Path
 import pytest
 
 from libvcell import (
+    VCellExpressionError,
+    evaluate_expression,
     sbml_to_finite_volume_input,
     sbml_to_vcml,
     vcell_infix_to_num_expr_infix,
@@ -16,14 +18,17 @@ from libvcell import (
 from libvcell._internal.native_utils import VCellNativeLibraryLoader
 
 
-def _native_lib_has_moving_boundary() -> bool:
-    """The vcmlToMovingBoundaryInput symbol only exists in native libraries rebuilt with
-    moving-boundary support; older shared libraries won't have it yet. Returns False (skip)
-    if the native library is missing or too old to even load."""
+def _native_lib_has_symbol(symbol: str) -> bool:
+    """A given entry-point symbol only exists in native libraries new enough to define it.
+    Returns False (skip) if the native library is missing or too old to even load."""
     try:
-        return hasattr(VCellNativeLibraryLoader().lib, "vcmlToMovingBoundaryInput")
+        return hasattr(VCellNativeLibraryLoader().lib, symbol)
     except Exception:
         return False
+
+
+def _native_lib_has_moving_boundary() -> bool:
+    return _native_lib_has_symbol("vcmlToMovingBoundaryInput")
 
 
 def test_vcml_to_finite_volume_input(temp_output_dir: Path, vcml_file_path: Path, vcml_sim_name: str) -> None:
@@ -147,3 +152,58 @@ def test_bad_vcell_infix_through_num_expr_conversion() -> None:
     success, msg, value = vcell_infix_to_num_expr_infix(vcellInfix)
     assert success is False
     assert "Parse Error while parsing expression" in msg
+
+
+_skip_no_evaluate = pytest.mark.skipif(
+    not _native_lib_has_symbol("evaluateExpression"),
+    reason="native library not yet rebuilt with evaluateExpression; run scripts/local_build_native.sh",
+)
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_with_symbols() -> None:
+    assert evaluate_expression("a + b/c", {"a": 10.0, "b": 20.0, "c": 5.0}) == 14.0
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_constant() -> None:
+    assert evaluate_expression("2 + 3 * sqrt(4)", {}) == 8.0
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_extra_symbols_ignored() -> None:
+    assert evaluate_expression("a * 2", {"a": 3.0, "unused": 99.0}) == 6.0
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_unbound_symbol_raises() -> None:
+    with pytest.raises(VCellExpressionError) as exc_info:
+        evaluate_expression("a + x", {"a": 1.0})
+    assert exc_info.value.error_type == "ExpressionBindingException"
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_divide_by_zero_raises() -> None:
+    with pytest.raises(VCellExpressionError) as exc_info:
+        evaluate_expression("1 / c", {"c": 0.0})
+    assert exc_info.value.error_type == "DivideByZeroException"
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_domain_error_raises() -> None:
+    with pytest.raises(VCellExpressionError) as exc_info:
+        evaluate_expression("sqrt(a)", {"a": -1.0})
+    assert exc_info.value.error_type == "FunctionDomainException"
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_parse_error_raises() -> None:
+    with pytest.raises(VCellExpressionError):
+        evaluate_expression("1 / + /", {})
+
+
+@_skip_no_evaluate
+def test_evaluate_expression_bad_symbol_table_raises() -> None:
+    # a symbol value that is not a number -> IllegalArgumentException on the Java side
+    with pytest.raises(VCellExpressionError):
+        evaluate_expression("a", {"a": "not a number"})  # type: ignore[dict-item]
