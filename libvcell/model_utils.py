@@ -1,6 +1,47 @@
 from pathlib import Path
 
-from libvcell._internal.native_calls import MutableString, ReturnValue, VCellNativeCalls
+from libvcell._internal.native_calls import EvalReturnValue, MutableString, ReturnValue, VCellNativeCalls
+
+
+class VCellExpressionError(Exception):
+    """Raised when a VCell expression cannot be evaluated.
+
+    Attributes:
+        error_type: the originating Java exception's simple class name (e.g. ``DivideByZeroException``,
+            ``ExpressionBindingException``, ``ParseException``, ``FunctionDomainException``), or ``None``.
+        message: the error message, or ``None``.
+    """
+
+    def __init__(self, error_type: str | None, message: str | None) -> None:
+        self.error_type = error_type
+        self.message = message
+        super().__init__(f"{error_type}: {message}")
+
+
+def evaluate_expression(expression_infix: str, symbol_table: dict[str, float]) -> float:
+    """
+    Evaluate a native-syntax VCell infix expression against a table of symbol values.
+
+    Any symbol referenced by the expression must be present in ``symbol_table``; extra
+    (unreferenced) symbols are permitted and ignored.
+
+    Args:
+        expression_infix (str): native VCell infix expression string (e.g. ``"a + b/c"``)
+        symbol_table (dict[str, float]): mapping of symbol name to 64-bit float value
+
+    Returns:
+        float: the evaluated value
+
+    Raises:
+        VCellExpressionError: if the expression fails to parse, references an unsupplied symbol,
+            fails to evaluate (e.g. division by zero, math domain error), or evaluates to a
+            non-finite value.
+    """
+    native = VCellNativeCalls()
+    result: EvalReturnValue = native.evaluate_expression(expression_infix, symbol_table)
+    if not result.success or result.value is None:
+        raise VCellExpressionError(result.error_type, result.message)
+    return result.value
 
 
 def vcml_to_sbml(

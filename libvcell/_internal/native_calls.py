@@ -1,4 +1,5 @@
 import ctypes
+import json
 import logging
 from pathlib import Path
 
@@ -12,6 +13,20 @@ class ReturnValue(BaseModel):
     message: str
 
 
+class EvalReturnValue(BaseModel):
+    """Structured result of evaluating a VCell expression.
+
+    On success, ``value`` holds the evaluated 64-bit float. On failure, ``error_type`` holds
+    the originating Java exception's simple class name (e.g. ``DivideByZeroException``) and
+    ``message`` holds its message.
+    """
+
+    success: bool
+    value: float | None = None
+    error_type: str | None = None
+    message: str | None = None
+
+
 class MutableString:
     def __init__(self, value: str):
         self.value: str = value
@@ -21,6 +36,28 @@ class VCellNativeCalls:
     def __init__(self) -> None:
         self.loader = VCellNativeLibraryLoader()
         self.lib = self.loader.lib
+
+    def evaluate_expression(self, expression_infix: str, symbol_table: dict[str, float]) -> EvalReturnValue:
+        try:
+            symbol_table_json = json.dumps(symbol_table)
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.evaluateExpression(
+                    isolate_thread,
+                    ctypes.c_char_p(expression_infix.encode("utf-8")),
+                    ctypes.c_char_p(symbol_table_json.encode("utf-8")),
+                )
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to evaluate expression")
+                return EvalReturnValue(
+                    success=False, error_type="NativeError", message="null return from evaluateExpression"
+                )
+            json_str: str = value.decode("utf-8")
+            # self.lib.freeString(json_ptr)
+            return EvalReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in evaluate_expression()", exc_info=e)
+            raise
 
     def vcml_to_finite_volume_input(
         self, vcml_content: str, simulation_name: str, output_dir_path: Path

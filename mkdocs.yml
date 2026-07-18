@@ -9,6 +9,7 @@ copyright: Maintained by <a href="https://virtualcell.com">Florian</a>.
 
 nav:
   - Home: index.md
+  - Design: design.md
   - Modules: modules.md
 plugins:
   - search

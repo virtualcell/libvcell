@@ -4,7 +4,10 @@ import cbit.image.ImageException;
 import cbit.util.xml.VCLoggerException;
 import cbit.vcell.geometry.GeometryException;
 import cbit.vcell.mapping.MappingException;
+import cbit.vcell.parser.DivideByZeroException;
+import cbit.vcell.parser.ExpressionBindingException;
 import cbit.vcell.parser.ExpressionException;
+import cbit.vcell.parser.FunctionDomainException;
 import cbit.vcell.xml.XmlParseException;
 import org.junit.jupiter.api.Test;
 import org.vcell.sbml.SbmlException;
@@ -13,7 +16,10 @@ import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.vcell.libvcell.ModelUtils.*;
 import static org.vcell.libvcell.TestUtils.getFileContentsAsString;
 
@@ -113,5 +119,44 @@ public class ModelEntrypointsTest {
 		}
 		System.err.println("test_bad_python_infix_attempt did not throw an exception");
 		assert(false);
+	}
+
+	@Test
+	public void test_evaluateExpression_with_symbols() throws ExpressionException {
+		double result = evaluateExpression("a + b/c", Map.of("a", 10.0, "b", 20.0, "c", 5.0));
+		assertEquals(14.0, result, 0.0);
+	}
+
+	@Test
+	public void test_evaluateExpression_constant() throws ExpressionException {
+		double result = evaluateExpression("2 + 3 * sqrt(4)", Map.of());
+		assertEquals(8.0, result, 0.0);
+	}
+
+	@Test
+	public void test_evaluateExpression_extra_symbols_ignored() throws ExpressionException {
+		double result = evaluateExpression("a * 2", Map.of("a", 3.0, "unused", 99.0));
+		assertEquals(6.0, result, 0.0);
+	}
+
+	@Test
+	public void test_evaluateExpression_unbound_symbol() {
+		// 'x' is referenced but not supplied in the symbol table
+		assertThrows(ExpressionBindingException.class, () -> evaluateExpression("a + x", Map.of("a", 1.0)));
+	}
+
+	@Test
+	public void test_evaluateExpression_parse_error() {
+		assertThrows(ExpressionException.class, () -> evaluateExpression("1 / + /", Map.of()));
+	}
+
+	@Test
+	public void test_evaluateExpression_divide_by_zero() {
+		assertThrows(DivideByZeroException.class, () -> evaluateExpression("1 / c", Map.of("c", 0.0)));
+	}
+
+	@Test
+	public void test_evaluateExpression_domain_error() {
+		assertThrows(FunctionDomainException.class, () -> evaluateExpression("sqrt(a)", Map.of("a", -1.0)));
 	}
 }

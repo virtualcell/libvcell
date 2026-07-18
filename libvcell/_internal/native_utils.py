@@ -64,6 +64,16 @@ class VCellNativeLibraryLoader:
                 ctypes.c_char_p,
             ]
 
+        # evaluateExpression is only present in newer native libraries; guard so the package
+        # still loads against older shared libraries that predate it.
+        if hasattr(self.lib, "evaluateExpression"):
+            self.lib.evaluateExpression.restype = ctypes.c_char_p
+            self.lib.evaluateExpression.argtypes = [
+                ctypes.c_void_p,
+                ctypes.c_char_p,
+                ctypes.c_char_p,
+            ]
+
         self.lib.vcellInfixToPythonInfix.restype = ctypes.c_char_p
         self.lib.vcellInfixToPythonInfix.argtypes = [
             ctypes.c_void_p,

@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToMovingBoundaryInput;
+import static org.vcell.libvcell.ModelUtils.evaluateExpression;
 import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
@@ -117,6 +118,14 @@ public class MainRecorder {
                 }
             } catch (Exception e) {
                 logger.warn("Failed to exercise vcmlToMovingBoundaryInput during recording: " + e.getMessage());
+            }
+
+            // exercise expression evaluation so native-image records the parser / SimpleSymbolTable config
+            try {
+                double evaluated = evaluateExpression("a + b/c", java.util.Map.of("a", 10.0, "b", 20.0, "c", 5.0));
+                logger.info("evaluateExpression recording result: " + evaluated);
+            } catch (Exception e) {
+                logger.warn("Failed to exercise evaluateExpression during recording: " + e.getMessage());
             }
 
             // use reflection to load jsbml classes and call their default constructors

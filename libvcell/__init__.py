@@ -1,6 +1,8 @@
 from importlib.metadata import PackageNotFoundError, version
 
 from libvcell.model_utils import (
+    VCellExpressionError,
+    evaluate_expression,
     sbml_to_vcml,
     vcell_infix_to_num_expr_infix,
     vcell_infix_to_python_infix,
@@ -20,6 +22,8 @@ except PackageNotFoundError:  # pragma: no cover - source tree, package not inst
 
 __all__ = [
     "__version__",
+    "VCellExpressionError",
+    "evaluate_expression",
     "sbml_to_finite_volume_input",
     "sbml_to_vcml",
     "vcell_infix_to_num_expr_infix",
