@@ -13,6 +13,7 @@ from libvcell import (
     vcml_to_finite_volume_input,
     vcml_to_moving_boundary_input,
     vcml_to_sbml,
+    vcml_convert_units,
     vcml_to_vcml,
 )
 from libvcell._internal.native_utils import VCellNativeLibraryLoader
@@ -120,6 +121,23 @@ def test_vcml_to_vcml(vcml_file_path: Path) -> None:
         assert vcml_file_path.exists()
         assert success is True
         assert msg == "Success"
+
+
+def test_vcml_convert_units(vcml_file_path: Path) -> None:
+    vcml_content = vcml_file_path.read_text()
+    with tempfile.TemporaryDirectory() as temp_dir:
+        vcell_units = Path(temp_dir) / "vcell_units.vcml"
+        success, msg = vcml_convert_units(vcml_content=vcml_content, unit_system="vcell", vcml_file_path=vcell_units)
+        assert (success, msg) == (True, "Success")
+        assert 'LengthUnit="um"' in vcell_units.read_text()
+        sbml_units = Path(temp_dir) / "sbml_units.vcml"
+        success, msg = vcml_convert_units(
+            vcml_content=vcell_units.read_text(), unit_system="sbml", vcml_file_path=sbml_units
+        )
+        assert (success, msg) == (True, "Success")
+        assert 'LengthUnit="dm"' in sbml_units.read_text()
+        success, _ = vcml_convert_units(vcml_content=vcml_content, unit_system="furlongs", vcml_file_path=sbml_units)
+        assert success is False
 
 
 def test_vcell_infix_to_python_infix() -> None:

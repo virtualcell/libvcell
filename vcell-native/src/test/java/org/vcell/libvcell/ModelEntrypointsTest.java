@@ -57,6 +57,40 @@ public class ModelEntrypointsTest {
     }
 
     @Test
+    public void test_hybrid_vcml_to_sbml_to_vcml() throws Exception {
+        // a PDE/particle hybrid: A particles, B a continuous field (ForceContinuous) in a spatial stochastic application
+        String vcmlContent = getFileContentsAsString("/hybrid_two_way_exchange.vcml");
+        File parent_dir = Files.createTempDirectory("hybridSbml").toFile();
+        File sbml_file = new File(parent_dir, "hybrid.sbml");
+        vcml_to_sbml(vcmlContent, "hybrid", sbml_file.toPath(), true);
+        String sbml = Files.readString(sbml_file.toPath());
+        assert(sbml.contains("representation=\"particle\""));
+        assert(sbml.contains("representation=\"continuous\""));
+
+        File vcml_file = new File(parent_dir, "hybrid.vcml");
+        sbml_to_vcml(sbml, vcml_file.toPath());
+        String vcml = Files.readString(vcml_file.toPath());
+        assert(vcml.contains("Stochastic=\"true\""));
+        assert(vcml.contains("LocalizedCompoundRef=\"A\" ForceConstant=\"false\" WellMixed=\"false\" ForceContinuous=\"false\""));
+        assert(vcml.contains("LocalizedCompoundRef=\"B\" ForceConstant=\"false\" WellMixed=\"false\" ForceContinuous=\"true\""));
+    }
+
+    @Test
+    public void test_vcml_convert_units() throws Exception {
+        // TinySpatialProject was imported from SBML, so it is in VCell's SBML units (dm); to VCell units and back
+        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlConvertUnits").toFile();
+        File vcell_units = new File(parent_dir, "vcell_units.vcml");
+        vcml_convert_units(vcmlContent, "vcell", vcell_units.toPath());
+        String converted = Files.readString(vcell_units.toPath());
+        assert(converted.contains("LengthUnit=\"um\""));
+        File sbml_units = new File(parent_dir, "sbml_units.vcml");
+        vcml_convert_units(converted, "sbml", sbml_units.toPath());
+        assert(Files.readString(sbml_units.toPath()).contains("LengthUnit=\"dm\""));
+        assertThrows(IllegalArgumentException.class, () -> vcml_convert_units(vcmlContent, "furlongs", vcell_units.toPath()));
+    }
+
+    @Test
     public void test_vcml_to_vcml() throws MappingException, IOException, XmlParseException, XMLStreamException, SbmlException {
         String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
         File parent_dir = Files.createTempDirectory("vcmlToVcml").toFile();
