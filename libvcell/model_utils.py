@@ -84,6 +84,28 @@ def sbml_to_vcml(sbml_content: str, vcml_file_path: Path) -> tuple[bool, str]:
     return return_value.success, return_value.message
 
 
+def vcml_convert_units(vcml_content: str, unit_system: str, vcml_file_path: Path) -> tuple[bool, str]:
+    """
+    Rewrite a VCML document in another model unit system, converting every quantity (geometry included)
+
+    For an SBML model, import it with :func:`sbml_to_vcml` first; VCell imports SBML in the SBML's own units.
+
+    Args:
+        vcml_content (str): VCML content
+        unit_system (str): "vcell" (µm, µM, s; what VCell's spatial and stochastic math assumes) or "sbml"
+            (the units VCell writes SBML in)
+        vcml_file_path (Path): path to resulting VCML file
+
+    Returns:
+        tuple[bool, str]: A tuple containing the success status and a message
+    """
+    native = VCellNativeCalls()
+    return_value: ReturnValue = native.vcml_convert_units(
+        vcml_content=vcml_content, unit_system=unit_system, vcml_file_path=vcml_file_path
+    )
+    return return_value.success, return_value.message
+
+
 def vcml_to_vcml(vcml_content: str, vcml_file_path: Path) -> tuple[bool, str]:
     """
     Process VCML content to regenerated VCML file

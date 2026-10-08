@@ -343,6 +343,36 @@ public class Entrypoints {
         return createString(json);
     }
 
+    @CEntryPoint(
+            name = "vcmlConvertUnits",
+            documentation = """
+                    Rewrites a VCML document in another model unit system, converting every quantity (geometry included).
+                      vcml_content: text of VCML XML document
+                      unit_system: "vcell" (um, uM, s) or "sbml" (the units VCell writes SBML in)
+                      vcml_file_path: path to the VCML file to write
+                      Returns a JSON string with success status and message"""
+    )
+    public static CCharPointer entrypoint_vcmlConvertUnits(
+            IsolateThread ignoredThread,
+            CCharPointer vcml_content,
+            CCharPointer unit_system,
+            CCharPointer vcml_file_path) {
+        ReturnValue returnValue;
+        try {
+            String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
+            String unitSystemStr = CTypeConversion.toJavaString(unit_system);
+            Path vcmlFilePath = new File(CTypeConversion.toJavaString(vcml_file_path)).toPath();
+            vcml_convert_units(vcmlContentStr, unitSystemStr, vcmlFilePath);
+            returnValue = new ReturnValue(true, "Success");
+        }catch (Throwable t) {
+            logger.error("Error converting vcml units", t);
+            returnValue = new ReturnValue(false, t.getMessage());
+        }
+        String json = returnValue.toJson();
+        logger.info("Returning from vcmlConvertUnits: " + json);
+        return createString(json);
+    }
+
 	@CEntryPoint(
 			name = "vcellInfixToPythonInfix",
 			documentation = """

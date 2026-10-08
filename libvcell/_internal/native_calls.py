@@ -188,6 +188,26 @@ class VCellNativeCalls:
             logging.exception("Error in vcml_to_vcml()", exc_info=e)
             raise
 
+    def vcml_convert_units(self, vcml_content: str, unit_system: str, vcml_file_path: Path) -> ReturnValue:
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.vcmlConvertUnits(
+                    isolate_thread,
+                    ctypes.c_char_p(vcml_content.encode("utf-8")),
+                    ctypes.c_char_p(unit_system.encode("utf-8")),
+                    ctypes.c_char_p(str(vcml_file_path).encode("utf-8")),
+                )
+
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to convert vcml units")
+                return ReturnValue(success=False, message="Failed to convert vcml units")
+            json_str: str = value.decode("utf-8")
+            return ReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in vcml_convert_units()", exc_info=e)
+            raise
+
     def vcell_infix_to_python_infix(
         self, vcell_infix: str, target_python_infix: MutableString, buffer_size: int | None = None
     ) -> ReturnValue:

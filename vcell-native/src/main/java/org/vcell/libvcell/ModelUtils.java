@@ -10,6 +10,7 @@ import cbit.vcell.geometry.GeometryException;
 import cbit.vcell.geometry.GeometrySpec;
 import cbit.vcell.mapping.MappingException;
 import cbit.vcell.mapping.SimulationContext;
+import cbit.vcell.model.ModelUnitSystem;
 import cbit.vcell.mongodb.VCMongoMessage;
 import cbit.vcell.parser.Expression;
 import cbit.vcell.parser.ExpressionException;
@@ -125,6 +126,31 @@ public class ModelUtils {
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
         bioModel.updateAll(false);
         // write the BioModel to a VCML file
+        String vcml_str = XmlHelper.bioModelToXML(bioModel);
+        XmlUtil.writeXMLStringToFile(vcml_str, vcmlPath.toFile().getAbsolutePath(), true);
+    }
+
+    /**
+     * Rewrites a VCML BioModel in another model unit system: "vcell" (um, uM, s; the units VCell's spatial and
+     * stochastic math assumes) or "sbml" (the units VCell writes SBML in). Every quantity is converted, geometry
+     * included, so the math is unchanged.
+     */
+    public static void vcml_convert_units(String vcml_content, String unit_system, Path vcmlPath) throws Exception {
+        GeometrySpec.avoidAWTImageCreation = true;
+        XmlHelper.cloneUsingXML = true;
+        VCMongoMessage.enabled = false;
+
+        ModelUnitSystem target = switch (unit_system) {
+            case "vcell" -> ModelUnitSystem.createDefaultVCModelUnitSystem();
+            case "sbml" -> ModelUnitConverter.createSbmlModelUnitSystem();
+            default -> throw new IllegalArgumentException("unknown unit system '" + unit_system + "' (expected 'vcell' or 'sbml')");
+        };
+        BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
+        bioModel.updateAll(false);
+        if (!bioModel.getModel().getUnitSystem().compareEqual(target)) {
+            bioModel = ModelUnitConverter.createBioModelWithNewUnitSystem(bioModel, target);
+            bioModel.updateAll(false);
+        }
         String vcml_str = XmlHelper.bioModelToXML(bioModel);
         XmlUtil.writeXMLStringToFile(vcml_str, vcmlPath.toFile().getAbsolutePath(), true);
     }

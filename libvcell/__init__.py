@@ -6,6 +6,7 @@ from libvcell.model_utils import (
     sbml_to_vcml,
     vcell_infix_to_num_expr_infix,
     vcell_infix_to_python_infix,
+    vcml_convert_units,
     vcml_to_sbml,
     vcml_to_vcml,
 )
@@ -28,6 +29,7 @@ __all__ = [
     "sbml_to_vcml",
     "vcell_infix_to_num_expr_infix",
     "vcell_infix_to_python_infix",
+    "vcml_convert_units",
     "vcml_to_finite_volume_input",
     "vcml_to_moving_boundary_input",
     "vcml_to_sbml",

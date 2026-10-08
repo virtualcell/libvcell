@@ -7,6 +7,7 @@ import cbit.vcell.parser.ExpressionException;
 import cbit.vcell.solver.SolverException;
 import cbit.vcell.xml.XmlParseException;
 import org.junit.jupiter.api.Test;
+import org.vcell.sbml.vcell.SBMLImportException;
 
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -31,16 +32,14 @@ public class SolverEntrypointsTest {
         assertEquals(4, countFiles(output_dir));
     }
 
-    // TODO: better exception handling by JSBML needed
     @Test
     public void testSbmlToFiniteVolumeInput_not_well_formed() throws IOException {
+        // vcell-core now reads the SBML stream itself and reports malformed XML as an SBMLImportException
+        // (it used to surface as a ClassCastException from inside JSBML)
         String sbmlContent = getFileContentsAsString("/TinySpatialProject_Application0.xml").replaceAll("<model ", "<modelXYZ ");
         Path output_dir = Files.createTempDirectory("sbmlToFiniteVolumeInput");
-        ClassCastException exc = assertThrows(ClassCastException.class, () -> sbmlToFiniteVolumeInput(sbmlContent, output_dir.toFile()));
-        assertEquals(
-                "class org.sbml.jsbml.xml.XMLNode cannot be cast to class org.sbml.jsbml.Annotation " +
-                "(org.sbml.jsbml.xml.XMLNode and org.sbml.jsbml.Annotation are in unnamed module of loader 'app')",
-                exc.getMessage());
+        SBMLImportException exc = assertThrows(SBMLImportException.class, () -> sbmlToFiniteVolumeInput(sbmlContent, output_dir.toFile()));
+        assertEquals("Unable to read SBML stream", exc.getMessage());
     }
 
     @Test
