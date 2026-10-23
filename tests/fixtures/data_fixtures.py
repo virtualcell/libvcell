@@ -63,3 +63,10 @@ def ode_vcml_file_path() -> Path:
 def ode_sbml_file_path() -> Path:
     """BIOMD0000000012 (Elowitz 2000, the repressilator; BioModels, CC0): non-spatial, no fast systems."""
     return fixtures_dir / "BIOMD0000000012_url.xml"
+
+
+@pytest.fixture
+def rule_based_vcml_file_path() -> Path:
+    """Public VCell BioModel 100992568 ("CompartmentTransport"), downloaded anonymously from the VCell API: one
+    reaction rule, whose network VCell would generate with BioNetGen (not in libvcell), and an ODE simulation."""
+    return fixtures_dir / "public_biomodel_100992568_rule_based.vcml"

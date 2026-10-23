@@ -7,6 +7,7 @@ import cbit.vcell.field.FieldFunctionArguments;
 import cbit.vcell.field.FieldUtilities;
 import cbit.vcell.geometry.GeometrySpec;
 import cbit.vcell.mapping.MappingException;
+import cbit.vcell.mapping.NetworkTransformer;
 import cbit.vcell.mapping.SimulationContext;
 import cbit.vcell.math.MathException;
 import cbit.vcell.messaging.server.SimulationTask;
@@ -175,7 +176,13 @@ public class SolverUtils {
      *
      * @return the input file written ({@code <basename>.cvodeInput} or {@code <basename>.idaInput})
      */
-    public static File vcmlToOdeInput(String vcml_content, String simulation_name, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException, MathException {
+    /**
+     * The ODE solver input written for a simulation: the input file, and whether the document's stored math was used
+     * instead of regenerating it (a rule-based application, see {@link #refreshSimulationMath}).
+     */
+    public record OdeInput(File inputFile, boolean usedStoredMath) {}
+
+    public static OdeInput vcmlToOdeInput(String vcml_content, String simulation_name, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException, MathException {
         GeometrySpec.avoidAWTImageCreation = true;
 	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
@@ -184,12 +191,44 @@ public class SolverUtils {
             throw new IllegalArgumentException("expecting VCML content, not SBML");
         }
         BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
-        bioModel.updateAll(false);
         Simulation sim = bioModel.getSimulation(simulation_name);
         if (sim == null) {
             throw new IllegalArgumentException("Simulation not found: " + simulation_name);
         }
-        return writeOdeInput(sim, simulation_name, outputDir);
+        boolean usedStoredMath = refreshSimulationMath(bioModel, sim);
+        return new OdeInput(writeOdeInput(sim, simulation_name, outputDir), usedStoredMath);
+    }
+
+    /**
+     * Regenerate the math of the simulation's own application (not every application in the document, so another
+     * application VCell cannot generate math for does not get in the way).
+     *
+     * <p>A rule-based application (reaction rules, expanded into a reaction network by BioNetGen) is the
+     * exception: network generation runs BioNetGen's BNG2.pl from a VCell installation, which libvcell does not
+     * have. For it the math stored in the document is used, which is the network VCell generated when the model was
+     * saved, and what the VCell server runs for a saved simulation. A document without stored math for it cannot be
+     * converted.
+     *
+     * @return whether the stored math was used
+     */
+    static boolean refreshSimulationMath(BioModel bioModel, Simulation sim) throws MappingException {
+        if (!(sim.getSimulationOwner() instanceof SimulationContext simContext)) {
+            bioModel.updateAll(false);  // not an application's simulation (a MathModel's): as before
+            return false;
+        }
+        bioModel.refreshDependencies();
+        if (simContext.createNewTransformer() instanceof NetworkTransformer) {
+            if (sim.getMathDescription() == null) {
+                throw new IllegalArgumentException("Simulation '" + sim.getName() + "' is in rule-based application '"
+                        + simContext.getName() + "', whose reaction network needs BioNetGen to generate, which libvcell"
+                        + " does not include; and the document stores no math for it to use instead");
+            }
+            logger.warn("Application '" + simContext.getName() + "' is rule-based: using its stored math (BioNetGen,"
+                    + " which would regenerate its reaction network, is not available in libvcell)");
+            return true;
+        }
+        simContext.updateAll(false);
+        return false;
     }
 
     /**

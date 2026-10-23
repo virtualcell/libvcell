@@ -97,6 +97,9 @@ public class Entrypoints {
     }
 
     // serialized in JSON and returned as a String (CCharPointer)
+    /** Appended to vcmlToOdeInput's message when the document's stored math was used (a rule-based application). */
+    static final String STORED_MATH_NOTE = "stored math (rule-based application: BioNetGen, which would regenerate its reaction network, is not available in libvcell)";
+
     public record ReturnValue(boolean success, String message) {
         public String toJson() {
             String escaped_message = JSONValue.escape(message);
@@ -237,7 +240,8 @@ public class Entrypoints {
                       vcml_content: text of VCML XML document
                       simulation_name: name of the simulation to convert (CVODE, IDA or Combined IDA/CVODE solver)
                       output_dir_path: path to the output directory
-                      Returns a JSON string with success status and, on success, the input file's name as message"""
+                      Returns a JSON string with success status and, on success, a message: the input file's name,
+                      then "; stored math (...)" when the document's stored math was used (a rule-based application)"""
     )
     public static CCharPointer entrypoint_vcmlToOdeInput(
             IsolateThread ignoredThread,
@@ -249,8 +253,12 @@ public class Entrypoints {
             String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
             String simulationName = CTypeConversion.toJavaString(simulation_name);
             String outputDirPathStr = CTypeConversion.toJavaString(output_dir_path);
-            File inputFile = vcmlToOdeInput(vcmlContentStr, simulationName, new File(outputDirPathStr));
-            returnValue = new ReturnValue(true, inputFile.getName());
+            SolverUtils.OdeInput odeInput = vcmlToOdeInput(vcmlContentStr, simulationName, new File(outputDirPathStr));
+            String name = odeInput.inputFile().getName();
+            // the input file's name, then (after "; ") a note when the stored math was used; file names have no ";"
+            returnValue = new ReturnValue(true, odeInput.usedStoredMath()
+                    ? name + "; " + STORED_MATH_NOTE
+                    : name);
         }catch (Throwable t) {
             logger.error("Error processing ODE model", t);
             returnValue = new ReturnValue(false, t.getMessage());

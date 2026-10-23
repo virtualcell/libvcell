@@ -219,7 +219,9 @@ public class SolverEntrypointsTest {
     public void testVcmlToOdeInput_cvode() throws Exception {
         String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
         File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
-        File input = vcmlToOdeInput(vcmlContent, "Copy of CVODE", output_dir);
+        SolverUtils.OdeInput odeInput = vcmlToOdeInput(vcmlContent, "Copy of CVODE", output_dir);
+        File input = odeInput.inputFile();
+        assertFalse(odeInput.usedStoredMath());
         assertTrue(input.getName().endsWith(".cvodeInput"), input.getName());
         assertEquals(output_dir.getCanonicalFile(), input.getCanonicalFile().getParentFile());
         assertEquals("SOLVER CVODE", firstLine(input));
@@ -230,7 +232,8 @@ public class SolverEntrypointsTest {
     public void testVcmlToOdeInput_ida() throws Exception {
         String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
         File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
-        File input = vcmlToOdeInput(vcmlContent, "Copy of IDA", output_dir);
+        SolverUtils.OdeInput odeInput = vcmlToOdeInput(vcmlContent, "Copy of IDA", output_dir);
+        File input = odeInput.inputFile();
         assertTrue(input.getName().endsWith(".idaInput"), input.getName());
         assertEquals("SOLVER IDA", firstLine(input));
     }
@@ -239,7 +242,8 @@ public class SolverEntrypointsTest {
     public void testVcmlToOdeInput_combined_resolves_to_cvode_or_ida() throws Exception {
         String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
         File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
-        File input = vcmlToOdeInput(vcmlContent, "Copy of combined ida/cvode", output_dir);
+        SolverUtils.OdeInput odeInput = vcmlToOdeInput(vcmlContent, "Copy of combined ida/cvode", output_dir);
+        File input = odeInput.inputFile();
         String first = firstLine(input);
         assertTrue(first.equals("SOLVER CVODE") || first.equals("SOLVER IDA"), first);
     }
@@ -289,6 +293,20 @@ public class SolverEntrypointsTest {
         String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
         IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> sbmlToOdeInput(vcmlContent, 10.0, 1.0, output_dir));
         assertEquals("expecting SBML content, not VCML", exc.getMessage());
+    }
+
+    @Test
+    public void testVcmlToOdeInput_rule_based_uses_the_stored_math() throws Exception {
+        // public BioModel 100992568 ("CompartmentTransport"): one reaction rule, which VCell would expand into a
+        // reaction network with BioNetGen (not available in libvcell), so the document's stored math is used
+        String vcmlContent = getFileContentsAsString("/public_biomodel_100992568_rule_based.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
+        SolverUtils.OdeInput odeInput = vcmlToOdeInput(vcmlContent, "Simulation0", output_dir);
+        File input = odeInput.inputFile();
+        assertTrue(odeInput.usedStoredMath());
+        String first = firstLine(input);
+        assertTrue(first.equals("SOLVER CVODE") || first.equals("SOLVER IDA"), first);
+        assertTrue(Files.readString(input.toPath()).contains("NUM_EQUATIONS"));
     }
 
 }
