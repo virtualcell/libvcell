@@ -28,8 +28,9 @@ cd "$ROOT_DIR"/vcell-native || ( echo "'vcell-native' directory not found" && ex
 # build vcell-native as java
 mvn clean install
 
-# run with native-image-agent to record configuration for native-image
-java -agentlib:native-image-agent=config-output-dir=target/recording \
+# run with native-image-agent to record configuration for native-image (with the bundled BioNetGen, so the
+# recording covers generating a rule-based reaction network)
+LIBVCELL_VCELL_INSTALL_DIR="$ROOT_DIR/libvcell/vcell_install" java -agentlib:native-image-agent=config-output-dir=target/recording \
      -jar target/vcell-native-1.0-SNAPSHOT.jar \
      "$ROOT_DIR/vcell-native/src/test/resources/TinySpatialProject_Application0.xml" \
      "$ROOT_DIR/vcell-native/src/test/resources/TinySpatialProject_Application0.vcml" \

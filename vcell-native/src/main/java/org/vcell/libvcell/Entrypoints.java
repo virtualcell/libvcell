@@ -97,9 +97,6 @@ public class Entrypoints {
     }
 
     // serialized in JSON and returned as a String (CCharPointer)
-    /** Appended to vcmlToOdeInput's message when the document's stored math was used (a rule-based application). */
-    static final String STORED_MATH_NOTE = "stored math (rule-based application: BioNetGen, which would regenerate its reaction network, is not available in libvcell)";
-
     public record ReturnValue(boolean success, String message) {
         public String toJson() {
             String escaped_message = JSONValue.escape(message);
@@ -241,7 +238,8 @@ public class Entrypoints {
                       simulation_name: name of the simulation to convert (CVODE, IDA or Combined IDA/CVODE solver)
                       output_dir_path: path to the output directory
                       Returns a JSON string with success status and, on success, a message: the input file's name,
-                      then "; stored math (...)" when the document's stored math was used (a rule-based application)"""
+                      then "; stored math (rule-based application: <why>)" when the document's stored math was used
+                      because BioNetGen could not regenerate a rule-based application's network"""
     )
     public static CCharPointer entrypoint_vcmlToOdeInput(
             IsolateThread ignoredThread,
@@ -257,7 +255,7 @@ public class Entrypoints {
             String name = odeInput.inputFile().getName();
             // the input file's name, then (after "; ") a note when the stored math was used; file names have no ";"
             returnValue = new ReturnValue(true, odeInput.usedStoredMath()
-                    ? name + "; " + STORED_MATH_NOTE
+                    ? name + "; stored math (rule-based application: " + odeInput.storedMathReason() + ")"
                     : name);
         }catch (Throwable t) {
             logger.error("Error processing ODE model", t);

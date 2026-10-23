@@ -1,3 +1,5 @@
+# vendored BioNetGen, kept byte-identical to its release
+exclude: ^libvcell/vcell_install/bionetgen/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v4.4.0"

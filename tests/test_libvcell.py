@@ -1,3 +1,4 @@
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -304,12 +305,24 @@ def test_sbml_to_ode_input_refuses_a_non_positive_duration(temp_output_dir: Path
 
 
 @_skip_no_ode
-def test_vcml_to_ode_input_uses_the_stored_math_of_a_rule_based_application(
+@pytest.mark.skipif(shutil.which("perl") is None, reason="BioNetGen runs with perl")
+def test_vcml_to_ode_input_regenerates_a_rule_based_application_with_the_bundled_bionetgen(
     temp_output_dir: Path, rule_based_vcml_file_path: Path
 ) -> None:
-    """Its network needs BioNetGen to regenerate, which libvcell does not include, so the stored math is used."""
+    success, msg = vcml_to_ode_input(rule_based_vcml_file_path.read_text(), "Simulation0", temp_output_dir)
+    assert success is True, msg
+    assert ";" not in msg  # regenerated: just the input file's name
+    _solves(temp_output_dir / msg)
+
+
+@_skip_no_ode
+def test_vcml_to_ode_input_falls_back_to_the_stored_math_without_bionetgen(
+    temp_output_dir: Path, rule_based_vcml_file_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Without BioNetGen (here: a directory with none), the stored math is used and the message says why."""
+    monkeypatch.setenv("LIBVCELL_VCELL_INSTALL_DIR", str(temp_output_dir))
     success, msg = vcml_to_ode_input(rule_based_vcml_file_path.read_text(), "Simulation0", temp_output_dir)
     assert success is True, msg
     name, _, note = msg.partition("; ")
-    assert note.startswith("stored math (rule-based application")
+    assert note.startswith("stored math (rule-based application: BioNetGen could not regenerate"), note
     _solves(temp_output_dir / name)

@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 import sys
@@ -61,6 +62,8 @@ def main() -> None:
         "unnamed_spatialGeom "
         "target/sbml-input",
         cwd=vcell_native_dir,
+        # the bundled BioNetGen, so the recording covers generating a rule-based reaction network (perl BNG2.pl)
+        env={**os.environ, "LIBVCELL_VCELL_INSTALL_DIR": str(root_dir / "libvcell" / "vcell_install")},
     )
 
     # Build vcell-native as native shared object library

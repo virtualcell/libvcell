@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "libvcell"
-version = "0.0.21"
+version = "0.0.22"
 description = "This is a python package which wraps a subset of VCell Java code as a native python package."
 authors = ["Jim Schaff <schaff@uchc.edu>", "Ezequiel Valencia <evalencia@uchc.edu>"]
 repository = "https://github.com/virtualcell/libvcell"
@@ -15,7 +15,9 @@ packages = [
 ]
 include = [
     {path="libvcell/lib/libvcell*", format="wheel"},
-    {path="libvcell/py.typed"}
+    {path="libvcell/py.typed"},
+    # BioNetGen (BNG2.pl and its Perl modules), which VCell runs to generate rule-based reaction networks
+    {path="libvcell/vcell_install/**/*"}
 ]
 
 [tool.poetry.dependencies]

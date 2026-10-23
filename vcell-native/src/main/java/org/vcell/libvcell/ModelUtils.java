@@ -36,6 +36,7 @@ public class ModelUtils {
 
     public static void sbml_to_vcml(String sbml_content, Path vcmlPath)
             throws VCLoggerException, XmlParseException, IOException, MappingException {
+        BioNetGenSupport.configure();
 
         GeometrySpec.avoidAWTImageCreation = true;
 	    XmlHelper.cloneUsingXML = true;
@@ -79,6 +80,7 @@ public class ModelUtils {
 
     public static void vcml_to_sbml(String vcml_content, String applicationName, Path sbmlPath, boolean roundTripValidation)
             throws XmlParseException, IOException, XMLStreamException, SbmlException, MappingException, ImageException, GeometryException, ExpressionException {
+        BioNetGenSupport.configure();
         GeometrySpec.avoidAWTImageCreation = true;
 	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
@@ -119,6 +121,7 @@ public class ModelUtils {
     }
 
     public static void vcml_to_vcml(String vcml_content, Path vcmlPath) throws XmlParseException, IOException, MappingException {
+        BioNetGenSupport.configure();
         GeometrySpec.avoidAWTImageCreation = true;
 	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
@@ -136,6 +139,7 @@ public class ModelUtils {
      * included, so the math is unchanged.
      */
     public static void vcml_convert_units(String vcml_content, String unit_system, Path vcmlPath) throws Exception {
+        BioNetGenSupport.configure();
         GeometrySpec.avoidAWTImageCreation = true;
         XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;

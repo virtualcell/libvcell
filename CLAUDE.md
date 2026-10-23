@@ -82,6 +82,17 @@ Pre-commit hooks run ruff (lint + format) and prettier automatically.
 
 Linux wheels are built inside the `docker/Dockerfile_manylinux_*` images (manylinux 2_28 and 2_34, for both `aarch64` and `x86_64`), which provide the GraalVM toolchain needed for native compilation in CI.
 
+### Bundled BioNetGen
+
+`libvcell/vcell_install/bionetgen/` is the Perl part of BioNetGen 2.9.3 (MIT; `BNG2.pl` and `Perl2/`, copied
+unchanged from the official release; see its `README.md`, and keep it byte-identical: pre-commit excludes it). VCell
+runs `perl <vcell.installDir>/bionetgen/BNG2.pl` to expand a rule-based application's reaction rules into a network
+when it generates the math. The Python package sets `LIBVCELL_VCELL_INSTALL_DIR` to `libvcell/vcell_install`
+(`_internal/native_utils.py`), and `BioNetGenSupport.configure()`, called at the start of every model-building method,
+turns it into `vcell.installDir` (each call runs in a fresh isolate). Without `perl` or BioNetGen,
+`vcml_to_ode_input` falls back to the document's stored math and says why in its message. The recorder run in
+`build.py` sets the variable too, so native-image records the BioNetGen path.
+
 ### Key dependencies
 
 - `vcell_submodule/` — Git submodule pointing to the full VCell Java repository (provides vcell-core). After cloning or pulling a submodule pointer bump, run `git submodule update --init --recursive` — git does NOT auto-update the submodule working tree, so it can sit at an older commit than the recorded pointer (shows as `M vcell_submodule` in `git status`). A stale checkout causes `vcell-native` to fail compiling against vcell-core. To make vcell-core/math available for a local `vcell-native` build, install them into `.m2` first: `mvn -DskipTests clean install -f vcell_submodule` (or run the full `scripts/local_build_native.sh`).
