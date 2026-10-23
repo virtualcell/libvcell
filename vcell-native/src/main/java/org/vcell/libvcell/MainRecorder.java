@@ -9,7 +9,9 @@ import java.io.FileInputStream;
 
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
+import static org.vcell.libvcell.SolverUtils.sbmlToOdeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToMovingBoundaryInput;
+import static org.vcell.libvcell.SolverUtils.vcmlToOdeInput;
 import static org.vcell.libvcell.ModelUtils.evaluateExpression;
 import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
@@ -118,6 +120,24 @@ public class MainRecorder {
                 }
             } catch (Exception e) {
                 logger.warn("Failed to exercise vcmlToMovingBoundaryInput during recording: " + e.getMessage());
+            }
+
+            // exercise the ODE input generation (both the CVODE and the IDA writer, and the SBML path) so
+            // native-image records their config; guarded like the moving boundary path above.
+            try {
+                File ode_vcml_file = new File("src/test/resources/Solver_Suite_6_2.vcml");
+                File ode_sbml_file = new File("src/test/resources/BIOMD0000000012_url.xml");
+                if (ode_vcml_file.exists() && ode_sbml_file.exists()) {
+                    String ode_vcml_str = new String(java.nio.file.Files.readAllBytes(ode_vcml_file.toPath()));
+                    String ode_sbml_str = new String(java.nio.file.Files.readAllBytes(ode_sbml_file.toPath()));
+                    vcmlToOdeInput(ode_vcml_str, "Copy of CVODE", output_dir);
+                    vcmlToOdeInput(ode_vcml_str, "Copy of IDA", output_dir);
+                    sbmlToOdeInput(ode_sbml_str, 10.0, 1.0, output_dir);
+                } else {
+                    logger.warn("ODE recording models not found: " + ode_vcml_file.getAbsolutePath() + ", " + ode_sbml_file.getAbsolutePath());
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to exercise the ODE input generation during recording: " + e.getMessage());
             }
 
             // exercise expression evaluation so native-image records the parser / SimpleSymbolTable config

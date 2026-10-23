@@ -57,6 +57,21 @@ class VCellNativeLibraryLoader:
 
         # vcmlToMovingBoundaryInput is only present in native libraries built with moving-boundary
         # support; guard so the package still loads against older shared libraries.
+        # vcmlToOdeInput / sbmlToOdeInput are only present in native libraries built with ODE input
+        # support; guard so the package still loads against older shared libraries.
+        if hasattr(self.lib, "vcmlToOdeInput"):
+            self.lib.vcmlToOdeInput.restype = ctypes.c_char_p
+            self.lib.vcmlToOdeInput.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        if hasattr(self.lib, "sbmlToOdeInput"):
+            self.lib.sbmlToOdeInput.restype = ctypes.c_char_p
+            self.lib.sbmlToOdeInput.argtypes = [
+                ctypes.c_void_p,
+                ctypes.c_char_p,
+                ctypes.c_double,
+                ctypes.c_double,
+                ctypes.c_char_p,
+            ]
+
         if hasattr(self.lib, "vcmlToMovingBoundaryInput"):
             self.lib.vcmlToMovingBoundaryInput.restype = ctypes.c_char_p
             self.lib.vcmlToMovingBoundaryInput.argtypes = [

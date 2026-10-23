@@ -59,16 +59,16 @@ Pre-commit hooks run ruff (lint + format) and prettier automatically.
 
 **Python layer** (`libvcell/`):
 
-- `__init__.py` — Public API: `vcml_to_finite_volume_input`, `sbml_to_finite_volume_input`, `vcml_to_moving_boundary_input`, `sbml_to_vcml`, `vcml_to_sbml`, `vcml_to_vcml`, `vcell_infix_to_python_infix`, `vcell_infix_to_num_expr_infix`. Also exposes `__version__` (read from installed package metadata; `"0.0.0"` when running from source tree)
+- `__init__.py` — Public API: `vcml_to_finite_volume_input`, `sbml_to_finite_volume_input`, `vcml_to_moving_boundary_input`, `vcml_to_ode_input`, `sbml_to_ode_input`, `sbml_to_vcml`, `vcml_to_sbml`, `vcml_to_vcml`, `vcell_infix_to_python_infix`, `vcell_infix_to_num_expr_infix`. Also exposes `__version__` (read from installed package metadata; `"0.0.0"` when running from source tree)
 - `solver_utils.py` / `model_utils.py` — Thin wrappers that instantiate `VCellNativeCalls` and delegate to native methods
 - `_internal/native_utils.py` — Loads the platform-specific shared library (`.so`/`.dylib`/`.dll`) from `libvcell/lib/` via ctypes; defines `IsolateManager` context manager for GraalVM isolate lifecycle
 - `_internal/native_calls.py` — ctypes FFI calls to the native library entry points; handles GraalVM isolate creation/teardown per call, JSON deserialization of `ReturnValue`
 
 **Native/Java layer** (`vcell-native/`):
 
-- `Entrypoints.java` — `@CEntryPoint` methods exposed as C symbols (`vcmlToFiniteVolumeInput`, `sbmlToFiniteVolumeInput`, `vcmlToMovingBoundaryInput`, `vcmlToSbml`, `sbmlToVcml`, `vcmlToVcml`, `vcellInfixToPythonInfix`)
+- `Entrypoints.java` — `@CEntryPoint` methods exposed as C symbols (`vcmlToFiniteVolumeInput`, `sbmlToFiniteVolumeInput`, `vcmlToMovingBoundaryInput`, `vcmlToOdeInput`, `sbmlToOdeInput`, `vcmlToSbml`, `sbmlToVcml`, `vcmlToVcml`, `vcellInfixToPythonInfix`)
 - `ModelUtils.java` / `SolverUtils.java` — Java implementation using vcell-core from the `vcell_submodule`
-- `solvers/LocalFVSolverStandalone.java` / `solvers/LocalMovingBoundarySolverStandalone.java` — thin subclasses of the vcell-core solvers that expose an input-only write path (they skip the native-executable lookup that the stock `initialize()` performs), so libvcell can generate solver input files without the solver binaries. The Moving Boundary input is a `MovingBoundarySetup` XML consumed downstream by the `vcell-mbsolver` package (`MovingBoundarySolver.from_xml`)
+- `solvers/LocalFVSolverStandalone.java` / `solvers/LocalMovingBoundarySolverStandalone.java` — thin subclasses of the vcell-core solvers that expose an input-only write path (they skip the native-executable lookup that the stock `initialize()` performs), so libvcell can generate solver input files without the solver binaries. The Moving Boundary input is a `MovingBoundarySetup` XML consumed downstream by the `vcell-mbsolver` package (`MovingBoundarySolver.from_xml`). `solvers/LocalOdeSolverStandalone.java` does the same for the Sundials ODE solvers: a non-spatial simulation on CVODE, IDA or Combined IDA/CVODE (Combined resolves as VCell's `CombinedSundialsSolver` does: IDA when the math has fast systems) becomes a `<base>.cvodeInput` or `<base>.idaInput` file, solved downstream by the `pyvcell-odesolver` package (`pyvcell_odesolver.solve(input, output)`, which writes VCell's `.ida` results). The two ODE entry points return the input file's name as their message
 - Built with Maven, then compiled to a shared library via GraalVM `native-maven-plugin` using the `shared-dll` profile
 - `MainRecorder.java` — Used with `native-image-agent` to record dynamic reflection/resource configs before native compilation
 
