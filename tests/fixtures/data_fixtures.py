@@ -50,3 +50,16 @@ def temp_output_dir() -> Generator[Path, None, None]:
     yield output_dir
 
     shutil.rmtree(output_dir)
+
+
+@pytest.fixture
+def ode_vcml_file_path() -> Path:
+    """Solver_Suite_6_2.vcml has non-spatial simulations on CVODE ("Copy of CVODE"), IDA ("Copy of IDA") and
+    Combined IDA/CVODE, and one on a non-Sundials ODE solver ("Copy of forward euler")."""
+    return fixtures_dir / "Solver_Suite_6_2.vcml"
+
+
+@pytest.fixture
+def ode_sbml_file_path() -> Path:
+    """BIOMD0000000012 (Elowitz 2000, the repressilator; BioModels, CC0): non-spatial, no fast systems."""
+    return fixtures_dir / "BIOMD0000000012_url.xml"

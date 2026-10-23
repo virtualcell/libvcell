@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vcell.libvcell.solvers.LocalFVSolverStandalone;
 import org.vcell.libvcell.solvers.LocalMovingBoundarySolverStandalone;
+import org.vcell.libvcell.solvers.LocalOdeSolverStandalone;
 import org.vcell.sbml.FiniteVolumeRunUtil;
 import org.vcell.sbml.vcell.SBMLExporter;
 import org.vcell.sbml.vcell.SBMLImporter;
@@ -165,6 +166,89 @@ public class SolverUtils {
         return fdiSpecs;
     }
 
+
+    /**
+     * Write the Sundials ODE solver input (CVODE or IDA) for a non-spatial VCML simulation; solved
+     * downstream by pyvcell-odesolver. The simulation must be configured for CVODE, IDA or the Combined
+     * IDA/CVODE solver; Combined resolves as VCell's CombinedSundialsSolver does (IDA when the math has
+     * fast systems, CVODE otherwise).
+     *
+     * @return the input file written ({@code <basename>.cvodeInput} or {@code <basename>.idaInput})
+     */
+    public static File vcmlToOdeInput(String vcml_content, String simulation_name, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException, MathException {
+        GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
+        VCMongoMessage.enabled = false;
+
+        if (vcml_content.substring(0, 300).contains("<sbml xmlns=\"http://www.sbml.org/sbml")) {
+            throw new IllegalArgumentException("expecting VCML content, not SBML");
+        }
+        BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
+        bioModel.updateAll(false);
+        Simulation sim = bioModel.getSimulation(simulation_name);
+        if (sim == null) {
+            throw new IllegalArgumentException("Simulation not found: " + simulation_name);
+        }
+        return writeOdeInput(sim, simulation_name, outputDir);
+    }
+
+    /**
+     * Write the Sundials ODE solver input for a non-spatial SBML model: its first application, simulated
+     * from 0 to {@code duration} with output every {@code output_time_step}, on the Combined IDA/CVODE
+     * solver (IDA when the math has fast systems, CVODE otherwise).
+     *
+     * @return the input file written ({@code <basename>.cvodeInput} or {@code <basename>.idaInput})
+     */
+    public static File sbmlToOdeInput(String sbml_content, double duration, double output_time_step, File outputDir) throws MappingException, PropertyVetoException, SolverException, ExpressionException, VCLoggerException, MathException {
+        GeometrySpec.avoidAWTImageCreation = true;
+	    XmlHelper.cloneUsingXML = true;
+        VCMongoMessage.enabled = false;
+
+        if (sbml_content.substring(0, 300).contains("<vcml xmlns=\"http://sourceforge.net/projects/vcell")) {
+            throw new IllegalArgumentException("expecting SBML content, not VCML");
+        }
+        if (!(duration > 0.0) || !(output_time_step > 0.0)) {
+            throw new IllegalArgumentException("duration and output_time_step must be positive, got " + duration + " and " + output_time_step);
+        }
+        SBMLExporter.MemoryVCLogger vcl = new SBMLExporter.MemoryVCLogger();
+        InputStream is = new ByteArrayInputStream(sbml_content.getBytes());
+        SBMLImporter importer = new SBMLImporter(is, vcl, true);
+        BioModel bioModel = importer.getBioModel();
+        bioModel.updateAll(false);
+
+        SimulationContext simContext = bioModel.getSimulationContext(0);
+        Simulation sim = new Simulation(simContext.getMathDescription(), simContext);
+        sim.getSolverTaskDescription().setSolverDescription(SolverDescription.CombinedSundials);
+        sim.getSolverTaskDescription().setTimeBounds(new TimeBounds(0.0, duration));
+        sim.getSolverTaskDescription().setOutputTimeSpec(new UniformOutputTimeSpec(output_time_step));
+        return writeOdeInput(sim, "the SBML model's simulation", outputDir);
+    }
+
+    private static File writeOdeInput(Simulation sim, String simulation_label, File outputDir) throws SolverException {
+        if (sim.isSpatial()) {
+            throw new IllegalArgumentException("Simulation '" + simulation_label + "' is spatial: use the finite volume input instead");
+        }
+        SolverDescription solverDescription = sim.getSolverTaskDescription().getSolverDescription();
+        boolean useIDA;
+        if (solverDescription == SolverDescription.CVODE) {
+            useIDA = false;
+        } else if (solverDescription == SolverDescription.IDA) {
+            useIDA = true;
+        } else if (solverDescription == SolverDescription.CombinedSundials) {
+            useIDA = sim.getMathDescription().hasFastSystems();
+        } else {
+            String actual = (solverDescription == null) ? "none" : solverDescription.getDisplayLabel();
+            throw new IllegalArgumentException("Simulation '" + simulation_label + "' is configured for the '" + actual + "' solver, expected CVODE, IDA or the Combined IDA/CVODE solver");
+        }
+
+        TempSimulation tempSimulation = new TempSimulation(sim, false);
+        tempSimulation.setSimulationOwner(sim.getSimulationOwner());
+        SimulationJob tempSimulationJob = new SimulationJob(tempSimulation, 0, null);
+
+        SimulationTask simTask = new SimulationTask(tempSimulationJob, 0);
+        LocalOdeSolverStandalone solver = new LocalOdeSolverStandalone(simTask, outputDir, useIDA);
+        return solver.writeInputFiles();
+    }
 
     public static void sbmlToFiniteVolumeInput(String sbml_content, File outputDir) throws MappingException, PropertyVetoException, SolverException, ExpressionException, VCLoggerException {
         GeometrySpec.avoidAWTImageCreation = true;

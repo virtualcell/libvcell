@@ -19,7 +19,9 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
+import static org.vcell.libvcell.SolverUtils.sbmlToOdeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToMovingBoundaryInput;
+import static org.vcell.libvcell.SolverUtils.vcmlToOdeInput;
 import static org.vcell.libvcell.TestUtils.*;
 
 public class SolverEntrypointsTest {
@@ -204,6 +206,89 @@ public class SolverEntrypointsTest {
         File output_dir = Files.createTempDirectory("vcmlToMovingBoundaryInput").toFile();
         IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToMovingBoundaryInput(vcmlContent_actually_sbml, "anything", output_dir));
         assertEquals("expecting VCML content, not SBML", exc.getMessage());
+    }
+
+
+    // -- Sundials ODE input (solved downstream by pyvcell-odesolver) -- //
+
+    private static String firstLine(File f) throws IOException {
+        return Files.readAllLines(f.toPath()).get(0);
+    }
+
+    @Test
+    public void testVcmlToOdeInput_cvode() throws Exception {
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
+        File input = vcmlToOdeInput(vcmlContent, "Copy of CVODE", output_dir);
+        assertTrue(input.getName().endsWith(".cvodeInput"), input.getName());
+        assertEquals(output_dir.getCanonicalFile(), input.getCanonicalFile().getParentFile());
+        assertEquals("SOLVER CVODE", firstLine(input));
+        assertTrue(Files.readString(input.toPath()).contains("NUM_EQUATIONS"));
+    }
+
+    @Test
+    public void testVcmlToOdeInput_ida() throws Exception {
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
+        File input = vcmlToOdeInput(vcmlContent, "Copy of IDA", output_dir);
+        assertTrue(input.getName().endsWith(".idaInput"), input.getName());
+        assertEquals("SOLVER IDA", firstLine(input));
+    }
+
+    @Test
+    public void testVcmlToOdeInput_combined_resolves_to_cvode_or_ida() throws Exception {
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
+        File input = vcmlToOdeInput(vcmlContent, "Copy of combined ida/cvode", output_dir);
+        String first = firstLine(input);
+        assertTrue(first.equals("SOLVER CVODE") || first.equals("SOLVER IDA"), first);
+    }
+
+    @Test
+    public void testVcmlToOdeInput_wrong_solver() throws IOException {
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput").toFile();
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToOdeInput(vcmlContent, "Copy of forward euler", output_dir));
+        assertTrue(exc.getMessage().contains("expected CVODE, IDA or the Combined IDA/CVODE solver"), exc.getMessage());
+    }
+
+    @Test
+    public void testVcmlToOdeInput_spatial() throws IOException {
+        String vcmlContent = getFileContentsAsString("/TinySpatialProject_Application0.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput").toFile();
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToOdeInput(vcmlContent, "Simulation0", output_dir));
+        assertTrue(exc.getMessage().contains("is spatial"), exc.getMessage());
+    }
+
+    @Test
+    public void testVcmlToOdeInput_bad_simname() throws IOException {
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput").toFile();
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> vcmlToOdeInput(vcmlContent, "wrong_sim_name", output_dir));
+        assertEquals("Simulation not found: wrong_sim_name", exc.getMessage());
+    }
+
+    @Test
+    public void testSbmlToOdeInput() throws Exception {
+        // BIOMD0000000012 (Elowitz 2000, the repressilator; BioModels, CC0): non-spatial, no fast systems
+        String sbmlContent = getFileContentsAsString("/BIOMD0000000012_url.xml");
+        File output_dir = Files.createTempDirectory("sbmlToOdeInput_" + UUID.randomUUID()).toFile();
+        File input = sbmlToOdeInput(sbmlContent, 100.0, 0.5, output_dir);
+        assertTrue(input.getName().endsWith(".cvodeInput"), input.getName());
+        String text = Files.readString(input.toPath());
+        assertTrue(text.startsWith("SOLVER CVODE"), text.substring(0, 40));
+        assertTrue(text.contains("ENDING_TIME 100.0"), text);
+        assertTrue(text.contains("OUTPUT_TIME_STEP 0.5"), text);
+    }
+
+    @Test
+    public void testSbmlToOdeInput_bad_arguments() throws IOException {
+        String sbmlContent = getFileContentsAsString("/BIOMD0000000012_url.xml");
+        File output_dir = Files.createTempDirectory("sbmlToOdeInput").toFile();
+        assertThrows(IllegalArgumentException.class, () -> sbmlToOdeInput(sbmlContent, 0.0, 0.5, output_dir));
+        String vcmlContent = getFileContentsAsString("/Solver_Suite_6_2.vcml");
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> sbmlToOdeInput(vcmlContent, 10.0, 1.0, output_dir));
+        assertEquals("expecting SBML content, not VCML", exc.getMessage());
     }
 
 }

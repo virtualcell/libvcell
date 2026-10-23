@@ -105,6 +105,49 @@ class VCellNativeCalls:
             logging.exception("Error in vcml_to_moving_boundary_input()", exc_info=e)
             raise
 
+    def vcml_to_ode_input(self, vcml_content: str, simulation_name: str, output_dir_path: Path) -> ReturnValue:
+        if not hasattr(self.lib, "vcmlToOdeInput"):
+            return ReturnValue(success=False, message="this libvcell native library predates vcml_to_ode_input")
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.vcmlToOdeInput(
+                    isolate_thread,
+                    ctypes.c_char_p(vcml_content.encode("utf-8")),
+                    ctypes.c_char_p(simulation_name.encode("utf-8")),
+                    ctypes.c_char_p(str(output_dir_path).encode("utf-8")),
+                )
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to convert vcml to ODE input")
+                return ReturnValue(success=False, message="Failed to convert vcml to ODE input")
+            return ReturnValue.model_validate_json(json_data=value.decode("utf-8"))
+        except Exception as e:
+            logging.exception("Error in vcml_to_ode_input()", exc_info=e)
+            raise
+
+    def sbml_to_ode_input(
+        self, sbml_content: str, duration: float, output_time_step: float, output_dir_path: Path
+    ) -> ReturnValue:
+        if not hasattr(self.lib, "sbmlToOdeInput"):
+            return ReturnValue(success=False, message="this libvcell native library predates sbml_to_ode_input")
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.sbmlToOdeInput(
+                    isolate_thread,
+                    ctypes.c_char_p(sbml_content.encode("utf-8")),
+                    ctypes.c_double(duration),
+                    ctypes.c_double(output_time_step),
+                    ctypes.c_char_p(str(output_dir_path).encode("utf-8")),
+                )
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to convert sbml to ODE input")
+                return ReturnValue(success=False, message="Failed to convert sbml to ODE input")
+            return ReturnValue.model_validate_json(json_data=value.decode("utf-8"))
+        except Exception as e:
+            logging.exception("Error in sbml_to_ode_input()", exc_info=e)
+            raise
+
     def sbml_to_finite_volume_input(self, sbml_content: str, output_dir_path: Path) -> ReturnValue:
         try:
             with IsolateManager(self.lib) as isolate_thread:

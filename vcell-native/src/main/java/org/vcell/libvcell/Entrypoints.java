@@ -27,7 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.vcell.libvcell.ModelUtils.*;
 import static org.vcell.libvcell.SolverUtils.sbmlToFiniteVolumeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToFiniteVolumeInput;
+import static org.vcell.libvcell.SolverUtils.sbmlToOdeInput;
 import static org.vcell.libvcell.SolverUtils.vcmlToMovingBoundaryInput;
+import static org.vcell.libvcell.SolverUtils.vcmlToOdeInput;
 
 
 public class Entrypoints {
@@ -223,6 +225,72 @@ public class Entrypoints {
         // return result as a json string
         String json = returnValue.toJson();
         logger.info("Returning from vcmlToMovingBoundaryInput: " + json);
+        return createString(json);
+    }
+
+
+    @CEntryPoint(
+            name = "vcmlToOdeInput",
+            documentation = """
+                    Converts a non-spatial VCML simulation into Sundials ODE solver input (a CVODE or IDA input
+                    file, solved by the pyvcell-odesolver package).
+                      vcml_content: text of VCML XML document
+                      simulation_name: name of the simulation to convert (CVODE, IDA or Combined IDA/CVODE solver)
+                      output_dir_path: path to the output directory
+                      Returns a JSON string with success status and, on success, the input file's name as message"""
+    )
+    public static CCharPointer entrypoint_vcmlToOdeInput(
+            IsolateThread ignoredThread,
+            CCharPointer vcml_content,
+            CCharPointer simulation_name,
+            CCharPointer output_dir_path) {
+        ReturnValue returnValue;
+        try {
+            String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
+            String simulationName = CTypeConversion.toJavaString(simulation_name);
+            String outputDirPathStr = CTypeConversion.toJavaString(output_dir_path);
+            File inputFile = vcmlToOdeInput(vcmlContentStr, simulationName, new File(outputDirPathStr));
+            returnValue = new ReturnValue(true, inputFile.getName());
+        }catch (Throwable t) {
+            logger.error("Error processing ODE model", t);
+            returnValue = new ReturnValue(false, t.getMessage());
+        }
+        String json = returnValue.toJson();
+        logger.info("Returning from vcmlToOdeInput: " + json);
+        return createString(json);
+    }
+
+
+    @CEntryPoint(
+            name = "sbmlToOdeInput",
+            documentation = """
+                    Converts a non-spatial SBML model into Sundials ODE solver input (a CVODE or IDA input file,
+                    solved by the pyvcell-odesolver package), simulated from 0 to duration on the Combined
+                    IDA/CVODE solver.
+                      sbml_content: text content of SBML XML document
+                      duration: end time of the simulation
+                      output_time_step: interval between saved time points
+                      output_dir_path: path to the output directory
+                      Returns a JSON string with success status and, on success, the input file's name as message"""
+    )
+    public static CCharPointer entrypoint_sbmlToOdeInput(
+            IsolateThread ignoredThread,
+            CCharPointer sbml_content,
+            double duration,
+            double output_time_step,
+            CCharPointer output_dir_path) {
+        ReturnValue returnValue;
+        try {
+            String sbmlContent = CTypeConversion.toJavaString(sbml_content);
+            String outputDirPathStr = CTypeConversion.toJavaString(output_dir_path);
+            File inputFile = sbmlToOdeInput(sbmlContent, duration, output_time_step, new File(outputDirPathStr));
+            returnValue = new ReturnValue(true, inputFile.getName());
+        }catch (Throwable t) {
+            logger.error("Error processing ODE model", t);
+            returnValue = new ReturnValue(false, t.getMessage());
+        }
+        String json = returnValue.toJson();
+        logger.info("Returning from sbmlToOdeInput: " + json);
         return createString(json);
     }
 

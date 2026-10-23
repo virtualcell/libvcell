@@ -7,12 +7,14 @@ from libvcell import (
     VCellExpressionError,
     evaluate_expression,
     sbml_to_finite_volume_input,
+    sbml_to_ode_input,
     sbml_to_vcml,
     vcell_infix_to_num_expr_infix,
     vcell_infix_to_python_infix,
     vcml_convert_units,
     vcml_to_finite_volume_input,
     vcml_to_moving_boundary_input,
+    vcml_to_ode_input,
     vcml_to_sbml,
     vcml_to_vcml,
 )
@@ -225,3 +227,76 @@ def test_evaluate_expression_bad_symbol_table_raises() -> None:
     # a symbol value that is not a number -> IllegalArgumentException on the Java side
     with pytest.raises(VCellExpressionError):
         evaluate_expression("a", {"a": "not a number"})  # type: ignore[dict-item]
+
+
+# -- Sundials ODE input (solved downstream by pyvcell-odesolver) -- #
+
+_skip_no_ode = pytest.mark.skipif(
+    not _native_lib_has_symbol("vcmlToOdeInput"),
+    reason="native library predates vcml_to_ode_input / sbml_to_ode_input",
+)
+
+
+def _solves(input_file: Path) -> None:
+    """When pyvcell-odesolver is installed, the input must solve and write results (not a dependency here)."""
+    odesolver = pytest.importorskip("pyvcell_odesolver")
+    output_file = input_file.with_suffix(".ida")
+    assert odesolver.solve(str(input_file), str(output_file)) == 0
+    assert output_file.exists() and output_file.stat().st_size > 0
+
+
+@_skip_no_ode
+@pytest.mark.parametrize(
+    ("simulation_name", "suffix"), [("Copy of CVODE", ".cvodeInput"), ("Copy of IDA", ".idaInput")]
+)
+def test_vcml_to_ode_input(temp_output_dir: Path, ode_vcml_file_path: Path, simulation_name: str, suffix: str) -> None:
+    success, msg = vcml_to_ode_input(
+        vcml_content=ode_vcml_file_path.read_text(), simulation_name=simulation_name, output_dir_path=temp_output_dir
+    )
+    assert success is True, msg
+    input_file = temp_output_dir / msg
+    assert input_file.suffix == suffix and input_file.exists()
+    assert input_file.read_text().startswith(f"SOLVER {suffix.removeprefix('.').removesuffix('Input').upper()}")
+
+
+@_skip_no_ode
+def test_vcml_to_ode_input_solves(temp_output_dir: Path, ode_vcml_file_path: Path) -> None:
+    success, msg = vcml_to_ode_input(ode_vcml_file_path.read_text(), "Copy of CVODE", temp_output_dir)
+    assert success is True, msg
+    _solves(temp_output_dir / msg)
+
+
+@_skip_no_ode
+def test_vcml_to_ode_input_refuses_other_solvers(temp_output_dir: Path, ode_vcml_file_path: Path) -> None:
+    success, msg = vcml_to_ode_input(ode_vcml_file_path.read_text(), "Copy of forward euler", temp_output_dir)
+    assert success is False
+    assert "expected CVODE, IDA or the Combined IDA/CVODE solver" in msg
+
+
+@_skip_no_ode
+def test_vcml_to_ode_input_refuses_spatial(temp_output_dir: Path, vcml_file_path: Path, vcml_sim_name: str) -> None:
+    success, msg = vcml_to_ode_input(vcml_file_path.read_text(), vcml_sim_name, temp_output_dir)
+    assert success is False
+    assert "is spatial" in msg
+
+
+@_skip_no_ode
+def test_sbml_to_ode_input(temp_output_dir: Path, ode_sbml_file_path: Path) -> None:
+    success, msg = sbml_to_ode_input(
+        sbml_content=ode_sbml_file_path.read_text(),
+        output_dir_path=temp_output_dir,
+        duration=100.0,
+        output_time_step=0.5,
+    )
+    assert success is True, msg
+    text = (temp_output_dir / msg).read_text()
+    assert text.startswith("SOLVER CVODE")
+    assert "ENDING_TIME 100.0" in text and "OUTPUT_TIME_STEP 0.5" in text
+    _solves(temp_output_dir / msg)
+
+
+@_skip_no_ode
+def test_sbml_to_ode_input_refuses_a_non_positive_duration(temp_output_dir: Path, ode_sbml_file_path: Path) -> None:
+    success, msg = sbml_to_ode_input(ode_sbml_file_path.read_text(), temp_output_dir, 0.0, 0.5)
+    assert success is False
+    assert "must be positive" in msg
