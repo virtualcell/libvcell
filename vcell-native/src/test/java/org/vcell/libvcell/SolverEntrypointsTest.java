@@ -291,4 +291,16 @@ public class SolverEntrypointsTest {
         assertEquals("expecting SBML content, not VCML", exc.getMessage());
     }
 
+    @Test
+    public void testVcmlToOdeInput_rule_based_uses_the_stored_math() throws Exception {
+        // public BioModel 100992568 ("CompartmentTransport"): one reaction rule, which VCell would expand into a
+        // reaction network with BioNetGen (not available in libvcell), so the document's stored math is used
+        String vcmlContent = getFileContentsAsString("/public_biomodel_100992568_rule_based.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
+        File input = vcmlToOdeInput(vcmlContent, "Simulation0", output_dir);
+        String first = firstLine(input);
+        assertTrue(first.equals("SOLVER CVODE") || first.equals("SOLVER IDA"), first);
+        assertTrue(Files.readString(input.toPath()).contains("NUM_EQUATIONS"));
+    }
+
 }

@@ -300,3 +300,13 @@ def test_sbml_to_ode_input_refuses_a_non_positive_duration(temp_output_dir: Path
     success, msg = sbml_to_ode_input(ode_sbml_file_path.read_text(), temp_output_dir, 0.0, 0.5)
     assert success is False
     assert "must be positive" in msg
+
+
+@_skip_no_ode
+def test_vcml_to_ode_input_uses_the_stored_math_of_a_rule_based_application(
+    temp_output_dir: Path, rule_based_vcml_file_path: Path
+) -> None:
+    """Its network needs BioNetGen to regenerate, which libvcell does not include, so the stored math is used."""
+    success, msg = vcml_to_ode_input(rule_based_vcml_file_path.read_text(), "Simulation0", temp_output_dir)
+    assert success is True, msg
+    _solves(temp_output_dir / msg)

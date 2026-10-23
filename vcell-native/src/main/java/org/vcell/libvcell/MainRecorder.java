@@ -133,6 +133,11 @@ public class MainRecorder {
                     vcmlToOdeInput(ode_vcml_str, "Copy of CVODE", output_dir);
                     vcmlToOdeInput(ode_vcml_str, "Copy of IDA", output_dir);
                     sbmlToOdeInput(ode_sbml_str, 10.0, 1.0, output_dir);
+                    // a rule-based application: the stored-math path (no BioNetGen in libvcell)
+                    File rule_based_file = new File("src/test/resources/public_biomodel_100992568_rule_based.vcml");
+                    if (rule_based_file.exists()) {
+                        vcmlToOdeInput(new String(java.nio.file.Files.readAllBytes(rule_based_file.toPath())), "Simulation0", output_dir);
+                    }
                 } else {
                     logger.warn("ODE recording models not found: " + ode_vcml_file.getAbsolutePath() + ", " + ode_sbml_file.getAbsolutePath());
                 }
