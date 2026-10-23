@@ -176,7 +176,13 @@ public class SolverUtils {
      *
      * @return the input file written ({@code <basename>.cvodeInput} or {@code <basename>.idaInput})
      */
-    public static File vcmlToOdeInput(String vcml_content, String simulation_name, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException, MathException {
+    /**
+     * The ODE solver input written for a simulation: the input file, and whether the document's stored math was used
+     * instead of regenerating it (a rule-based application, see {@link #refreshSimulationMath}).
+     */
+    public record OdeInput(File inputFile, boolean usedStoredMath) {}
+
+    public static OdeInput vcmlToOdeInput(String vcml_content, String simulation_name, File outputDir) throws XmlParseException, MappingException, SolverException, ExpressionException, MathException {
         GeometrySpec.avoidAWTImageCreation = true;
 	    XmlHelper.cloneUsingXML = true;
         VCMongoMessage.enabled = false;
@@ -189,8 +195,8 @@ public class SolverUtils {
         if (sim == null) {
             throw new IllegalArgumentException("Simulation not found: " + simulation_name);
         }
-        refreshSimulationMath(bioModel, sim);
-        return writeOdeInput(sim, simulation_name, outputDir);
+        boolean usedStoredMath = refreshSimulationMath(bioModel, sim);
+        return new OdeInput(writeOdeInput(sim, simulation_name, outputDir), usedStoredMath);
     }
 
     /**
@@ -202,11 +208,13 @@ public class SolverUtils {
      * have. For it the math stored in the document is used, which is the network VCell generated when the model was
      * saved, and what the VCell server runs for a saved simulation. A document without stored math for it cannot be
      * converted.
+     *
+     * @return whether the stored math was used
      */
-    static void refreshSimulationMath(BioModel bioModel, Simulation sim) throws MappingException {
+    static boolean refreshSimulationMath(BioModel bioModel, Simulation sim) throws MappingException {
         if (!(sim.getSimulationOwner() instanceof SimulationContext simContext)) {
             bioModel.updateAll(false);  // not an application's simulation (a MathModel's): as before
-            return;
+            return false;
         }
         bioModel.refreshDependencies();
         if (simContext.createNewTransformer() instanceof NetworkTransformer) {
@@ -217,9 +225,10 @@ public class SolverUtils {
             }
             logger.warn("Application '" + simContext.getName() + "' is rule-based: using its stored math (BioNetGen,"
                     + " which would regenerate its reaction network, is not available in libvcell)");
-            return;
+            return true;
         }
         simContext.updateAll(false);
+        return false;
     }
 
     /**

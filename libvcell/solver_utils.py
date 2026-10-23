@@ -70,9 +70,14 @@ def vcml_to_ode_input(vcml_content: str, simulation_name: str, output_dir_path: 
         simulation_name (str): simulation name (must use CVODE, IDA or Combined IDA/CVODE)
         output_dir_path (Path): output directory path
 
+    A rule-based application (reaction rules, whose network VCell generates with BioNetGen, which libvcell does not
+    include) is converted from the math stored in the document: the network VCell generated when the model was
+    saved. The message then says so.
+
     Returns:
-        tuple[bool, str]: the success status, and the input file's name (``<base>.cvodeInput`` or
-        ``<base>.idaInput``) on success or the error message on failure
+        tuple[bool, str]: the success status, and on success the input file's name (``<base>.cvodeInput`` or
+        ``<base>.idaInput``), followed by ``"; stored math (...)"`` when the stored math was used (file names have
+        no ``;``, so ``message.split(";")[0]`` is the name); on failure the error message
     """
     native = VCellNativeCalls()
     return_value: ReturnValue = native.vcml_to_ode_input(vcml_content, simulation_name, output_dir_path)
