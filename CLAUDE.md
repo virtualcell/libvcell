@@ -91,7 +91,10 @@ when it generates the math. The Python package sets `LIBVCELL_VCELL_INSTALL_DIR`
 (`_internal/native_utils.py`), and `BioNetGenSupport.configure()`, called at the start of every model-building method,
 turns it into `vcell.installDir` (each call runs in a fresh isolate). Without `perl` or BioNetGen,
 `vcml_to_ode_input` falls back to the document's stored math and says why in its message. The recorder run in
-`build.py` sets the variable too, so native-image records the BioNetGen path.
+`build.py` sets the variable too, so native-image records the BioNetGen path. On Windows VCell runs
+`bionetgen/win64Standalone/BNG2.exe` instead of `perl BNG2.pl`: `scripts/pack_bionetgen.sh` packs it from the same
+files with PAR::Packer (and smoke-tests it); the Windows jobs of both workflows run it before the build (cached on a
+hash of the BioNetGen files and the script), and the exe is git-ignored but included in the wheel.
 
 ### Key dependencies
 

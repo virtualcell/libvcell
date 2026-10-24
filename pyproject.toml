@@ -17,7 +17,9 @@ include = [
     {path="libvcell/lib/libvcell*", format="wheel"},
     {path="libvcell/py.typed"},
     # BioNetGen (BNG2.pl and its Perl modules), which VCell runs to generate rule-based reaction networks
-    {path="libvcell/vcell_install/**/*"}
+    {path="libvcell/vcell_install/**/*"},
+    # the packed BioNetGen for Windows (git-ignored, built by scripts/pack_bionetgen.sh in the Windows CI job)
+    {path="libvcell/vcell_install/bionetgen/win64Standalone/*", format="wheel"}
 ]
 
 [tool.poetry.dependencies]

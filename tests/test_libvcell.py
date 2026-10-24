@@ -1,9 +1,12 @@
+import platform
 import shutil
 import tempfile
+from importlib.resources import files
 from pathlib import Path
 
 import pytest
 
+import libvcell
 from libvcell import (
     VCellExpressionError,
     evaluate_expression,
@@ -304,8 +307,17 @@ def test_sbml_to_ode_input_refuses_a_non_positive_duration(temp_output_dir: Path
     assert "must be positive" in msg
 
 
+def _bundled_bionetgen_runs() -> bool:
+    """VCell runs the packed bionetgen/win64Standalone/BNG2.exe on Windows (scripts/pack_bionetgen.sh), and
+    `perl BNG2.pl` elsewhere."""
+    bionetgen = files(libvcell).joinpath("vcell_install", "bionetgen")
+    if platform.system() == "Windows":
+        return bionetgen.joinpath("win64Standalone", "BNG2.exe").is_file()
+    return shutil.which("perl") is not None
+
+
 @_skip_no_ode
-@pytest.mark.skipif(shutil.which("perl") is None, reason="BioNetGen runs with perl")
+@pytest.mark.skipif(not _bundled_bionetgen_runs(), reason="needs perl, or the packed BNG2.exe on Windows")
 def test_vcml_to_ode_input_regenerates_a_rule_based_application_with_the_bundled_bionetgen(
     temp_output_dir: Path, rule_based_vcml_file_path: Path
 ) -> None:

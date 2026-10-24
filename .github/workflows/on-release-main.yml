@@ -94,6 +94,21 @@ jobs:
           CIBW_MANYLINUX_AARCH64_IMAGE: "${{ env.MANYLINUX_IMAGE_TARGET }}"
       #          CIBW_BUILD_VERBOSITY_LINUX: 2
 
+      - name: Cache the packed BioNetGen (Windows)
+        if: runner.os == 'Windows'
+        id: bionetgen-exe
+        uses: actions/cache@v4
+        with:
+          path: libvcell/vcell_install/bionetgen/win64Standalone/BNG2.exe
+          key: bionetgen-exe-${{ hashFiles('libvcell/vcell_install/bionetgen/**', 'scripts/pack_bionetgen.sh') }}
+
+      - name: Pack BioNetGen for Windows (PAR::Packer)
+        # VCell runs bionetgen/win64Standalone/BNG2.exe on Windows, not perl BNG2.pl (scripts/pack_bionetgen.sh)
+        if: runner.os == 'Windows' && steps.bionetgen-exe.outputs.cache-hit != 'true'
+        run: |
+          cpanm --notest PAR::Packer
+          scripts/pack_bionetgen.sh
+
       - name: Run cibuildwheel
         if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: |

@@ -66,6 +66,15 @@ def main() -> None:
         env={**os.environ, "LIBVCELL_VCELL_INSTALL_DIR": str(root_dir / "libvcell" / "vcell_install")},
     )
 
+    # On Windows VCell runs BioNetGen as bionetgen/win64Standalone/BNG2.exe, packed by scripts/pack_bionetgen.sh
+    if sys.platform == "win32":
+        bng2_exe = root_dir / "libvcell" / "vcell_install" / "bionetgen" / "win64Standalone" / "BNG2.exe"
+        if not bng2_exe.is_file():
+            print(
+                f"WARNING: {bng2_exe} is missing (run scripts/pack_bionetgen.sh): on Windows, rule-based models "
+                "will use their stored math instead of regenerating it"
+            )
+
     # Build vcell-native as native shared object library
     install_message_4: str = """
 /*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
