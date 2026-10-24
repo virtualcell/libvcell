@@ -106,8 +106,12 @@ jobs:
         # VCell runs bionetgen/win64Standalone/BNG2.exe on Windows, not perl BNG2.pl (scripts/pack_bionetgen.sh)
         if: runner.os == 'Windows' && steps.bionetgen-exe.outputs.cache-hit != 'true'
         run: |
-          cpanm --notest PAR::Packer
-          scripts/pack_bionetgen.sh
+          # Strawberry Perl, not the Perl that ships with Git for Windows (Git Bash puts its own first, and it lacks
+          # the modules cpanm and PAR::Packer need)
+          export PATH="/c/Strawberry/perl/bin:/c/Strawberry/perl/site/bin:/c/Strawberry/c/bin:$PATH"
+          perl -v | head -2
+          perl -S cpanm --notest PAR::Packer
+          PP="perl -S pp" scripts/pack_bionetgen.sh
 
       - name: Run cibuildwheel
         if: ${{ !startsWith(matrix.os, 'ubuntu') }}
