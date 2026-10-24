@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "libvcell"
-version = "0.0.22"
+version = "0.0.23"
 description = "This is a python package which wraps a subset of VCell Java code as a native python package."
 authors = ["Jim Schaff <schaff@uchc.edu>", "Ezequiel Valencia <evalencia@uchc.edu>"]
 repository = "https://github.com/virtualcell/libvcell"
@@ -46,7 +46,10 @@ mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 build-frontend = "pip"
 skip = "*-musllinux* *pypy* *i686 *ppc64le *s390x *armv7l *riscv64"
 
-#[tool.cibuildwheel.linux]
+[tool.cibuildwheel.linux]
+# the build's tests run the bundled BioNetGen (perl BNG2.pl), and the manylinux images carry only perl-interpreter,
+# without the core modules it needs (FindBin, Math::Trig); the perl package installs them all
+before-all = "dnf install -y perl || yum install -y perl"
 #archs = ["x86_64"]
 #
 #[tool.cibuildwheel.windows]
