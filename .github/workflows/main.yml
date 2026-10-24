@@ -75,6 +75,25 @@ jobs:
           native-image-job-reports: "true"
           cache: "maven"
 
+      - name: Cache the packed BioNetGen (Windows)
+        if: runner.os == 'Windows'
+        id: bionetgen-exe
+        uses: actions/cache@v4
+        with:
+          path: libvcell/vcell_install/bionetgen/win64Standalone/BNG2.exe
+          key: bionetgen-exe-${{ hashFiles('libvcell/vcell_install/bionetgen/**', 'scripts/pack_bionetgen.sh') }}
+
+      - name: Pack BioNetGen for Windows (PAR::Packer)
+        # VCell runs bionetgen/win64Standalone/BNG2.exe on Windows, not perl BNG2.pl (scripts/pack_bionetgen.sh)
+        if: runner.os == 'Windows' && steps.bionetgen-exe.outputs.cache-hit != 'true'
+        run: |
+          # Strawberry Perl, not the Perl that ships with Git for Windows (Git Bash puts its own first, and it lacks
+          # the modules cpanm and PAR::Packer need)
+          export PATH="/c/Strawberry/perl/bin:/c/Strawberry/perl/site/bin:/c/Strawberry/c/bin:$PATH"
+          perl -v | head -2
+          perl -S cpanm --notest PAR::Packer
+          PP="perl -S pp" scripts/pack_bionetgen.sh
+
       - name: Install python dependencies
         run: poetry install --no-interaction
 
@@ -87,12 +106,6 @@ jobs:
       - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11
         uses: codecov/codecov-action@v4
         if: ${{ matrix.python-version == '3.11' }}
-
-      - name: Setup tmate
-        if: failure()
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
 
   check-docs:
     runs-on: ubuntu-latest

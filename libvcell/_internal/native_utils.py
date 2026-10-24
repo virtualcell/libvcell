@@ -1,15 +1,29 @@
 import ctypes
+import os
 import platform
 from _ctypes import byref
 from importlib.resources import files
 
 import libvcell
 
+#: The environment variable the native library reads to find VCell's resources (org.vcell.libvcell.BioNetGenSupport).
+VCELL_INSTALL_DIR_ENV = "LIBVCELL_VCELL_INSTALL_DIR"
+
+
+def _use_bundled_bionetgen() -> None:
+    """Point the native library at the BioNetGen this package bundles (``vcell_install/bionetgen/BNG2.pl``), which
+    VCell runs with ``perl`` to generate a rule-based application's reaction network. A value already in the
+    environment wins."""
+    install_dir = files(libvcell).joinpath("vcell_install")
+    if install_dir.joinpath("bionetgen", "BNG2.pl").is_file():
+        os.environ.setdefault(VCELL_INSTALL_DIR_ENV, str(install_dir))
+
 
 class VCellNativeLibraryLoader:
     lib: ctypes.CDLL
 
     def __init__(self) -> None:
+        _use_bundled_bionetgen()
         self.lib = self._load_library()
         self._define_entry_points()
 

@@ -1,8 +1,12 @@
+import platform
+import shutil
 import tempfile
+from importlib.resources import files
 from pathlib import Path
 
 import pytest
 
+import libvcell
 from libvcell import (
     VCellExpressionError,
     evaluate_expression,
@@ -303,13 +307,34 @@ def test_sbml_to_ode_input_refuses_a_non_positive_duration(temp_output_dir: Path
     assert "must be positive" in msg
 
 
+def _bundled_bionetgen_runs() -> bool:
+    """VCell runs the packed bionetgen/win64Standalone/BNG2.exe on Windows (scripts/pack_bionetgen.sh), and
+    `perl BNG2.pl` elsewhere."""
+    bionetgen = files(libvcell).joinpath("vcell_install", "bionetgen")
+    if platform.system() == "Windows":
+        return bionetgen.joinpath("win64Standalone", "BNG2.exe").is_file()
+    return shutil.which("perl") is not None
+
+
 @_skip_no_ode
-def test_vcml_to_ode_input_uses_the_stored_math_of_a_rule_based_application(
+@pytest.mark.skipif(not _bundled_bionetgen_runs(), reason="needs perl, or the packed BNG2.exe on Windows")
+def test_vcml_to_ode_input_regenerates_a_rule_based_application_with_the_bundled_bionetgen(
     temp_output_dir: Path, rule_based_vcml_file_path: Path
 ) -> None:
-    """Its network needs BioNetGen to regenerate, which libvcell does not include, so the stored math is used."""
+    success, msg = vcml_to_ode_input(rule_based_vcml_file_path.read_text(), "Simulation0", temp_output_dir)
+    assert success is True, msg
+    assert ";" not in msg  # regenerated: just the input file's name
+    _solves(temp_output_dir / msg)
+
+
+@_skip_no_ode
+def test_vcml_to_ode_input_falls_back_to_the_stored_math_without_bionetgen(
+    temp_output_dir: Path, rule_based_vcml_file_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Without BioNetGen (here: a directory with none), the stored math is used and the message says why."""
+    monkeypatch.setenv("LIBVCELL_VCELL_INSTALL_DIR", str(temp_output_dir))
     success, msg = vcml_to_ode_input(rule_based_vcml_file_path.read_text(), "Simulation0", temp_output_dir)
     assert success is True, msg
     name, _, note = msg.partition("; ")
-    assert note.startswith("stored math (rule-based application")
+    assert note.startswith("stored math (rule-based application: BioNetGen could not regenerate"), note
     _solves(temp_output_dir / name)

@@ -303,10 +303,28 @@ public class SolverEntrypointsTest {
         File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
         SolverUtils.OdeInput odeInput = vcmlToOdeInput(vcmlContent, "Simulation0", output_dir);
         File input = odeInput.inputFile();
-        assertTrue(odeInput.usedStoredMath());
+        assertTrue(odeInput.usedStoredMath());  // no vcell.installDir here, so BioNetGen cannot run
+        assertTrue(odeInput.storedMathReason().startsWith("BioNetGen could not regenerate"), odeInput.storedMathReason());
         String first = firstLine(input);
         assertTrue(first.equals("SOLVER CVODE") || first.equals("SOLVER IDA"), first);
         assertTrue(Files.readString(input.toPath()).contains("NUM_EQUATIONS"));
+    }
+
+    @Test
+    public void testVcmlToOdeInput_rule_based_regenerated_with_the_bundled_bionetgen() throws Exception {
+        // the BioNetGen the Python package bundles (libvcell/vcell_install/bionetgen, run with perl)
+        File installDir = new File("../libvcell/vcell_install").getCanonicalFile();
+        assertTrue(new File(installDir, "bionetgen/BNG2.pl").isFile(), installDir.toString());
+        String vcmlContent = getFileContentsAsString("/public_biomodel_100992568_rule_based.vcml");
+        File output_dir = Files.createTempDirectory("vcmlToOdeInput_" + UUID.randomUUID()).toFile();
+        System.setProperty("vcell.installDir", installDir.getPath());
+        try {
+            SolverUtils.OdeInput odeInput = vcmlToOdeInput(vcmlContent, "Simulation0", output_dir);
+            assertFalse(odeInput.usedStoredMath(), odeInput.storedMathReason());
+            assertTrue(Files.readString(odeInput.inputFile().toPath()).contains("NUM_EQUATIONS"));
+        } finally {
+            System.clearProperty("vcell.installDir");
+        }
     }
 
 }
