@@ -86,6 +86,35 @@ def test_sbml_to_vcml(sbml_file_path: Path) -> None:
         assert msg == "Success"
 
 
+# A namespace declared on <annotation> makes jsbml format the Annotation into a debug message, which reflects over its
+# isSet*/get* methods (AbstractTreeNode.toString); the native library failed with MissingReflectionRegistrationError for
+# Annotation.isSetAbout() until every jsbml tree node was registered for reflection (BioModels 56, 94, 150, 168, ...).
+_SBML_WITH_ANNOTATION_NAMESPACE = """<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="m">
+    <annotation xmlns:jd="http://www.sys-bio.org/sbml"><jd:x/></annotation>
+    <listOfCompartments><compartment id="c" size="1"/></listOfCompartments>
+    <listOfSpecies><species id="A" compartment="c" initialConcentration="1"/></listOfSpecies>
+    <listOfParameters><parameter id="k" value="1"/></listOfParameters>
+    <listOfReactions>
+      <reaction id="R" reversible="false">
+        <listOfReactants><speciesReference species="A"/></listOfReactants>
+        <kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci>k</ci><ci>A</ci></apply></math></kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
+"""
+
+
+def test_sbml_to_vcml_with_an_annotation_namespace() -> None:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        vcml_file_path = Path(temp_dir) / "test.vcml"
+        success, msg = sbml_to_vcml(sbml_content=_SBML_WITH_ANNOTATION_NAMESPACE, vcml_file_path=vcml_file_path)
+        assert (success, msg) == (True, "Success")
+        assert vcml_file_path.exists()
+
+
 def test_vcml_to_sbml_with_validation(vcml_file_path: Path, vcml_app_name: str) -> None:
     vcml_content = vcml_file_path.read_text()
     with tempfile.TemporaryDirectory() as temp_dir:

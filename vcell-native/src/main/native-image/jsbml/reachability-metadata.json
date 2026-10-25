@@ -1,0 +1,766 @@
+{
+    "reflection": [
+        {
+            "type": "org.sbml.jsbml.ASTNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AbstractMathContainer",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AbstractNamedSBase",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AbstractNamedSBaseWithUnit",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AbstractSBase",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AbstractTreeNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AlgebraicRule",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Annotation",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AnnotationElement",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.AssignmentRule",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.CVTerm",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Compartment",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.CompartmentType",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Constraint",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Creator",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Delay",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Event",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.EventAssignment",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ExplicitRule",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.FunctionDefinition",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.History",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.InitialAssignment",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.KineticLaw",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ListOf",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.LocalParameter",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Model",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ModifierSpeciesReference",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Parameter",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Priority",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.QuantityWithUnit",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.RateRule",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Reaction",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Rule",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.SBMLDocument",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.SimpleSpeciesReference",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Species",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.SpeciesReference",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.SpeciesType",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.StoichiometryMath",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Symbol",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Trigger",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.Unit",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.UnitDefinition",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.AbstractASTNodePlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.AbstractSBasePlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.AbstractSpatialNamedSBase",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.AbstractSpatialSBasePlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.AdjacentDomains",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.AdvectionCoefficient",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.AnalyticGeometry",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.AnalyticVolume",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.Boundary",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.BoundaryCondition",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGHomogeneousTransformation",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGObject",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGPrimitive",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGPseudoPrimitive",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGRotation",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGScale",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGSetOperator",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGTransformation",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGTranslation",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CSGeometry",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CompartmentMapping",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CoordinateComponent",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.CoordinateReference",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.DiffusionCoefficient",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.Domain",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.DomainType",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.Geometry",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.GeometryDefinition",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.InteriorPoint",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.MixedGeometry",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.OrdinalMapping",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.ParameterType",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.ParametricGeometry",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.ParametricObject",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.PolygonObject",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SampledField",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SampledFieldGeometry",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SampledVolume",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SpatialCompartmentPlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SpatialModelPlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SpatialParameterPlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SpatialPoints",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SpatialReactionPlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SpatialSpeciesPlugin",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.SpatialSymbolReference",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.ext.spatial.TransformationComponent",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTArithmeticOperatorNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTBinaryFunctionNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTBoolean",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCSymbolAvogadroNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCSymbolDelayNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCSymbolTimeNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCiFunctionNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCiNumberNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCnExponentialNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCnIntegerNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCnNumberNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCnRationalNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTCnRealNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTConstantNumber",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTDivideNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTFunction",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTHyperbolicNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTLambdaFunctionNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTLogarithmNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTLogicalOperatorNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTMinusNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTNumber",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTPiecewiseFunctionNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTPlusNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTPowerNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTQualifierNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTRelationalOperatorNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTRootNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTTimesNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTTrigonometricNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.ASTUnaryFunctionNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.math.AbstractASTNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.util.ListOfWithName",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.util.TreeNodeAdapter",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.xml.XMLNode",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.xml.XMLToken",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "org.sbml.jsbml.xml.parsers.SBMLLevel1Rule",
+            "allDeclaredMethods": true,
+            "allPublicMethods": true,
+            "allDeclaredFields": true
+        }
+    ]
+}
