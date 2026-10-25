@@ -76,7 +76,7 @@ Pre-commit hooks run ruff (lint + format) and prettier automatically.
 
 1. `mvn clean install -DskipTests` on `vcell_submodule/` (full VCell Java project)
 2. `mvn clean install` on `vcell-native/` (builds the shaded JAR)
-3. Run JAR with `native-image-agent` to record native-image config into `target/recording/`
+3. Run JAR with `native-image-agent` to record native-image config into `target/recording/` (the native build also reads the checked-in `vcell-native/src/main/native-image/jsbml/`, every jsbml tree node registered for reflection; `scripts/JsbmlReflection.java` regenerates it)
 4. `mvn package -P shared-dll` to produce the native shared library
 5. Copy resulting `libvcell.{so,dylib,dll}` into `libvcell/lib/`
 

@@ -236,7 +236,7 @@
                                 <arg>--initialize-at-build-time=org.apache.xerces.parsers.SAXParser</arg>
                                 <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
                                 <arg>-g</arg>
-                                <arg>-H:ConfigurationFileDirectories=target/recording</arg>
+                                <arg>-H:ConfigurationFileDirectories=target/recording,src/main/native-image/jsbml</arg>
                             </buildArgs>
                         </configuration>
                         <executions>
@@ -267,7 +267,7 @@
                                 <arg>-Djava.security.properties=src/main/resources/custom.security</arg>
                                 <arg>-g</arg>
                                 <arg>--shared</arg>
-                                <arg>-H:ConfigurationFileDirectories=target/recording</arg>
+                                <arg>-H:ConfigurationFileDirectories=target/recording,src/main/native-image/jsbml</arg>
                             </buildArgs>
                         </configuration>
                         <executions>
