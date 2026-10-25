@@ -42,11 +42,13 @@ public class JsbmlReflection {
             if (!treeNode.isAssignableFrom(c) || c.isInterface()) {
                 continue;
             }
-            entries.add("    {\"type\": \"" + name + "\", \"allDeclaredMethods\": true, \"allPublicMethods\": true, "
-                + "\"allDeclaredFields\": true}");
+            entries.add("        {\n            \"type\": \"" + name + "\",\n"
+                + "            \"allDeclaredMethods\": true,\n"
+                + "            \"allPublicMethods\": true,\n"
+                + "            \"allDeclaredFields\": true\n        }");
         }
         Files.createDirectories(out.getParent());
-        Files.writeString(out, "{\n  \"reflection\": [\n" + String.join(",\n", entries) + "\n  ]\n}\n");
+        Files.writeString(out, "{\n    \"reflection\": [\n" + String.join(",\n", entries) + "\n    ]\n}\n");
         System.out.println("wrote " + entries.size() + " jsbml tree node classes to " + out);
     }
 }
