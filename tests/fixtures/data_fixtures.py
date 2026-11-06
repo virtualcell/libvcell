@@ -20,6 +20,12 @@ def relative_sizes_vcml_file_path() -> Path:
 
 
 @pytest.fixture
+def species_graphs_vcml_file_path() -> Path:
+    """A rule-based model whose network generation compares species graphs (JGraphT, reflective edges)."""
+    return fixtures_dir / "public_biomodel_120397384_species_graphs.vcml"
+
+
+@pytest.fixture
 def vcml_sim_name() -> str:
     return "Simulation0"
 

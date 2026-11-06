@@ -18,6 +18,8 @@ import cbit.vcell.parser.SimpleSymbolTable;
 import cbit.vcell.xml.XMLSource;
 import cbit.vcell.xml.XmlHelper;
 import cbit.vcell.xml.XmlParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vcell.sbml.SbmlException;
 import org.vcell.sbml.vcell.SBMLAnnotationUtil;
 import org.vcell.sbml.vcell.SBMLExporter;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ModelUtils {
+    private static final Logger logger = LogManager.getLogger(ModelUtils.class);
 
     public static void sbml_to_vcml(String sbml_content, Path vcmlPath)
             throws VCLoggerException, XmlParseException, IOException, MappingException {
@@ -163,12 +166,23 @@ public class ModelUtils {
                 simulationContext.updateAll(true);
                 regenerated.add(simulationContext.getName());
             } catch (Exception e) {
-                failed.put(simulationContext.getName(), String.valueOf(e.getMessage()));
+                logger.error("failed to regenerate the math of application '" + simulationContext.getName() + "'", e);
+                failed.put(simulationContext.getName(), failureReason(e));
             }
         }
         String vcml_str = XmlHelper.bioModelToXML(bioModel);
         XmlUtil.writeXMLStringToFile(vcml_str, vcmlPath.toFile().getAbsolutePath(), true);
         return new Regeneration(regenerated, failed);
+    }
+
+    /** A failure's message, with its root cause's type and message when the failure wraps another. */
+    static String failureReason(Throwable e) {
+        Throwable root = e;
+        while (root.getCause() != null && root.getCause() != root) {
+            root = root.getCause();
+        }
+        String reason = String.valueOf(e.getMessage());
+        return root == e ? reason : reason + " [caused by " + root.getClass().getName() + ": " + root.getMessage() + "]";
     }
 
     /**

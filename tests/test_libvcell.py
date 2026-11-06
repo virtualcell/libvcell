@@ -178,6 +178,23 @@ def test_vcml_regenerate_math(relative_sizes_vcml_file_path: Path) -> None:
         assert '<FeatureMapping Feature="cyto" GeometryClass="Compartment" SubVolume="Compartment" Size="' in text
 
 
+@pytest.mark.skipif(
+    not _native_lib_has_symbol("vcmlRegenerateMath"),
+    reason="native library predates vcmlRegenerateMath",
+)
+def test_vcml_regenerate_math_compares_species_graphs(species_graphs_vcml_file_path: Path) -> None:
+    # network generation checks species-graph isomorphism with JGraphT, which builds its edges reflectively
+    # (SpeciesGraphIsomorphismInspector$BNGEdge): the native library must register that constructor
+    vcml_content = species_graphs_vcml_file_path.read_text()
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out = Path(temp_dir) / "regenerated.vcml"
+        success, msg, regeneration = vcml_regenerate_math(vcml_content=vcml_content, vcml_file_path=out)
+        assert success is True, msg
+        assert regeneration is not None
+        assert regeneration.failed == {}, regeneration.failed
+        assert regeneration.regenerated
+
+
 def test_vcml_convert_units(vcml_file_path: Path) -> None:
     vcml_content = vcml_file_path.read_text()
     with tempfile.TemporaryDirectory() as temp_dir:

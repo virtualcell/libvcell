@@ -6,6 +6,7 @@ from tests.fixtures.data_fixtures import (  # noqa: F401
     relative_sizes_vcml_file_path,
     rule_based_vcml_file_path,
     sbml_file_path,
+    species_graphs_vcml_file_path,
     temp_output_dir,
     vcml_app_name,
     vcml_file_path,
