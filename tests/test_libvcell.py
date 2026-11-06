@@ -117,6 +117,75 @@ def test_sbml_to_vcml_with_an_annotation_namespace() -> None:
         assert vcml_file_path.exists()
 
 
+# SBML L3V2 features vcell-core imports since vcell#2206 (found by compose-api's SBML Test Suite sample): a
+# 0-dimensional compartment, the rateOf csymbol, a rule with no math (no effect), and L3V2 MathML (quotient). The rate
+# rule's parameter is the only ODE; the species is constant.
+_SBML_L3V2_FEATURES = """<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model id="m">
+    <listOfCompartments><compartment id="c" spatialDimensions="0" constant="true"/></listOfCompartments>
+    <listOfSpecies>
+      <species id="S" compartment="c" initialAmount="2" hasOnlySubstanceUnits="true" boundaryCondition="false"
+        constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="P" value="0" constant="false"/>
+      <parameter id="R" value="0" constant="false"/>
+      <parameter id="Q" value="0" constant="false"/>
+      <parameter id="U" value="0" constant="false"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="P"><math xmlns="http://www.w3.org/1998/Math/MathML"><cn>1.5</cn></math></rateRule>
+      <assignmentRule variable="R">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply><csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/rateOf">rateOf</csymbol>
+            <ci>P</ci></apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Q">
+        <math xmlns="http://www.w3.org/1998/Math/MathML"><apply><quotient/><cn>9</cn><cn>2</cn></apply></math>
+      </assignmentRule>
+      <assignmentRule variable="U"/>
+    </listOfRules>
+  </model>
+</sbml>
+"""
+
+# A comp model: jsbml loads no comp plugin, so its submodels would be dropped; vcell-core refuses it instead.
+_SBML_COMP = """<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2"
+  xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" comp:required="true">
+  <model id="m">
+    <listOfCompartments><compartment id="c" spatialDimensions="3" size="1" constant="true"/></listOfCompartments>
+    <listOfParameters><parameter id="P" value="1" constant="true"/></listOfParameters>
+    <comp:listOfSubmodels><comp:submodel comp:id="A" comp:modelRef="sub"/></comp:listOfSubmodels>
+  </model>
+</sbml>
+"""
+
+
+def test_sbml_to_vcml_imports_l3v2_features() -> None:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        vcml_file_path = Path(temp_dir) / "test.vcml"
+        success, msg = sbml_to_vcml(sbml_content=_SBML_L3V2_FEATURES, vcml_file_path=vcml_file_path)
+        assert (success, msg) == (True, "Success")
+        assert vcml_file_path.exists()
+
+
+def test_sbml_to_ode_input_with_l3v2_features(temp_output_dir: Path) -> None:
+    success, msg = sbml_to_ode_input(
+        sbml_content=_SBML_L3V2_FEATURES, output_dir_path=temp_output_dir, duration=2.0, output_time_step=0.5
+    )
+    assert success is True, msg
+
+
+def test_sbml_to_vcml_refuses_a_comp_model() -> None:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        success, msg = sbml_to_vcml(sbml_content=_SBML_COMP, vcml_file_path=Path(temp_dir) / "test.vcml")
+        assert success is False
+        assert "'comp'" in msg
+
+
 def test_vcml_to_sbml_with_validation(vcml_file_path: Path, vcml_app_name: str) -> None:
     vcml_content = vcml_file_path.read_text()
     with tempfile.TemporaryDirectory() as temp_dir:
