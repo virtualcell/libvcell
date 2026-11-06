@@ -231,6 +231,25 @@ class VCellNativeCalls:
             logging.exception("Error in vcml_to_vcml()", exc_info=e)
             raise
 
+    def vcml_regenerate_math(self, vcml_content: str, vcml_file_path: Path) -> ReturnValue:
+        try:
+            with IsolateManager(self.lib) as isolate_thread:
+                json_ptr: ctypes.c_char_p = self.lib.vcmlRegenerateMath(
+                    isolate_thread,
+                    ctypes.c_char_p(vcml_content.encode("utf-8")),
+                    ctypes.c_char_p(str(vcml_file_path).encode("utf-8")),
+                )
+
+            value: bytes | None = ctypes.cast(json_ptr, ctypes.c_char_p).value
+            if value is None:
+                logging.error("Failed to regenerate vcml math")
+                return ReturnValue(success=False, message="Failed to regenerate vcml math")
+            json_str: str = value.decode("utf-8")
+            return ReturnValue.model_validate_json(json_data=json_str)
+        except Exception as e:
+            logging.exception("Error in vcml_regenerate_math()", exc_info=e)
+            raise
+
     def vcml_convert_units(self, vcml_content: str, unit_system: str, vcml_file_path: Path) -> ReturnValue:
         try:
             with IsolateManager(self.lib) as isolate_thread:

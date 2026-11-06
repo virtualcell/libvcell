@@ -32,8 +32,21 @@ libvcell is a thin **pure-Python layer** over a **GraalVM `native-image` shared 
 | `vcmlToFiniteVolumeInput` / `sbmlToFiniteVolumeInput`  | `vcml_to_finite_volume_input` / `sbml_to_finite_volume_input`   | write Finite Volume solver input                               |
 | `vcmlToMovingBoundaryInput`                            | `vcml_to_moving_boundary_input`                                 | write Moving Boundary solver input (`MovingBoundarySetup` XML) |
 | `vcmlToSbml` / `sbmlToVcml` / `vcmlToVcml`             | `vcml_to_sbml` / `sbml_to_vcml` / `vcml_to_vcml`                | model format conversion                                        |
+| `vcmlRegenerateMath`                                   | `vcml_regenerate_math`                                          | regenerate each application's math with VCell's forced upgrade |
 | `vcellInfixToPythonInfix` / `vcellInfixToNumExprInfix` | `vcell_infix_to_python_infix` / `vcell_infix_to_num_expr_infix` | translate VCell infix to other syntaxes                        |
 | `evaluateExpression`                                   | `evaluate_expression`                                           | evaluate a VCell infix expression to a float                   |
+
+## `vcml_regenerate_math`
+
+Regenerates the math of every application of a VCML document as VCell does when it upgrades an old document
+(`SimulationContext.updateAll(true)`), and writes the result. A non-spatial application that gives no absolute
+structure size gets the sizes VCell's `StructureSizeSolver` computes from its surface-to-volume ratios and volume
+fractions, with the model's first structure anchored at 1; the sizes are symbolic over the ratios, which stay in the
+math as constants. `vcml_to_vcml` (`BioModel.updateAll(false)`) generates the same math but leaves such an
+application's structure mappings without sizes. Each application is regenerated on its own: the result,
+`MathRegeneration`, lists the applications regenerated and, for each one whose math generation failed, the reason
+(that application keeps the math it was stored with). Its use: comparing another math generator against the math
+current VCell generates, not the math a document was last saved with.
 
 ## `evaluate_expression`
 

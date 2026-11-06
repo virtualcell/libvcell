@@ -15,6 +15,7 @@ import static org.vcell.libvcell.SolverUtils.vcmlToOdeInput;
 import static org.vcell.libvcell.ModelUtils.evaluateExpression;
 import static org.vcell.libvcell.ModelUtils.sbml_to_vcml;
 import static org.vcell.libvcell.ModelUtils.vcml_to_sbml;
+import static org.vcell.libvcell.ModelUtils.vcml_regenerate_math;
 import static org.vcell.libvcell.ModelUtils.vcml_to_vcml;
 
 public class MainRecorder {
@@ -93,6 +94,7 @@ public class MainRecorder {
                 // create a temporary file for the VCML output
                 File temp_vcml_file = new File(output_dir, "temp.vcml");
                 vcml_to_vcml(vcml_str, temp_vcml_file.toPath());
+                vcml_regenerate_math(vcml_str, temp_vcml_file.toPath());
                 // remove temporary file
                 if (temp_vcml_file.exists()) {
                     boolean deleted = temp_vcml_file.delete();

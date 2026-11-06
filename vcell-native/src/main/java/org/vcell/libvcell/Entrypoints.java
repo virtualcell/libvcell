@@ -418,6 +418,38 @@ public class Entrypoints {
     }
 
     @CEntryPoint(
+            name = "vcmlRegenerateMath",
+            documentation = """
+                    Regenerates the math of every application of a VCML document as VCell does when it upgrades an
+                    old document (structure sizes solved from ratios where none is absolute), and writes the result.
+                      vcml_content: text of VCML XML document
+                      vcml_file_path: path to the VCML file to write
+                      Returns a JSON string with success status and message; on success the message is itself a JSON
+                      object {"regenerated":[<application name>...],"failed":{<application name>:<reason>...}}"""
+    )
+    public static CCharPointer entrypoint_vcmlRegenerateMath(
+            IsolateThread ignoredThread,
+            CCharPointer vcml_content,
+            CCharPointer vcml_file_path) {
+        ReturnValue returnValue;
+        try {
+            String vcmlContentStr = CTypeConversion.toJavaString(vcml_content);
+            Path vcmlFilePath = new File(CTypeConversion.toJavaString(vcml_file_path)).toPath();
+            Regeneration regeneration = vcml_regenerate_math(vcmlContentStr, vcmlFilePath);
+            JSONObject report = new JSONObject();
+            report.put("regenerated", new ArrayList<>(regeneration.regenerated()));
+            report.put("failed", new LinkedHashMap<>(regeneration.failed()));
+            returnValue = new ReturnValue(true, report.toJSONString());
+        } catch (Throwable t) {
+            logger.error("Error regenerating vcml math", t);
+            returnValue = new ReturnValue(false, t.getMessage());
+        }
+        String json = returnValue.toJson();
+        logger.info("Returning from vcmlRegenerateMath: " + json);
+        return createString(json);
+    }
+
+    @CEntryPoint(
             name = "vcmlConvertUnits",
             documentation = """
                     Rewrites a VCML document in another model unit system, converting every quantity (geometry included).

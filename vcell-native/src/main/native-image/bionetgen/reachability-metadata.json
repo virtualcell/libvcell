@@ -1,0 +1,8 @@
+{
+    "reflection": [
+        {
+            "type": "cbit.vcell.bionetgen.SpeciesGraphIsomorphismInspector$BNGEdge",
+            "methods": [{ "name": "<init>", "parameterTypes": [] }]
+        }
+    ]
+}

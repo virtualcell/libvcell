@@ -99,6 +99,31 @@ public class ModelEntrypointsTest {
         assert(vcml_temp_file.exists());
     }
 
+    @Test
+    public void test_vcml_regenerate_math_solves_relative_sizes() throws Exception {
+        // a pre-5.3 document: no absolute structure size, only the ER membrane's ratios (surface-to-volume 1,
+        // volume fraction 0.2); the forced upgrade anchors ER (the model's first structure) at 1, so
+        // ERMem = 1 * V(ER) = 1 and V(ER) = 0.2 * (cyto + ER) gives cyto = 4
+        String vcmlContent = getFileContentsAsString("/public_biomodel_2264899_relative_sizes.vcml");
+        File parent_dir = Files.createTempDirectory("vcmlRegenerateMath").toFile();
+        File vcml_file = new File(parent_dir, "regenerated.vcml");
+        Regeneration regeneration = vcml_regenerate_math(vcmlContent, vcml_file.toPath());
+        assertEquals(java.util.List.of("PingPong2_compartmental"), regeneration.regenerated());
+        assertEquals(Map.of(), regeneration.failed());
+        String vcml = Files.readString(vcml_file.toPath());
+        // VCell solves the sizes symbolically, over the ratios it keeps as math constants
+        assert(vcml.contains("<Constant Name=\"Size_ER\">1.0</Constant>"));
+        assert(vcml.contains("<Function Name=\"Size_cyto\" Domain=\"Compartment\">((( - Size_ER * VolFract_ERMem) + Size_ER) / VolFract_ERMem)</Function>"));
+        assert(vcml.contains("<Function Name=\"Size_ERMem\" Domain=\"Compartment\">( - Size_ER * SurfToVol_ERMem /  - 1.0)</Function>"));
+        assert(vcml.contains("<FeatureMapping Feature=\"cyto\" GeometryClass=\"Compartment\" SubVolume=\"Compartment\" Size=\""));
+        // the unforced update generates the same math but leaves the mappings without sizes
+        File plain_file = new File(parent_dir, "plain.vcml");
+        vcml_to_vcml(vcmlContent, plain_file.toPath());
+        String plain = Files.readString(plain_file.toPath());
+        assert(plain.contains("<FeatureMapping Feature=\"cyto\" GeometryClass=\"Compartment\" SubVolume=\"Compartment\">"));
+        assert(plain.contains("<Function Name=\"Size_cyto\" Domain=\"Compartment\">((( - Size_ER * VolFract_ERMem) + Size_ER) / VolFract_ERMem)</Function>"));
+    }
+
 	@Test
 	public void test_get_python_infix(){
 		String vcellInfix = "id_1 * csc(id_0 ^ 2.2)";

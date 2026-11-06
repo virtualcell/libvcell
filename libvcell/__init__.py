@@ -1,12 +1,14 @@
 from importlib.metadata import PackageNotFoundError, version
 
 from libvcell.model_utils import (
+    MathRegeneration,
     VCellExpressionError,
     evaluate_expression,
     sbml_to_vcml,
     vcell_infix_to_num_expr_infix,
     vcell_infix_to_python_infix,
     vcml_convert_units,
+    vcml_regenerate_math,
     vcml_to_sbml,
     vcml_to_vcml,
 )
@@ -25,6 +27,7 @@ except PackageNotFoundError:  # pragma: no cover - source tree, package not inst
 
 __all__ = [
     "__version__",
+    "MathRegeneration",
     "VCellExpressionError",
     "evaluate_expression",
     "sbml_to_finite_volume_input",
@@ -37,5 +40,6 @@ __all__ = [
     "vcml_to_moving_boundary_input",
     "vcml_to_ode_input",
     "vcml_to_sbml",
+    "vcml_regenerate_math",
     "vcml_to_vcml",
 ]
