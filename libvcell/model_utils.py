@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from pydantic import BaseModel
+
 from libvcell._internal.native_calls import EvalReturnValue, MutableString, ReturnValue, VCellNativeCalls
 
 
@@ -120,6 +122,45 @@ def vcml_to_vcml(vcml_content: str, vcml_file_path: Path) -> tuple[bool, str]:
     native = VCellNativeCalls()
     return_value: ReturnValue = native.vcml_to_vcml(vcml_content=vcml_content, vcml_file_path=vcml_file_path)
     return return_value.success, return_value.message
+
+
+class MathRegeneration(BaseModel):
+    """Which applications of a document had their math regenerated, and why the others failed.
+
+    Attributes:
+        regenerated: names of the applications whose math was regenerated, in document order.
+        failed: application name -> reason, for each application whose math generation failed; such an
+            application keeps the math it was stored with.
+    """
+
+    regenerated: list[str]
+    failed: dict[str, str]
+
+
+def vcml_regenerate_math(vcml_content: str, vcml_file_path: Path) -> tuple[bool, str, MathRegeneration | None]:
+    """
+    Regenerate the math of every application of a VCML document, as VCell does when it upgrades an old document,
+    and write the result.
+
+    Unlike ``vcml_to_vcml``, this forces VCell's upgrade (``SimulationContext.updateAll(true)``): a non-spatial
+    application that gives no absolute structure size gets the sizes VCell's ``StructureSizeSolver`` computes from
+    its surface-to-volume ratios and volume fractions (the model's first structure anchored at 1), written into its
+    structure mappings. Each application is regenerated on its own, so one whose math generation fails does not stop
+    the others.
+
+    Args:
+        vcml_content (str): VCML content
+        vcml_file_path (Path): path to resulting VCML file
+
+    Returns:
+        tuple[bool, str, MathRegeneration | None]: the success status (the document was read and written), a
+            message ("Success", or the error), and on success which applications were regenerated and which failed
+    """
+    native = VCellNativeCalls()
+    return_value: ReturnValue = native.vcml_regenerate_math(vcml_content=vcml_content, vcml_file_path=vcml_file_path)
+    if not return_value.success:
+        return False, return_value.message, None
+    return True, "Success", MathRegeneration.model_validate_json(return_value.message)
 
 
 def vcell_infix_to_python_infix(vcell_infix: str) -> tuple[bool, str, str]:

@@ -14,6 +14,12 @@ def vcml_file_path() -> Path:
 
 
 @pytest.fixture
+def relative_sizes_vcml_file_path() -> Path:
+    """A pre-5.3 document: no absolute structure size, only the ER membrane's ratios."""
+    return fixtures_dir / "public_biomodel_2264899_relative_sizes.vcml"
+
+
+@pytest.fixture
 def vcml_sim_name() -> str:
     return "Simulation0"
 

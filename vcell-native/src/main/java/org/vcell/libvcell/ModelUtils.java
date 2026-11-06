@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModelUtils {
@@ -131,6 +133,42 @@ public class ModelUtils {
         // write the BioModel to a VCML file
         String vcml_str = XmlHelper.bioModelToXML(bioModel);
         XmlUtil.writeXMLStringToFile(vcml_str, vcmlPath.toFile().getAbsolutePath(), true);
+    }
+
+    /**
+     * The outcome of regenerating a document's math: the applications whose math was regenerated, and the ones whose
+     * generation failed (name -> reason), in document order. A failed application keeps the math it was stored with.
+     */
+    public record Regeneration(List<String> regenerated, Map<String, String> failed) {}
+
+    /**
+     * Regenerates the math of every application of a VCML BioModel as VCell does when it upgrades an old document
+     * ({@code SimulationContext.updateAll(true)}): a non-spatial application that gives no absolute structure size
+     * gets the sizes the {@code StructureSizeSolver} computes from its surface-to-volume ratios and volume fractions
+     * (the model's first structure anchored at 1), and a spatial one its unit sizes; then its math is generated anew.
+     * Each application is regenerated on its own, so one that fails does not stop the others.
+     */
+    public static Regeneration vcml_regenerate_math(String vcml_content, Path vcmlPath) throws XmlParseException, IOException {
+        BioNetGenSupport.configure();
+        GeometrySpec.avoidAWTImageCreation = true;
+        XmlHelper.cloneUsingXML = true;
+        VCMongoMessage.enabled = false;
+
+        BioModel bioModel = XmlHelper.XMLToBioModel(new XMLSource(vcml_content));
+        bioModel.refreshDependencies();
+        List<String> regenerated = new ArrayList<>();
+        Map<String, String> failed = new LinkedHashMap<>();
+        for (SimulationContext simulationContext : bioModel.getSimulationContexts()) {
+            try {
+                simulationContext.updateAll(true);
+                regenerated.add(simulationContext.getName());
+            } catch (Exception e) {
+                failed.put(simulationContext.getName(), String.valueOf(e.getMessage()));
+            }
+        }
+        String vcml_str = XmlHelper.bioModelToXML(bioModel);
+        XmlUtil.writeXMLStringToFile(vcml_str, vcmlPath.toFile().getAbsolutePath(), true);
+        return new Regeneration(regenerated, failed);
     }
 
     /**

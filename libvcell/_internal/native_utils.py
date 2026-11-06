@@ -68,6 +68,11 @@ class VCellNativeLibraryLoader:
         self.lib.vcmlToVcml.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
         self.lib.vcmlConvertUnits.restype = ctypes.c_char_p
         self.lib.vcmlConvertUnits.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        # vcmlRegenerateMath is only present in newer native libraries; guard so the package still loads against
+        # older shared libraries that predate it.
+        if hasattr(self.lib, "vcmlRegenerateMath"):
+            self.lib.vcmlRegenerateMath.restype = ctypes.c_char_p
+            self.lib.vcmlRegenerateMath.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p]
 
         # vcmlToMovingBoundaryInput is only present in native libraries built with moving-boundary
         # support; guard so the package still loads against older shared libraries.

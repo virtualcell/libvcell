@@ -1,0 +1,124 @@
+<BioModel Name="PingPong2">
+   <Model Name="PingPong2">
+      <Compound Name="Ca">
+         <Annotation>Calcium</Annotation>
+      </Compound>
+      <Feature Name="ER" KeyValue="14703" />
+      <Feature Name="cyto" KeyValue="14701" />
+      <Membrane InsideFeature="ER" OutsideFeature="cyto" MembraneVoltage="Voltage_ERMem" Name="ERMem" KeyValue="14702" />
+      <LocalizedCompound Name="Ca_cyto" CompoundRef="Ca" Structure="cyto" OverrideName="false" KeyValue="14707" />
+      <LocalizedCompound Name="Ca_ERMem" CompoundRef="Ca" Structure="ERMem" OverrideName="false" KeyValue="14708" />
+      <SimpleReaction Structure="ERMem" Name="reaction0" FluxCarrierValence="0" FluxOption="MolecularOnly" KeyValue="14709">
+         <Reactant LocalizedCompoundRef="Ca_cyto" Stoichiometry="1" KeyValue="14711" />
+         <Product LocalizedCompoundRef="Ca_ERMem" Stoichiometry="1" KeyValue="14710" />
+         <Kinetics KineticsType="MassAction">
+            <Parameter Name="J" Role="reaction rate" Unit="molecules.um-2.s-1">((Kf * Ca_cyto) - (Kr * Ca_ERMem))</Parameter>
+            <Parameter Name="I" Role="inward current density" Unit="pA.um-2">0.0</Parameter>
+            <Parameter Name="Kf" Role="forward rate constant" Unit="molecules.um-2.uM-1.s-1">(Kon * (t &lt; 8.0))</Parameter>
+            <Parameter Name="Kr" Role="reverse rate constant" Unit="s-1">(Koff * (t &gt; 8.0))</Parameter>
+            <Parameter Name="Kon" Role="user defined" Unit="molecules.um-2.s-1">20.0</Parameter>
+            <Parameter Name="Koff" Role="user defined" Unit="molecules.um-2.s-1">0.0050</Parameter>
+         </Kinetics>
+      </SimpleReaction>
+      <Diagram Name="Feature0_diagram" Structure="cyto" />
+      <Diagram Name="Feature1_diagram" Structure="ER" />
+      <Diagram Name="Membrane0_diagram" Structure="ERMem">
+         <LocalizedCompoundShape LocalizedCompoundRef="Ca_ERMem" LocationX="225" LocationY="79" />
+         <LocalizedCompoundShape LocalizedCompoundRef="Ca_cyto" LocationX="60" LocationY="44" />
+         <SimpleReactionShape SimpleReactionRef="reaction0" LocationX="99" LocationY="108" />
+      </Diagram>
+      <Version Name="PingPong2" KeyValue="14700" BranchId="14598" Archived="0" Date="11-Jun-2000 09:28:30" FromVersionable="false">
+         <Owner Name="schaff" Identifier="17" />
+         <GroupAccess Type="1" />
+      </Version>
+   </Model>
+   <SimulationSpec Name="PingPong2_compartmental">
+      <Geometry Name="compartmental" Dimension="0">
+         <Extent X="10.0" Y="10.0" Z="10.0" />
+         <Origin X="0.0" Y="0.0" Z="0.0" />
+         <SubVolume Name="Compartment" Handle="0" Type="Compartmental" KeyValue="14617" />
+         <Version Name="compartmental" KeyValue="14614" BranchId="14615" Archived="0" Date="10-Jun-2000 16:04:27" FromVersionable="false">
+            <Owner Name="schaff" Identifier="17" />
+            <GroupAccess Type="1" />
+         </Version>
+      </Geometry>
+      <GeometryContext>
+         <FeatureMapping Feature="ER" SubVolume="Compartment" Resolved="false">
+            <BoundariesTypes Xm="Value" Xp="Value" Ym="Value" Yp="Value" Zm="Value" Zp="Value" />
+         </FeatureMapping>
+         <FeatureMapping Feature="cyto" SubVolume="Compartment" Resolved="false">
+            <BoundariesTypes Xm="Value" Xp="Value" Ym="Value" Yp="Value" Zm="Value" Zp="Value" />
+         </FeatureMapping>
+         <MembraneMapping Membrane="ERMem" SurfaceToVolumeRatio="1.0" VolumeFraction="0.2" CalculateVoltage="false" SpecificCapacitance="1.0" InitialVoltage="0.0" />
+      </GeometryContext>
+      <ReactionContext>
+         <LocalizedCompoundSpec LocalizedCompoundRef="Ca_ERMem" ForceConstant="false" EnableDiffusion="false">
+            <Initial>0.0</Initial>
+            <Diffusion>0.0</Diffusion>
+         </LocalizedCompoundSpec>
+         <LocalizedCompoundSpec LocalizedCompoundRef="Ca_cyto" ForceConstant="false" EnableDiffusion="true">
+            <Initial>1.0</Initial>
+            <Diffusion>0.0</Diffusion>
+         </LocalizedCompoundSpec>
+         <ReactionSpec ReactionStepRef="reaction0" ReactionMapping="included" />
+      </ReactionContext>
+      <MathDescription Name="PingPong2_compartmental_14699">
+         <Constant Name="Koff">0.0050</Constant>
+         <Constant Name="_T_">300.0</Constant>
+         <Constant Name="K_milliVolts_per_Volt">1000.0</Constant>
+         <Constant Name="Ca_cyto_init">1.0</Constant>
+         <Constant Name="_F_">96480.0</Constant>
+         <Constant Name="_R_">8314.0</Constant>
+         <Constant Name="VolFract_ER">0.2</Constant>
+         <Constant Name="Ca_ERMem_init">0.0</Constant>
+         <Constant Name="KMOLE">0.0016611295681063123</Constant>
+         <Constant Name="Kon">20.0</Constant>
+         <Constant Name="SurfToVol_ERMem">1.0</Constant>
+         <VolumeVariable Name="Ca_cyto" />
+         <Function Name="Voltage_ERMem">0.0</Function>
+         <Function Name="Kflux_ERMem_cyto">(SurfToVol_ERMem * VolFract_ER / (1.0 - VolFract_ER))</Function>
+         <Function Name="Kf_reaction0">(Kon * (t &lt; 8.0))</Function>
+         <Function Name="Kr_reaction0">(Koff * (t &gt; 8.0))</Function>
+         <Function Name="K_Ca_ERMem_total">((Ca_ERMem_init * SurfToVol_ERMem * VolFract_ER * KMOLE) + ((1.0 - VolFract_ER) * Ca_cyto_init))</Function>
+         <Function Name="Ca_ERMem">((K_Ca_ERMem_total - ((1.0 - VolFract_ER) * Ca_cyto)) / (SurfToVol_ERMem * VolFract_ER * KMOLE))</Function>
+         <Function Name="J_reaction0">((Kf_reaction0 * Ca_cyto) - (Kr_reaction0 * Ca_ERMem))</Function>
+         <Function Name="Kflux_ERMem_ER">SurfToVol_ERMem</Function>
+         <CompartmentSubDomain Name="Compartment">
+            <BoundaryType Boundary="Xm" Type="Value" />
+            <BoundaryType Boundary="Xp" Type="Value" />
+            <BoundaryType Boundary="Ym" Type="Value" />
+            <BoundaryType Boundary="Yp" Type="Value" />
+            <BoundaryType Boundary="Zm" Type="Value" />
+            <BoundaryType Boundary="Zp" Type="Value" />
+            <OdeEquation Name="Ca_cyto" SolutionType="Unknown">
+               <Rate> - (Kflux_ERMem_cyto * KMOLE * J_reaction0)</Rate>
+               <Initial>Ca_cyto_init</Initial>
+            </OdeEquation>
+         </CompartmentSubDomain>
+         <Version Name="PingPong2_compartmental_14699" KeyValue="2209399" BranchId="2003265" Archived="0" Date="25-Oct-2001 14:26:07" FromVersionable="false">
+            <Owner Name="schaff" Identifier="17" />
+            <GroupAccess Type="1" />
+         </Version>
+      </MathDescription>
+      <Simulation Name="PingPong2_compartmental_14699_SIM">
+         <SolverTaskDescription TaskType="Unsteady" KeepEvery="10000" KeepAtMost="1000" UseSymbolicJacobian="false" Solver="Forward Euler (First Order, Fixed Time Step)">
+            <TimeBound StartTime="0.0" EndTime="1.0" />
+            <TimeStep DefaultTime="1.0E-6" MinTime="1.0E-8" MaxTime="1.0" />
+            <ErrorTolerance Absolut="1.0E-9" Relative="1.0E-9" />
+         </SolverTaskDescription>
+         <MathOverrides />
+         <Version Name="PingPong2_compartmental_14699_SIM" KeyValue="2264897" BranchId="2005349" Archived="0" Date="13-Nov-2001 10:59:17" FromVersionable="false">
+            <Owner Name="schaff" Identifier="17" />
+            <GroupAccess Type="1" />
+         </Version>
+      </Simulation>
+      <Version Name="PingPong2_compartmental" KeyValue="2209398" BranchId="14619" Archived="0" Date="25-Oct-2001 14:26:07" FromVersionable="false">
+         <Owner Name="schaff" Identifier="17" />
+         <GroupAccess Type="1" />
+      </Version>
+   </SimulationSpec>
+   <Version Name="PingPong2" KeyValue="2264899" BranchId="1014598" Archived="0" Date="13-Nov-2001 10:59:19" FromVersionable="false">
+      <Owner Name="schaff" Identifier="17" />
+      <GroupAccess Type="1" />
+   </Version>
+</BioModel>
